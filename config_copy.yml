@@ -1,0 +1,54 @@
+NET_INFO_PATH: ./config.yml
+EXPERIMENT_NAME: ywkim_test
+
+
+#path
+DATASET_PATH: ./Dataset/128x128_FIX
+TENSORBOARD_PATH: ./tensorboard/
+CSV_NAME: block_info.csv
+SAVE_PATH : model
+
+#DataShape
+#TUDATA
+IS_CONST_TU_DATA: 1
+TU_ORDER: {QP: 0, MODE: 1, DEPTH: 2}
+
+#PELDATA
+PEL_DATA: [1, 1, 1, 1]  # Original, Prediction, Reconstruction, UnfiltredReconstruction
+IS_ONLY_LUMA: 0
+BIT_DEPTH: 10
+
+#Condition
+INIT_LEARNING_RATE : 0.001
+PRINT_PERIOD : 600
+BATCH_SIZE : 18
+
+#Framework
+FRAMEWORK: 1  # 0 : tensorflow , 1 : pytorch
+
+
+OBJECT_EPOCH: 100
+NUM_WORKER : 1
+
+#tensorboard
+#PLOT_LIST : ['Reconstruction', 'CNN_Recon'] #[0 : 'Prediction', 1 : 'Reconstruction', 2 : 'UnfilteredRecon', 3 : 'CNN_Recon']
+GPU_MONITOR: 1
+
+#Valiable, Save Valiable
+
+step: 0
+
+DATAMEAN:
+- 432.9460616354421
+- 502.3481561544486
+- 522.3250068716206
+- 29.277580071174377
+- 15.507460020239057
+- 3.2198954932698056
+DATASTD:
+- 238.8101645764655
+- 63.5189203559179
+- 60.71818243900988
+- 5.57954586539721
+- 20.94491191676783
+- 1.51095349150374
