@@ -43,7 +43,25 @@ class Mytensorboard(NetManager):
         else:
             mymin = img.min()
             mymax = img.max()
-        imgs = ax.imshow((img[0]).astype(int), vmin=mymin, vmax=mymax, interpolation='bilinear',
+        imgs = ax.imshow((img[0]).astype(int), vmin=mymin, vmax=mymax, interpolation='nearest',
+                   cmap=plt.cm.get_cmap('seismic'))
+        v1 = np.linspace(mymin, mymax, 10, endpoint=True)
+        cb = fig.colorbar(imgs, ticks=v1)
+        cb.ax.set_yticklabels(["{:4.2f}".format(i) for i in v1])
+        self.plotToTensorboard(fig, name)
+        return
+
+
+    def plotMSEImage(self, resi, name):
+        img = (resi.cpu().detach().numpy())*1023.0*1023.0
+        fig, ax= plt.subplots()
+        if img.min()<0 and img.max()>0:
+            mymax = max(abs(img.min()), img.max())
+            mymin = -mymax
+        else:
+            mymin = img.min()
+            mymax = img.max()
+        imgs = ax.imshow((img[0]).astype(int), vmin=mymin, vmax=mymax, interpolation='nearest',
                    cmap=plt.cm.get_cmap('seismic'))
         v1 = np.linspace(mymin, mymax, 10, endpoint=True)
         cb = fig.colorbar(imgs, ticks=v1)
@@ -56,9 +74,9 @@ class Mytensorboard(NetManager):
         fig, ax= plt.subplots()
         if vminmax is None:
             vminmax = (img.min(), img.max())
-        imgs = ax.imshow((img.cpu().numpy()[0]).astype(int), vmin=vminmax[0], vmax=vminmax[1], interpolation='bilinear',
+        imgs = ax.imshow((img.cpu().numpy()[0]).astype(int), vmin=vminmax[0], vmax=vminmax[1], interpolation='nearest',
                    cmap=plt.cm.get_cmap('viridis', color_num))
-        v1 = np.linspace(vminmax[0], vminmax[1], 10, endpoint=True)
+        v1 = np.round(np.linspace(vminmax[0], vminmax[1], 10, endpoint=True))
         cb = fig.colorbar(imgs, ticks=v1)
         cb.ax.set_yticklabels(["{:4.2f}".format(i) for i in v1])
         self.plotToTensorboard(fig, name)

@@ -1,7 +1,8 @@
 import numpy as np
 import struct
+from help_func.logging import LoggingHelper
 from help_func.help_python import myUtil
-# import copy
+import copy
 
 class LearningIndex:
     TEST = 0
@@ -35,8 +36,9 @@ class TuList:
 
     def __init__(self, tulist):
         if tulist is None:
-            self.tulist = np.array([[],[],[],[]])
-        self.tulist = tulist
+            self.tulist = np.array([[],[],[],[]], dtype='int32')
+        else:
+            self.tulist = tulist
         # Only Use +=, -=, *=, /=, //= or Reference...
         self.width = self.tulist[0]
         self.height = self.tulist[1]
@@ -67,16 +69,21 @@ class TuList:
         return np.shape(self.tulist)
 
 
+    # 0: width, 1: height, 2: x_pos 3: y_pos, 4 : qp, 5 : mode ..
     def containTuList(self, area):
         filtered = self.tulist[:,~np.any([(self.tulist[1] + self.tulist[3]) < area.y,
                                           (self.tulist[2] + self.tulist[0]) < area.x,
-                                           self.tulist[3] > area.y + area.height,
-                                           self.tulist[2] > area.x + area.width
+                                           self.tulist[3] > (area.y + area.height),
+                                           self.tulist[2] > (area.x + area.width)
                                            ], axis = 0)]
         filtered[2, filtered[2]<area.x] = area.x
         filtered[3, filtered[3]<area.y] = area.y
-        filtered[0, (filtered[0] + filtered[2]) > (area.x + area.width)] -= area.width
-        filtered[1, (filtered[1] + filtered[3]) > (area.y + area.height)] -= area.height
+        # if filtered.min() < 0:
+        #     pass
+        filtered[0, (filtered[0] + filtered[2]) > (area.x + area.width)] =\
+            (area.width + area.x) - filtered[2, (filtered[0] + filtered[2]) > (area.x + area.width)]
+        filtered[1, (filtered[1] + filtered[3]) > (area.y + area.height)] -= \
+            (area.height + area.y) - filtered[3, (filtered[1] + filtered[3]) > (area.y + area.height)]
         np.abs(filtered, out=filtered) # abs inplace
         return filtered
 
@@ -89,17 +96,33 @@ class TuList:
 
     def saveTuList(self, f):
         if not len(self.tulist[0]):
-            return
+            f.write(struct.pack('<2i', *[0,0]))
+            LoggingHelper.get_instance().logger.error('No Tu info')
+            return False
         self.tulist[2] -= self.tulist[2].min()
         self.tulist[3] -= self.tulist[3].min()
         row, num = self.dataShape()
-        data = np.concatenate((np.array((row, num)), self.tulist.flatten()), axis = 0)
+        rowandnum = np.array((row, num), dtype= 'int32')
+        data = self.tulist.flatten()
+        f.write(struct.pack('<2i', *rowandnum))
         f.write(struct.pack('<' + str(len(data)) + 'h', *data))
-        return
+        return True
+
+
+
+    @staticmethod
+    def loadTuList_Old(f):
+        row, num = struct.unpack('<2h', f.read(4))
+        tulist = np.array(struct.unpack('<' + str(row * num) + 'h',
+                                        f.read(2*row*num)), dtype = 'int16').reshape((row, num))
+
+        return TuList(tulist)
 
     @staticmethod
     def loadTuList(f):
-        row, num = struct.unpack('<2h', f.read(4))
+        row, num = struct.unpack('<2i', f.read(8))
+        if not row:
+            return TuList(None)
         tulist = np.array(struct.unpack('<' + str(row * num) + 'h',
                                         f.read(2*row*num)), dtype = 'int16').reshape((row, num))
 
@@ -134,11 +157,14 @@ class TuList:
                    self.x_pos[i] + self.x_pos + self.width] = 0
         return
 
+    def __iadd__(self, other):
+        self.tulist = np.concatenate((self.tulist,other.tulist), axis = 0)
+        self.resetMember()
+        return self
 
-
-
-
-
+    def __add__(self, other):
+        tulist = np.concatenate((self.tulist,other.tulist), axis = 0)
+        return TuList(tulist)
 
 
 class Size:
@@ -234,6 +260,7 @@ class UnitBuf:
                  ):
         self.area = area
         self.chromaFormat = ChromaFormatID
+        self.carea = self.getCArea()
         self.original = [OrigY, OrigCb, OrigCr]
         self.prediction = [PredY, PredCb, PredCr]
         self.reconstruction = [ReconY, ReconCb, ReconCr]
@@ -241,9 +268,18 @@ class UnitBuf:
         self.pelBuf = [self.original, self.prediction, self.reconstruction, self.unfilteredRecon]
         self.tulist = tuList
 
-    def CopyBlock(self, others ,PictureFormatID,):
-        self.pelBuf[PictureFormatID][:, others.area.y:(others.area.y+others.area.h), others.area.x:(others.area.x + others.area.w)] = others[:,:,:]
+    def CopyBlock(self, others ,PictureFormatID):
+        if PictureFormatID%3:
+            self.pelBuf[PictureFormatID][:, others.carea.y:(others.carea.y+others.carea.h), others.carea.x:(others.carea.x + others.carea.w)] = others.pelBuf[PictureFormatID][:,:,:]
+        else:
+            self.pelBuf[PictureFormatID][:, others.area.y:(others.area.y+others.area.h), others.area.x:(others.area.x + others.area.w)] = others.pelBuf[PictureFormatID][:,:,:]
         return
+
+    def CopyAll(self, others):
+        for i in range(len(self.pelBuf)):
+            if self.pelBuf[i] is not None:
+                self.CopyBlock(others, i)
+
 
     def CopyArea(self, others, PictureFormatID, dstarea, srcarea):
         self.pelBuf[PictureFormatID][:, dstarea.y:(dstarea.y + dstarea.h), dstarea.x:(dstarea.x + dstarea.w)] = others[:,srcarea.y:(srcarea.y + srcarea.h), srcarea.x:(srcarea.x + srcarea.w)]
@@ -260,7 +296,23 @@ class UnitBuf:
         else:
             assert 0
 
+    def getCArea(self):
+        if self.chromaFormat == ChromaFormat.YCbCr4_2_0:
+            return self.area.getCArea()
+        else:
+            return self.area
 
+    def setReshape1dTo2d(self, pic_kinds):
+        if self.chromaFormat == ChromaFormat.YCbCr4_2_0:
+            self.pelBuf[pic_kinds][0] = self.pelBuf[pic_kinds][0].reshape((self.area.height, self.area.width))
+            self.pelBuf[pic_kinds][1] = myUtil.UpSamplingChroma(self.pelBuf[pic_kinds][1].reshape((self.carea.height, self.carea.width)))
+            self.pelBuf[pic_kinds][2] = myUtil.UpSamplingChroma(self.pelBuf[pic_kinds][2].reshape((self.carea.height, self.carea.width)))
+
+    def dropPadding(self, x, pad, isDeepCopy = False):
+        if isDeepCopy:
+            return copy.deepcopy(x[:,pad:-pad,pad:-pad])
+        else:
+            return x[:,pad:-pad,pad:-pad]
 
     def getPic(self, PictureFormatID):
         return self.pelBuf[PictureFormatID]

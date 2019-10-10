@@ -7,13 +7,15 @@ TEST_ORG_PATH : [D:/origCfP]
 VALIDATION_ORG_PATH : []
 DECODE_LOG_PATH : ./build_data/logs
 
-TRAINING_BIN_PATH : [C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one]
-TEST_BIN_PATH : [C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one]
-VALIDATION_BIN_PATH : [C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one]
+TRAINING_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
+TEST_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
+VALIDATION_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
 
 ADDITION_DATA : 1
 IS_ONLY_ONE_INTRA : 0 #default zero, only use when you get png data
-
+PNG_ORG_PATH : [C:/intra_additional/DIV2K_train_YUV]
+TRAINING_PNG_PATH : [C:/Users/tuzm2/Desktop/VTM6.1bin/PNG_DATA/PNGDATA]
+VALIDATION_PNG_PATH : [C:/Users/tuzm2/Desktop/VTM6.1bin/PNG_DATA/valid_bin]
 
 
 #Dataset Path
@@ -36,8 +38,10 @@ TARGET_TESTSET_NUM : 2 # [0 : All Frame, Others : A few frames ahead each Test S
 USE_CONST_BLOCK : 1 # 0 : split by tu, 1 : split by const size
 CONST_WIDTH : 128
 CONST_HEIGHT : 128
-SAVE_TU_CONST_BLOCK_INFO : 3 # 0 : Disable , 1 : Luma , 2 : Chroma, 3 : Dual
+SAVE_TU_CONST_BLOCK_INFO : 1 # 0 : Disable , 1 : Luma , 2 : Chroma, 3 : Dual
 CONST_BLOCK_INTERVAL : 1
+GET_TESTSET_BY_PICTURE : 1
+
 
 #TU Size
 IS_TU_SPLIT: 0 # [1 : split by tu luma], [2 : split by tu Chroma]
@@ -66,7 +70,9 @@ PARALLEL_DECODE : 1 # [1 : None parrallel processing], [Others : Thread number]
 INTRA_TEMPORAL_SUBSAMPLE_RATIO : 8
 DECODER_BIT_DEPTH : 10
 
-TU_DATA_OTHERS: ['QP', 'MODE', 'DEPTH'] # data order [width, height, x_pos, y_pos, qp, ... etc]
+
+CTU_DTA_OTHERS: ['ALFLUMA']
+TU_DATA_OTHERS: ['QP', 'MODE', 'DEPTH', 'HOR_TR', 'VER_TR'] # data order [width, height, x_pos, y_pos, qp, ... etc]
 
 
 #Padding Setting

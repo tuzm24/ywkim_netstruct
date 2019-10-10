@@ -83,6 +83,13 @@ class myUtil(object):
                 headerlinewriter = csv.writer(f)
                 headerlinewriter.writerow(header)
 
+    @staticmethod
+    def getleafDirs(dir):
+        folders = []
+        for root, dirs, files in os.walk(dir):
+            if not dirs:
+                folders.append(root)
+        return folders
 
 class Singleton(object):
     def __new__(cls, *args, **kwds):

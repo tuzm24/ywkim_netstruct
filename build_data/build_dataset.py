@@ -13,6 +13,7 @@ from CfgEnv.config import Config
 from help_func.help_python import myUtil
 import csv
 import copy
+import random
 # import mmap
 
 
@@ -27,12 +28,8 @@ from help_func.CompArea import PictureFormat
 from help_func.CompArea import UniBuf
 from help_func.CompArea import Area
 
-
-
 if __name__ == '__main__':
     os.chdir("../")
-
-
 
 
 class BuildData(object):
@@ -61,13 +58,12 @@ class BuildData(object):
     others_data = cfg.TU_DATA_OTHERS
     tu_data_num = len(others_data) + 4
 
-    #Data Format Config
+    # Data Format Config
     isOnlyLuma = cfg.ONLY_LUMA
     usePelDataList = cfg.PEL_DATA
     # tu_map = cfg.TU_MAP
 
     # assert len(tu_map) == len(others_data)
-
 
     training_datacnt = 0
     validation_datacnt = 0
@@ -84,7 +80,7 @@ class BuildData(object):
     temp_path = cfg.TEMP_PATH
     depth = cfg.DECODER_BIT_DEPTH
     if depth == 10:
-        datatype = 'int16' # Output Data Type
+        datatype = 'int16'  # Output Data Type
     else:
         datatype = 'uint8'
 
@@ -105,15 +101,15 @@ class BuildData(object):
     const_height = cfg.CONST_HEIGHT
     save_tu_const_block_info = cfg.SAVE_TU_CONST_BLOCK_INFO
 
-    #Tu Shape
+    get_testset_by_picture = cfg.GET_TESTSET_BY_PICTURE
+
+
+    # Tu Shape
     min_width = cfg.MIN_WIDTH_SIZE
     max_width = cfg.MAX_WIDTH_SIZE
     min_height = cfg.MIN_HEIGHT_SIZE
     max_height = cfg.MAX_HEIGHT_SIZE
     only_square = cfg.ONLY_SQUARE
-
-
-
 
     # padding setting
     boundary_pad = cfg.PIC_BOUNDARY_PAD
@@ -138,6 +134,8 @@ class BuildData(object):
     comp_opt = cfg.COMPARE_OPT
     yuv_opt = cfg.YUV_OPT
 
+    ctulist = cfg.CTU_DTA_OTHERS
+    ctu_data_num = len(ctulist)
     # training_tu_data = queue.Queue()
     # validation_tu_data = queue.Queue()
     test_data_order = ['NAME', 'WIDTH', 'HEIGHT', 'X_POS', 'Y_POS']
@@ -159,19 +157,13 @@ class BuildData(object):
         splitmode = 0
 
 
-
-
-
 class imgInfo(BuildData):
     thlock = threading.Lock()
-
 
     # os.makedirs(os.path.join(TrainingSetPath, '32x32'), exist_ok=True)
     # os.makedirs(os.path.join(TestSetPath, '32x32'), exist_ok=True)
     def __init__(self, name, data_opt, targetnum):
         self.example_image_get = False
-        if self.cfg.IS_ONLY_ONE_INTRA:
-            self.example_image_get = True
         binpath = "./ywkim_" + name + ".bin"
         self.name = name
         self.num = 0
@@ -186,6 +178,8 @@ class imgInfo(BuildData):
         self.area = self.width * self.height
         self.carea = self.cwidth * self.cheight
         self.pelCumsum = []
+        if self.cfg.IS_ONLY_ONE_INTRA and random.randrange(0,30)%29 != 0:
+            self.example_image_get = True
         for _ in range(len(self.usePelDataList)):
             self.pelCumsum.append(self.area)
             self.pelCumsum.append(self.carea)
@@ -193,8 +187,7 @@ class imgInfo(BuildData):
         self.totalpels = np.sum(self.pelCumsum)
         if len(self.pelCumsum):
             self.pelCumsum = np.cumsum(np.array(self.pelCumsum), dtype='int32')
-        self.dataopt = data_opt # 0 : test, 1 : training, 2 : validation
-
+        self.dataopt = data_opt  # 0 : test, 1 : training, 2 : validation
 
     # def Check_Cfg_Setting(self):
     #     if self.boundary_pad !=2 and (self.luma_pad !=0 or self.chroma_pad !=0):
@@ -219,11 +212,6 @@ class imgInfo(BuildData):
     def GetFilecnt(self, path):
         return len(os.listdir(path))
 
-
-
-
-
-
     def getTrainingset(self):
         self.logger.info("%s binfile get training set.." % self.name)
         if self.cfg.SKIP_TU_DEPENDENT_QP == 0:
@@ -235,6 +223,8 @@ class imgInfo(BuildData):
             # Pic = []  # piclist {0:Original, 1:prediction, 2:reconstruction, 3:unfiltered }
             # PicUV = []
             # pocMode = struct.unpack('<h', self.img.read(2))[0]
+            if self.ctu_data_num > 0:
+                CTUInfo = self.getCTUInfo()
             YSplitInfo = self.getTuInfo()
             CSplitInfo = self.getTuInfo()
             # print("Until Make Pic&TU : %s", time.time() - st_time)
@@ -245,7 +235,7 @@ class imgInfo(BuildData):
             #                       CSplitInfo = CSplitInfo)
 
             if np.sum(pic.original[0]) == 0:
-                self.logger.error('   %s poc %s Original is zero' %(self.name,poc))
+                self.logger.error('   %s poc %s Original is zero' % (self.name, poc))
                 return
             try:
                 self.logger.info("  %s POC %s" % (self.name, poc))
@@ -271,7 +261,7 @@ class imgInfo(BuildData):
                                       self.getPSNR(pic.original[2], pic.unfilteredRecon[2])))
             except Exception as e:
                 self.logger.error(e)
-                self.logger.error('   %s poc %s cannot calc PSNR' %(self.name,poc))
+                self.logger.error('   %s poc %s cannot calc PSNR' % (self.name, poc))
                 return
             # if self.mode or self.mode != pocMode:
             #     self.logger.info("  Skip POC...")
@@ -281,8 +271,11 @@ class imgInfo(BuildData):
             if self.use_const_block:
                 cbi = self.cfg.CONST_BLOCK_INTERVAL
                 pos_list = [
-                    np.array((self.const_width, self.const_height, x * (self.const_width//cbi), y * (self.const_height//cbi), self.qp))
-                    for y in range((self.height*cbi) // self.const_height - 1) for x in range((self.width*cbi) // self.const_width - 1)]
+                    np.array((self.const_width if (x + self.const_width) <= self.width else (self.width - x),
+                              self.const_height if (y + self.const_height) <= self.height else (self.height - y),
+                              x, y, self.qp))
+                    for y in range(0, (self.height//self.const_height)*self.const_height, self.const_height)
+                    for x in range(0, (self.width//self.const_width)*self.const_width, self.const_width)]
 
                 pos_list = TuList(np.array(pos_list).T)
                 # pic.tulist = copy.deepcopy(YSplitInfo)
@@ -302,11 +295,11 @@ class imgInfo(BuildData):
             if not self.example_image_get:
                 real_pos_list = copy.deepcopy(pos_list)
                 if self.splitmode < 2:
-                    real_pos_list.x_pos += self.cfg.LUMA_PAD[2]
-                    real_pos_list.y_pos += self.cfg.LUMA_PAD[3]
+                    real_pos_list.tulist[2] += self.cfg.LUMA_PAD[2]
+                    real_pos_list.tulist[3] += self.cfg.LUMA_PAD[0]
                 else:
-                    real_pos_list.x_pos += self.cfg.CHROMA_PAD[2]
-                    real_pos_list.y_pos += self.cfg.CHROMA_PAD[3]
+                    real_pos_list.tulist[2] += self.cfg.CHROMA_PAD[2]
+                    real_pos_list.tulist[3] += self.cfg.CHROMA_PAD[0]
 
             pad_width = 0
             pad_height = 0
@@ -316,20 +309,49 @@ class imgInfo(BuildData):
                     for j in range(3):
                         if self.boundary_pad != 1:
                             pic.pelBuf[i][j] = np.pad(pic.pelBuf[i][j], self.pad_opt[j]
-                                               # + ((0,0),)
-                                               , mode='constant', constant_values=(self.boundary_pad))
+                                                      # + ((0,0),)
+                                                      , mode='constant', constant_values=(self.boundary_pad))
                         else:
                             pic.pelBuf[i][j] = np.pad(pic.pelBuf[i][j], self.pad_opt[j]
-                                               # + ((0,0),)
-                                               , mode='edge')
+                                                      # + ((0,0),)
+                                                      , mode='edge')
                 if self.splitmode < 2:  # split mode is luma or constant
                     pad_width = self.cfg.LUMA_PAD[2] + self.cfg.LUMA_PAD[3]
                     pad_height = self.cfg.LUMA_PAD[0] + self.cfg.LUMA_PAD[1]
                 else:
                     pad_width = self.cfg.CHROMA_PAD[2] + self.cfg.CHROMA_PAD[3]
                     pad_height = self.cfg.CHROMA_PAD[0] + self.cfg.CHROMA_PAD[1]
-                pos_list.width += pad_width
-                pos_list.height += pad_height
+                pos_list.tulist[0] += pad_width
+                pos_list.tulist[1] += pad_height
+
+                if self.ctu_data_num>0:
+                    CTUInfo.tulist[0] += pad_width
+                    CTUInfo.tulist[1] += pad_height
+
+                if self.use_const_block and self.save_tu_const_block_info:
+                    if self.save_tu_const_block_info % 2 == 1:
+                        YSplitInfo.tulist[2] += self.cfg.LUMA_PAD[2]
+                        YSplitInfo.tulist[3] += self.cfg.LUMA_PAD[0]
+                        YSplitInfo.tulist[0, YSplitInfo.tulist[2] == self.cfg.LUMA_PAD[2]] += self.cfg.LUMA_PAD[2]
+                        YSplitInfo.tulist[2, YSplitInfo.tulist[2] == self.cfg.LUMA_PAD[2]] = 0
+                        YSplitInfo.tulist[1, YSplitInfo.tulist[3] == self.cfg.LUMA_PAD[0]] += self.cfg.LUMA_PAD[0]
+                        YSplitInfo.tulist[3, YSplitInfo.tulist[3] == self.cfg.LUMA_PAD[0]] = 0
+                        YSplitInfo.tulist[0, (YSplitInfo.tulist[2] + YSplitInfo.tulist[0]) == (self.width - 1)] += \
+                        self.cfg.LUMA_PAD[3]
+                        YSplitInfo.tulist[1, (YSplitInfo.tulist[3] + YSplitInfo.tulist[1]) == (self.height - 1)] += \
+                        self.cfg.LUMA_PAD[1]
+
+                    if self.save_tu_const_block_info > 1:
+                        CSplitInfo.tulist[2] += self.cfg.CHROMA_PAD[2]
+                        CSplitInfo.tulist[3] += self.cfg.CHROMA_PAD[0]
+                        CSplitInfo.tulist[0, CSplitInfo.tulist[2] == self.cfg.CHROMA_PAD[2]] += self.cfg.CHROMA_PAD[2]
+                        CSplitInfo.tulist[2, CSplitInfo.tulist[2] == self.cfg.CHROMA_PAD[2]] = 0
+                        CSplitInfo.tulist[1, CSplitInfo.tulist[3] == self.cfg.CHROMA_PAD[0]] += self.cfg.CHROMA_PAD[0]
+                        CSplitInfo.tulist[3, CSplitInfo.tulist[3] == self.cfg.CHROMA_PAD[0]] = 0
+                        CSplitInfo.tulist[0, (CSplitInfo.tulist[2] + CSplitInfo.tulist[0]) == (self.width - 1)] += \
+                        self.cfg.CHROMA_PAD[3]
+                        CSplitInfo.tulist[1, (CSplitInfo.tulist[3] + CSplitInfo.tulist[1]) == (self.height - 1)] += \
+                        self.cfg.CHROMA_PAD[1]
 
             # print("Until Tu Padding : %s", time.time() - st_time)
             # pos_list = pos_list.transpose((1,0))
@@ -398,20 +420,20 @@ class imgInfo(BuildData):
                         prob_list.append(se)
                     prob_list = np.array(prob_list)
                 pos_list.tulist = pos_list.tulist[:,
-                           np.random.choice(np.arange(len(prob_list)),
-                                            self.ofPOC, p=prob_list / prob_list.sum())]
+                                  np.random.choice(np.arange(len(prob_list)),
+                                                   self.ofPOC, p=prob_list / prob_list.sum())]
 
             # 0: width, 1: height, 2: x_pos 3: y_pos, 4 : qp, 5 : mode
             pos_list.resetMember()
             # print("Until Tu Extracting : %s", time.time() - st_time)
             for block in pos_list.tulist.T:
                 self.thlock.acquire()
-                if self.dataopt == 1: #training
+                if self.dataopt == 1:  # training
                     BuildData.training_datacnt += 1
                     block_path = os.path.join(self.trainingset_path, str(BuildData.training_datacnt) + '.bin')
                     self.training_csv.writerow([str(BuildData.training_datacnt) + '.bin', *block[:2], *block[4:]])
                 else:
-                    BuildData.validation_datacnt +=1
+                    BuildData.validation_datacnt += 1
                     block_path = os.path.join(self.validation_path, str(BuildData.validation_datacnt) + '.bin')
                     self.validation_csv.writerow([str(BuildData.validation_datacnt) + '.bin', *block[:2], *block[4:]])
                 self.thlock.release()
@@ -428,8 +450,10 @@ class imgInfo(BuildData):
                     if self.use_const_block and self.save_tu_const_block_info:
                         if self.save_tu_const_block_info % 2:
                             TuList(YSplitInfo.containTuList(Area(*block[:4]))).saveTuList(f)
-                        elif self.save_tu_const_block_info > 1:
+                        if self.save_tu_const_block_info > 1:
                             TuList(CSplitInfo.containTuList(Area(*block[:4]))).saveTuList(f)
+                    if self.ctu_data_num > 0:
+                        TuList(CTUInfo.containTuList(Area(*block[:4]))).saveTuList(f)
 
             # print("Save Tu : %s", time.time() - st_time)
             if self.example_image_get == False:
@@ -479,6 +503,8 @@ class imgInfo(BuildData):
             # Pic = []  # piclist {0:Original, 1:prediction, 2:reconstruction, 3:unfiltered }
             # PicUV = []
             # pocMode = struct.unpack('<h', self.img.read(2))[0]
+            if self.ctu_data_num > 0:
+                CTUInfo = self.getCTUInfo()
             YSplitInfo = self.getTuInfo()
             CSplitInfo = self.getTuInfo()
 
@@ -488,7 +514,7 @@ class imgInfo(BuildData):
             pic = self.imgUnpack()
             # print("Until Make Pic&TU : %s", time.time() - st_time)
             if np.sum(pic.original[0]) == 0:
-                self.logger.error('   %s poc %s Original is zero' %(self.name,poc))
+                self.logger.error('   %s poc %s Original is zero' % (self.name, poc))
                 return
             try:
                 self.logger.info("  %s POC %s" % (self.name, poc))
@@ -514,13 +540,15 @@ class imgInfo(BuildData):
                                       self.getPSNR(pic.original[2], pic.unfilteredRecon[2])))
             except Exception as e:
                 self.logger.error(e)
-                self.logger.error('   %s poc %s cannot calc PSNR' %(self.name,poc))
+                self.logger.error('   %s poc %s cannot calc PSNR' % (self.name, poc))
                 return
 
             if self.use_const_block:
                 pos_list = [
-                    np.array((self.const_width, self.const_height, x * (self.const_width), y * (self.const_height), self.qp))
-                    for y in range((self.height) // self.const_height - 1) for x in range((self.width) // self.const_width - 1)]
+                    np.array((self.const_width if (x + self.const_width) <= self.width else (self.width - x),
+                              self.const_height if (y + self.const_height) <= self.height else (self.height - y),
+                              x, y, self.qp))
+                    for y in range(0, self.height, self.const_height) for x in range(0, self.width, self.const_width)]
                 pos_list = np.array(pos_list).T
 
                 pos_list = TuList(pos_list)
@@ -536,7 +564,14 @@ class imgInfo(BuildData):
                 self.logger.error("  Config IS_TU_SPLIT is Unknown")
                 return
 
-
+            if not self.example_image_get:
+                real_pos_list = copy.deepcopy(pos_list)
+                if self.splitmode < 2:
+                    real_pos_list.tulist[2] += self.cfg.LUMA_PAD[2]
+                    real_pos_list.tulist[3] += self.cfg.LUMA_PAD[0]
+                else:
+                    real_pos_list.tulist[2] += self.cfg.CHROMA_PAD[2]
+                    real_pos_list.tulist[3] += self.cfg.CHROMA_PAD[0]
 
             pad_width = 0
             pad_height = 0
@@ -546,23 +581,51 @@ class imgInfo(BuildData):
                     for j in range(3):
                         if self.boundary_pad != 1:
                             pic.pelBuf[i][j] = np.pad(pic.pelBuf[i][j], self.pad_opt[j]
-                                               # + ((0,0),)
-                                               , mode='constant', constant_values=(self.boundary_pad))
+                                                      # + ((0,0),)
+                                                      , mode='constant', constant_values=(self.boundary_pad))
                         else:
                             pic.pelBuf[i][j] = np.pad(pic.pelBuf[i][j], self.pad_opt[j]
-                                               # + ((0,0),)
-                                               , mode='edge')
+                                                      # + ((0,0),)
+                                                      , mode='edge')
                 if self.splitmode < 2:  # split mode is luma or constant
                     pad_width = self.cfg.LUMA_PAD[2] + self.cfg.LUMA_PAD[3]
                     pad_height = self.cfg.LUMA_PAD[0] + self.cfg.LUMA_PAD[1]
                 else:
                     pad_width = self.cfg.CHROMA_PAD[2] + self.cfg.CHROMA_PAD[3]
                     pad_height = self.cfg.CHROMA_PAD[0] + self.cfg.CHROMA_PAD[1]
-                pos_list.width += pad_width
-                pos_list.height += pad_height
+                pos_list.tulist[0] += pad_width
+                pos_list.tulist[1] += pad_height
+
+                if self.ctu_data_num>0:
+                    CTUInfo.tulist[0] += pad_width
+                    CTUInfo.tulist[1] += pad_height
+
+                if self.use_const_block and self.save_tu_const_block_info:
+                    if self.save_tu_const_block_info % 2 == 1:
+                        YSplitInfo.tulist[2] += self.cfg.LUMA_PAD[2]
+                        YSplitInfo.tulist[3] += self.cfg.LUMA_PAD[0]
+                        YSplitInfo.tulist[0, YSplitInfo.tulist[2] == self.cfg.LUMA_PAD[2]] += self.cfg.LUMA_PAD[2]
+                        YSplitInfo.tulist[2, YSplitInfo.tulist[2] == self.cfg.LUMA_PAD[2]] = 0
+                        YSplitInfo.tulist[1, YSplitInfo.tulist[3] == self.cfg.LUMA_PAD[0]] += self.cfg.LUMA_PAD[0]
+                        YSplitInfo.tulist[3, YSplitInfo.tulist[3] == self.cfg.LUMA_PAD[0]] = 0
+                        YSplitInfo.tulist[0, (YSplitInfo.tulist[2] + YSplitInfo.tulist[0]) == (self.width - 1)] += \
+                        self.cfg.LUMA_PAD[3]
+                        YSplitInfo.tulist[1, (YSplitInfo.tulist[3] + YSplitInfo.tulist[1]) == (self.height - 1)] += \
+                        self.cfg.LUMA_PAD[1]
+
+                    if self.save_tu_const_block_info > 1:
+                        CSplitInfo.tulist[2] += self.cfg.CHROMA_PAD[2]
+                        CSplitInfo.tulist[3] += self.cfg.CHROMA_PAD[0]
+                        CSplitInfo.tulist[0, CSplitInfo.tulist[2] == self.cfg.CHROMA_PAD[2]] += self.cfg.CHROMA_PAD[2]
+                        CSplitInfo.tulist[2, CSplitInfo.tulist[2] == self.cfg.CHROMA_PAD[2]] = 0
+                        CSplitInfo.tulist[1, CSplitInfo.tulist[3] == self.cfg.CHROMA_PAD[0]] += self.cfg.CHROMA_PAD[0]
+                        CSplitInfo.tulist[3, CSplitInfo.tulist[3] == self.cfg.CHROMA_PAD[0]] = 0
+                        CSplitInfo.tulist[0, (CSplitInfo.tulist[2] + CSplitInfo.tulist[0]) == (self.width - 1)] += \
+                        self.cfg.CHROMA_PAD[3]
+                        CSplitInfo.tulist[1, (CSplitInfo.tulist[3] + CSplitInfo.tulist[1]) == (self.height - 1)] += \
+                        self.cfg.CHROMA_PAD[1]
 
             condition_arr = []
-
 
             condition_arr.append(np.ones(len(pos_list.tulist[0])))
             if self.splitmode != 0:
@@ -578,15 +641,14 @@ class imgInfo(BuildData):
                 condition_arr.append(pos_list.tulist[1] >= self.min_height + pad_height)
                 condition_arr.append(pos_list.tulist[1] <= self.max_height + pad_height)
 
-            mask = (pos_list.tulist[0] + pos_list.tulist[2]) > self.width
-            condition_arr.append(~mask)
-            pos_list.tulist[0, mask] = pos_list.tulist[0, mask] - (self.width - pos_list.tulist[2, mask])
-            mask = (pos_list.tulist[1] + pos_list.tulist[3]) > self.height
-            condition_arr.append(~mask)
-            pos_list.tulist[1, mask] = pos_list.tulist[1, mask] - (self.height - pos_list.tulist[3, mask])
-
+            # mask = (pos_list.tulist[0] + pos_list.tulist[2]) > self.width
+            # condition_arr.append(~mask)
+            # pos_list.tulist[0, mask] = pos_list.tulist[0, mask] - (self.width - pos_list.tulist[2, mask])
+            # mask = (pos_list.tulist[1] + pos_list.tulist[3]) > self.height
+            # condition_arr.append(~mask)
+            # pos_list.tulist[1, mask] = pos_list.tulist[1, mask] - (self.height - pos_list.tulist[3, mask])
             if self.only_square:
-                pos_list = condition_arr.append(pos_list.width == pos_list.height)
+                condition_arr.append(pos_list.width == pos_list.height)
             try:
                 if len(pos_list.tulist[0]) == 0:
                     self.logger.info("  No match block in POC about config..")
@@ -596,11 +658,15 @@ class imgInfo(BuildData):
                 self.logger.error("  No match block in POC about config..")
                 self.logger.error("  Skip POC...")
                 return
-            condition_arr = np.all(condition_arr, axis = 0)
-            pos_list.tulist = np.concatenate((pos_list.tulist, condition_arr[np.newaxis, :]), axis = 0)
+            condition_arr = np.all(condition_arr, axis=0)
+            pos_list.tulist = np.concatenate((pos_list.tulist, condition_arr[np.newaxis, :]), axis=0)
+
+            if self.get_testset_by_picture:
+                pos_list.tulist = np.array([[np.max(pos_list.tulist[0] + pos_list.tulist[2])], [np.max(pos_list.tulist[1] + pos_list.tulist[3])],
+                                            [0], [0], [self.qp], [1]])
+
             pos_list.resetMember()
             for idx, block in enumerate(pos_list.tulist.T):
-
 
                 block_name = str(block[3]) + '_' + str(block[2]) \
                              + '_' + str(block[1]) + '_' + str(block[0]) + '.bin'
@@ -622,12 +688,20 @@ class imgInfo(BuildData):
                     if self.use_const_block and self.save_tu_const_block_info:
                         if self.save_tu_const_block_info % 2:
                             TuList(YSplitInfo.containTuList(Area(*block[:4]))).saveTuList(f)
-                        elif self.save_tu_const_block_info > 1:
+                        if self.save_tu_const_block_info > 1:
                             TuList(CSplitInfo.containTuList(Area(*block[:4]))).saveTuList(f)
+                    if self.ctu_data_num > 0:
+                        TuList(CTUInfo.containTuList(Area(*block[:4]))).saveTuList(f)
+            if self.example_image_get == False:
+                self.example_image_get = True
+                self.logger.info("  Save to Image : %s", self.name)
+                self.saveImage(pic.original, real_pos_list.tulist, pos_list.tulist, 'orig_', select_mark=False)
+                self.saveImage(pic.prediction, real_pos_list.tulist, pos_list.tulist, 'pred_', select_mark=False)
+                self.saveImage(pic.reconstruction, real_pos_list.tulist, pos_list.tulist, 'recon_', select_mark=False)
+                self.saveImage(pic.unfilteredRecon, real_pos_list.tulist, pos_list.tulist, 'unfiltered_',
+                               select_mark=False)
         self.img.close()
         os.remove('./ywkim_' + self.name + '.bin')
-
-
 
         # def SaveByTIFF(self, YUV, name):
         #     y = YUV[0]
@@ -655,14 +729,13 @@ class imgInfo(BuildData):
             for ch in range(Component.MAX_NUM_COMPONENT):
                 if isUse and not (ch and self.isOnlyLuma):
                     if not ch:
-                        buflist.append(image[i*Component.MAX_NUM_COMPONENT + ch].reshape((self.height, self.width)))
+                        buflist.append(image[i * Component.MAX_NUM_COMPONENT + ch].reshape((self.height, self.width)))
                     else:
-                        buflist.append(image[i*Component.MAX_NUM_COMPONENT + ch].reshape((self.cheight, self.cwidth)))
+                        buflist.append(image[i * Component.MAX_NUM_COMPONENT + ch].reshape((self.cheight, self.cwidth)))
                 else:
                     buflist.append(None)
 
-        return UnitBuf(ChromaFormat.YCbCr4_2_0, Area(self.width, self.height, 0 ,0), *buflist)
-
+        return UnitBuf(ChromaFormat.YCbCr4_2_0, Area(self.width, self.height, 0, 0), *buflist)
 
         # imgY = np.array(struct.unpack(endian + str(self.area) + fmt, self.img.read((perbyte) * self.area)),
         #                 dtype='float32').reshape((self.height, self.width))
@@ -675,14 +748,24 @@ class imgInfo(BuildData):
         # tulist = []
         # print(tuCnt)
         strTuCnt = '<' + str(tuCnt * self.tu_data_num) + 'h'
-        tudatanum_mul_two = self.tu_data_num *2
+        tudatanum_mul_two = self.tu_data_num * 2
         # for i in range(tuCnt):
-        tulist = np.array(struct.unpack(strTuCnt, self.img.read(tudatanum_mul_two * tuCnt)), dtype='int16').reshape((-1, self.tu_data_num)).transpose(
+        tulist = np.array(struct.unpack(strTuCnt, self.img.read(tudatanum_mul_two * tuCnt)), dtype='int16').reshape(
+            (-1, self.tu_data_num)).transpose(
             (1, 0))
         # tu1 = (struct.unpack('2B', self.img.read(2)))
         # tu2 = (struct.unpack('<4h', self.img.read(8)))
         # tulist.append(np.concatenate((tu1, tu2), axis=0).astype('int16'))
         return TuList(tulist)
+
+    def getCTUInfo(self):
+        ctuCnt = struct.unpack('<i', self.img.read(4))[0]
+        strCTUCnt = '<' + str(ctuCnt * (self.ctu_data_num + 4)) + 'h'
+        tudatanum_mul_two = (self.ctu_data_num + 4) * 2
+        ctulist = np.array(struct.unpack(strCTUCnt, self.img.read(tudatanum_mul_two * ctuCnt)),
+                           dtype='int16').reshape((-1, (self.ctu_data_num + 4))).transpose(
+            (1, 0))
+        return TuList(ctulist)
 
     def DownSamplingLuma(self, lumaPic):
         pos00 = lumaPic[::2, ::2, :]
@@ -692,7 +775,7 @@ class imgInfo(BuildData):
     def UpSamplingChroma(self, UVPic):
         return UVPic.repeat(2, axis=0).repeat(2, axis=1)
 
-    def saveImage(self, YUV, real_tulist, candi_list, name):
+    def saveImage(self, YUV, real_tulist, candi_list, name, select_mark=True):
         uv = self.UpSamplingChroma(np.concatenate((YUV[1].reshape(1, YUV[1].shape[0], YUV[1].shape[1]),
                                                    YUV[2].reshape(1, YUV[2].shape[0], YUV[2].shape[1])),
                                                   axis=0).transpose((1, 2, 0)))
@@ -702,12 +785,17 @@ class imgInfo(BuildData):
             YUV = np.uint8(YUV >> 2)
         else:
             YUV = np.uint8(YUV)
+
+        # 0: width, 1: height, 2: x_pos 3: y_pos, 4 : qp, 5 : mode
         for tu in real_tulist.T:
             YUV[tu[3]:tu[3] + tu[1], tu[2], 0] = 0
             YUV[tu[3], tu[2]:tu[2] + tu[0], 0] = 0
-        for tu in candi_list.T:
-            YUV[tu[3]:tu[3] + tu[1], tu[2]:tu[2] + tu[0], 1] = self.COLOR_BLUE[1]
-            YUV[tu[3]:tu[3] + tu[1], tu[2]:tu[2] + tu[0], 2] = self.COLOR_BLUE[2]
+            YUV[tu[3] + tu[1], tu[2]:tu[2] + tu[0], 0] = 0
+            YUV[tu[3]:tu[3] + tu[1], tu[2] + tu[0], 0] = 0
+        if select_mark:
+            for tu in candi_list.T:
+                YUV[tu[3]:tu[3] + tu[1], tu[2]:tu[2] + tu[0], 1] = self.COLOR_BLUE[1]
+                YUV[tu[3]:tu[3] + tu[1], tu[2]:tu[2] + tu[0], 2] = self.COLOR_BLUE[2]
 
         rgbimg = Image.fromarray(YUV, 'YCbCr')
         rgbimg.convert('RGBA').save(os.path.join(self.sample_path, name + self.name + ".png"))
@@ -740,14 +828,18 @@ class SplitManager(BuildData):
             filelist += myUtil.getFileList(files, pattern)
         return filelist
 
-    def OnlyOneIntra(self, filelist, orglist):
+    def OnlyOneIntra(self, filepath, yuvpath):
         commands = []
         orgdic = {}
+        filelist = self.getFileListsFromList(filepath, pattern='.bin')
+        orglist = self.getFileListsFromList(yuvpath, pattern='.yuv')
+
         for org in orglist:
-            orgdic[os.path.basename(org).split('_')[0]] = org
+            orgdic['PNG' + str(os.path.basename(org).split('_')[0])] = org
         for file in filelist:
-            if os.path.basename(file).split('_')[0] in orgdic:
-                command = self.cfg.DECODER_PATH + ' -b ' + file + ' -i ' + orgdic[os.path.basename(file).split('_')[0]] + ' -bd ' + '8'
+            if os.path.basename(file).split('_')[1] in orgdic:
+                command = self.cfg.DECODER_PATH + ' -b ' + file + ' -i ' + orgdic[
+                    str(os.path.basename(file).split('_')[1])] + ' -bd ' + '8'
                 commands.append((os.path.basename(file), command))
         return commands
 
@@ -756,8 +848,6 @@ class SplitManager(BuildData):
         bdDic = {}
         # frameDic = {}
         # framenum = 0
-        if self.cfg.IS_ONLY_ONE_INTRA:
-            return self.OnlyOneIntra(filelist, orglist)
         with open("./build_data/Sequences.csv", 'r') as reader:
             # with open("./SequenceSetting/CTCSequences.csv", 'r') as reader:
             data = reader.read()
@@ -766,23 +856,32 @@ class SplitManager(BuildData):
                 seqs.append(line.split(','))
         seqs = seqs[1:]
         for seq in seqs:
+            # if seq[0].split("_")[0].lower() != "netflix":
             bdDic[seq[0].lower()] = seq[2]
+            # else:
+            #
+            #     bdDic[''.join(seq[0].split('_')[1:]).lower()] = seq[2]
             # frameDic[seq[0].lower()] = seq[8]
         commands = []
         for org in orglist:
             tmp = str(os.path.basename(org).split(".")[0])
             if tmp.split("_")[0].lower() != "netflix":
-                tmp = os.path.basename(org).split("_")[0].lower()
+                tmp = '_'.join(tmp.split("_")[:3]).lower()
             else:
-                tmp = str(tmp.split("_")[1].lower())
+                tmp = '_'.join(tmp.split("_")[:4]).lower()
             for binfile in filelist:
                 if binfile.split('_')[1] == 'PNG' and tmp == binfile.split('_')[2]:
                     command = self.cfg.DECODER_PATH + ' -b ' + binfile + ' -i ' + org + ' -bd 8'
                     commands.append((os.path.basename(binfile), command))
                     # framenum +=1
                 else:
-                    for splitbin in os.path.basename(binfile).lower().split("_"):
-                        if splitbin == tmp:
+                    if os.path.basename(binfile).lower().split('_')[1] != 'netflix':
+                        if '_'.join(os.path.basename(binfile).lower().split("_")[1:4]).lower() == tmp:
+                            # command = Decoderpath + ' -b ' + binfile + ' -i ' + org + ' -bd ' + bdDic[tmp]
+                            command = self.cfg.DECODER_PATH + ' -b ' + binfile + ' -i ' + org + ' -bd ' + bdDic[tmp]
+                            commands.append((os.path.basename(binfile), command))
+                    else:
+                        if '_'.join(os.path.basename(binfile).lower().split("_")[1:5]).lower() == tmp:
                             # command = Decoderpath + ' -b ' + binfile + ' -i ' + org + ' -bd ' + bdDic[tmp]
                             command = self.cfg.DECODER_PATH + ' -b ' + binfile + ' -i ' + org + ' -bd ' + bdDic[tmp]
                             commands.append((os.path.basename(binfile), command))
@@ -820,21 +919,29 @@ class SplitManager(BuildData):
         if not len(self.filelist):
             return
         targetnum = self.cfg.TARGET_DATASET_NUM // len(self.filelist)  # 각 bin file에서 데이터를 몇개 뽑을 것인지 체크
-        commands = self.initCommand(self.filelist, self.orglist)
+        if self.cfg.IS_ONLY_ONE_INTRA:
+            commands = self.OnlyOneIntra(self.cfg.TRAINING_PNG_PATH, self.cfg.PNG_ORG_PATH)
+        else:
+            commands = self.initCommand(self.filelist, self.orglist)
         for command in commands:
             while self.cores >= self.corenum:
                 time.sleep(3)
             self.corelock.acquire()
             self.cores += 1
             self.corelock.release()
-            t = Thread(target=self.runThreading, args=(command,1, targetnum))
+            t = Thread(target=self.runThreading, args=(command, 1, targetnum))
             t.start()
         return
+
     def getValidationset(self):
         if not len(self.validationlist):
             return
         targetnum = self.cfg.VALIDATION_DATSET_NUM // len(self.validationlist)  # 각 bin file에서 데이터를 몇개 뽑을 것인지 체크
-        commands = self.initCommand(self.validationlist, self.validationOrgList)
+
+        if self.cfg.IS_ONLY_ONE_INTRA:
+            commands = self.OnlyOneIntra(self.cfg.VALIDATION_PNG_PATH, self.cfg.PNG_ORG_PATH)
+        else:
+            commands = self.initCommand(self.validationlist, self.validationOrgList)
         for command in commands:
             while self.cores >= self.corenum:
                 time.sleep(3)
@@ -844,7 +951,6 @@ class SplitManager(BuildData):
             t = Thread(target=self.runThreading, args=(command, 2, targetnum))
             t.start()
         return
-
 
     def getTestset(self):
         if not len(self.testlist):
@@ -861,15 +967,13 @@ class SplitManager(BuildData):
         return
 
 
-
-
 if __name__ == '__main__':
     # os.chdir("../")
-    # print(os.getcwd())
+    print(os.getcwd())
     sp = SplitManager()
     # sp.getTrainingset()
-    # sp.getTestset()
-    sp.getValidationset()
+    sp.getTestset()
+    # sp.getValidationset()
     # st = time.time()
     # fsize = os.path.getsize('./ywkim_AI_MAIN10_FoodMarket4_3840x2160_60_10b_S02_27.bin')
     # im =  open('./ywkim_AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin', 'rb')

@@ -35,14 +35,17 @@ class NetManager(object):
     # TB_PLOT_LIST = [TENSORBOARD_BASIC_PLOT[i] for i in cfg.PLOT_LIST]
         #netInfo
     OBJECT_EPOCH = cfg.OBJECT_EPOCH
-
+    SET_NEW_MEAN_STD = cfg.SET_NEW_MEAN_STD
     #PELDATA
     PEL_DATA = cfg.PEL_DATA # Original, Prediction, Reconstruction, UnfiltredReconstruction
     BIT_DEPTH = cfg.BIT_DEPTH
     IS_ONLY_LUMA = cfg.IS_ONLY_LUMA
 
+    VALIDATION_LEN = cfg.VALIDATION_LEN
+
     #TUDATA
     IS_CONST_TU_DATA = cfg.IS_CONST_TU_DATA
+    IS_CONST_CTU_DATA = cfg.IS_CONST_CTU_DATA
     TU_ORDER = cfg.TU_ORDER
 
     PRINT_PERIOD = cfg.PRINT_PERIOD

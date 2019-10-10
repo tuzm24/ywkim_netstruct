@@ -3,6 +3,7 @@ from help_func.logging import LoggingHelper
 from tqdm import tqdm
 
 
+
 class torchUtil:
     logger = LoggingHelper.get_instance().logger
 
@@ -12,19 +13,22 @@ class torchUtil:
 
             Var[x] = E[X^2] - E^2[X]
         """
+        input_channel = loader.dataset.dataset.data_channel_num
         torchUtil.logger.info('Calculating data mean and std')
         cnt = 0
-        fst_moment = torch.empty(6).double()
-        snd_moment = torch.empty(6).double()
-
-        for _, data,_ in tqdm(loader):
+        fst_moment = torch.empty(input_channel).float().to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        snd_moment = torch.empty(input_channel).float().to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        for _, data, _ in tqdm(loader):
             b, c, h, w = data.shape
+            data = data.to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
             nb_pixels = b * h * w
             sum_ = torch.sum(data, dim=[0, 2, 3])
             sum_of_square = torch.sum(data ** 2, dim=[0, 2, 3])
             fst_moment = (cnt * fst_moment + sum_) / (cnt + nb_pixels)
             snd_moment = (cnt * snd_moment + sum_of_square) / (cnt + nb_pixels)
-
             cnt += nb_pixels
         torchUtil.logger.info('Finish calculate data mean and std')
-        return fst_moment, torch.sqrt(snd_moment - fst_moment ** 2)
+        return fst_moment.cpu(), torch.sqrt(snd_moment - fst_moment ** 2).cpu()
