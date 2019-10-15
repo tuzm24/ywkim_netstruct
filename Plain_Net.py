@@ -300,32 +300,32 @@ class PlainNetwork(nn.Sequential):
 
 
 
-class COMMONDATASETTING:
-    DATA_CHANNEL_NUM = 3
+class COMMONDATASETTING():
+    DATA_CHANNEL_NUM = 4
     OUTPUT_CHANNEL_NUM = 1
+    qplist = [22,27,32,37]
+    depthlist = [i for i in range(1,7)]
+    modelist = [i for i in range(0,67)]
+    translist = [0,2]
+    mean = NetManager.cfg.DATAMEAN[:DATA_CHANNEL_NUM]
+    std = NetManager.cfg.DATASTD[:DATA_CHANNEL_NUM]
+    alflist = [i for i in range(0,17)]
+    if not mean and not std:
+        mean = 0
+        std = 1
+    else:
+        mean = (np.array(list(mean))).reshape((len(mean), 1 , 1))
+        std = (np.array(list(std))).reshape((len(std), 1, 1))
+        std[std == 0] = 1
 
 
 
-class _DataBatch(DataBatch):
+class _DataBatch(DataBatch, COMMONDATASETTING):
     def __init__(self, istraining, batch_size):
         DataBatch.__init__(self, istraining, batch_size)
         self.data_channel_num = COMMONDATASETTING.DATA_CHANNEL_NUM
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
-        self.qplist = [22,27,32,37]
-        self.depthlist = [i for i in range(1,7)]
-        self.modelist = [i for i in range(0,67)]
-        self.translist = [0,2]
-        self.alflist = [i for i in range(0,17)]
-        self.mean = self.cfg.DATAMEAN
-        self.std = self.cfg.DATASTD
         self.data_padding = 2
-        if not self.mean and not self.std:
-            self.mean = 0
-            self.std = 1
-        else:
-            self.mean = (np.array(list(self.mean))).reshape((len(self.mean), 1 , 1))
-            self.std = (np.array(list(self.std))).reshape((len(self.std), 1, 1))
-            self.std[self.std == 0] = 1
 
     def getInputDataShape(self):
         return (self.batch_size, self.data_channel_num, self.batch[0][2], self.batch[0][1])
@@ -337,15 +337,15 @@ class _DataBatch(DataBatch):
 
     # self.info - 0 : filename, 1 : width, 2: height, 3: qp, 4: mode, 5: depth ...
     def unpackData(self, info):
-        # DataBatch.unpackData(self, info)
-        # qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
+        DataBatch.unpackData(self, info)
+        qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
         # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
         # depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
         # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
         # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
         # data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap,hortrans,vertrans,alfmap], axis=0)
-        data = np.stack([*self.reshapeRecon()], axis=0)
+        data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
         gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
         recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
         data = (data - self.mean) / self.std
@@ -359,26 +359,18 @@ class _DataBatch(DataBatch):
         std = torch.from_numpy(np.array(self.std[idx]))
         return x * std + mean
 
-class _TestSetBatch(TestDataBatch):
+class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
     def __init__(self):
         TestDataBatch.__init__(self)
         self.data_channel_num = COMMONDATASETTING.DATA_CHANNEL_NUM
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
-        self.mean = self.cfg.DATAMEAN[:self.data_channel_num]
-        self.std = self.cfg.DATASTD[:self.data_channel_num]
-        if not self.mean and not self.std:
-            self.mean = 0
-            self.std = 1
-        else:
-            self.mean = (np.array(list(self.mean))).reshape((len(self.mean), 1 , 1))
-            self.std = (np.array(list(self.std))).reshape((len(self.std), 1, 1))
-            self.std[self.std == 0] = 1
 
     def unpackData(self, testFolderPath):
         TestDataBatch.unpackData(self, testFolderPath=testFolderPath)
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
-        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION]])
+        qpmap = self.pic.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
+        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
         orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
         recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
         data = (data - self.mean) / self.std
@@ -479,7 +471,7 @@ if '__main__' == __name__:
                                     (epoch_iter,i+1,
                                      dataset.batch_num, running_loss / dataset.PRINT_PERIOD))
                 running_loss = 0.0
-
+            del recons, inputs, gts
             tb.step += 1  # Must Used
 
         mean_loss_cnn = 0
@@ -520,7 +512,6 @@ if '__main__' == __name__:
             'optimizer_state_dict': optimizer.state_dict()
         }, NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth')
         lr_scheduler.step()
-
         logger.info('Epoch %d Finished' % epoch_iter)
 
 
@@ -534,4 +525,4 @@ if '__main__' == __name__:
             recon_MSE = torch.mean((gts) ** 2)
             mean_test_psnr += myUtil.psnr(MSE.item())
             mean_testGT_psnr += myUtil.psnr(recon_MSE.item())
-    logger.info("%s %s")
+            logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))

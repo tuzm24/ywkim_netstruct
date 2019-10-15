@@ -3,6 +3,7 @@ from torchvision import utils as vutils
 import matplotlib.pyplot as plt
 import numpy as np
 from tensorboardX import SummaryWriter
+import math
 
 class Mytensorboard(NetManager):
     def __init__(self, comment=''):
@@ -24,7 +25,8 @@ class Mytensorboard(NetManager):
 
     @staticmethod
     def Makegrid(imgs, nrow = 5):
-        return vutils.make_grid(imgs, nrow=nrow)
+        nrow = math.ceil(math.sqrt(imgs.shape[0]))
+        return vutils.make_grid(imgs, nrow)
 
     def setObjectStep(self, num_set):
         self.object_step = num_set * self.OBJECT_EPOCH

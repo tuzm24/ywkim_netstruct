@@ -91,13 +91,15 @@ class myUtil(object):
                 folders.append(root)
         return folders
 
-class Singleton(object):
-    def __new__(cls, *args, **kwds):
-        it = cls.__dict__.get("__it__")
-        if it is not None:
-            return it
-        cls.__it__ = it = object.__new__(cls)
-        it.init(*args, **kwds)
-        return it
-    def init(self, *args, **kwds):
-        pass
+class SingletonInstane:
+  __instance = None
+
+  @classmethod
+  def __getInstance(cls):
+    return cls.__instance
+
+  @classmethod
+  def instance(cls, *args, **kargs):
+    cls.__instance = cls(*args, **kargs)
+    cls.instance = cls.__getInstance
+    return cls.__instance
