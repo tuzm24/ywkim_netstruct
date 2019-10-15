@@ -1,19 +1,22 @@
 딥러닝 아이디어 노트
 =============
-- 이미 지나간 시간에 실험을 할 수 없다. 몸은 놀아도 실험컴은 놀지말자.
+- 이미 지나간 시간에 실험은 할 수 없다. 몸은 놀아도 실험컴은 놀지말자.
 >
 >
 >>### 2019년 10월 16일 
 > - - -
->### 1. SENet의 NN에 QP 추가 하여 Feature Map 재조정 (IF)
+>### 1. SENet의 NN에 QP 추가 하여 Feature Map 재조정
+>       Offline Training
+>       In-loop Filtering
 >   * SENet의 모듈을 이용하여 QP나 ALF Mode Index등의 CTU 전체에 같은 값이 적용되는값에 대하여 Complex측면이나 효율성에서 더 나은 정보를 전할 수 있을 것으로 보임.
 >   * 많은 Convolution layer중에 어디에 NN QP를 추가 할지는 여러번의 실험으로 결정해야 할것 (네트워크 초반, 중반, 후반, 모두 등등..)
 >   
 >
 >       현재 MobileNetwork의 Anchor가 실험 완료되는대로 순차적 실험 예정. 
 >
->### 2. Unfiltered Reconstruction을 활용한 Encoder-Decoder Side Prediction Filtering (Prediction)
+>### 2. Unfiltered Reconstruction을 활용한 Encoder-Decoder Side Prediction Filtering
 >       Online Training
+>       Intra-Inter Prediction
 >   * Decoder에서 Reconstruction은 당연히 알 수 있다. 이를 이용하여 Prediction 신호를 CNN을 이용하여 Filtering 하되, Prediction과 Reconstruction의 차이를 이용하여 Network를 Online Training 한다.
 >   * 적절한 Training Control이 필요할 것으로 보인다. 현재 생각으로는 Pixel loss Sum를 계속 Accumulate Mean 하다가, 특정 loss Threshold가 넘어가는 순간 Training을 진행하는 방향이 어떨까싶다.
 >   * 최초 실험에서는 계속 Training 하는 방향도 괜찮아 보인다.
