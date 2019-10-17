@@ -136,6 +136,9 @@ class TuList:
             self.x_pos[i] : self.x_pos[i] + self.width[i]] = self.tulist[4+idx, i]
         return tumap
 
+    def getMeanTuValue(self, idx):
+        return np.mean(self.tulist[4+idx])
+
     def getTUMaskFromIndex_OneHot(self, idx, height, width, rangelist):
         tumap = np.zeros((len(rangelist), height, width), dtype='float32')
         for i in range(len(self.width)):
