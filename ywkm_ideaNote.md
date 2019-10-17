@@ -13,6 +13,7 @@
 >   
 >
 >       현재 MobileNetwork의 Anchor가 실험 완료되는대로 순차적 실험 예정. 
+>![QP_SE](./ImageForGit/QP_SE.PNG)
 >
 >### 2. Unfiltered Reconstruction을 활용한 Encoder-Decoder Side Prediction Filtering
 >       Online Training

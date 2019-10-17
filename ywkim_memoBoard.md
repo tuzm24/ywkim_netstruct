@@ -81,10 +81,11 @@ class MyModel(nn.Module):
         return x
 ```
 >3. 논문
->   * Do Better ImageNet Models Transfer Better?
+>   * **Do Better ImageNet Models Transfer Better?**
 >       * CVPR 2019에서 Google이 발표한 논문 중 하나이다.
 >       * 결론을 정리하면 transfer Coding에서 일부 네트워크 가중치를 그대로 쓰는 것은 별로다.
->       * 가장 좋은 방법은 Fine Tuning인데, 사실 지금까지 내가 Transfer Learning을 사용하지 않은 이유는 Video Codec이 기본적으로 YUV도메인이기 때문이였는데, 
->생각해보니 약간 멍청했었던게, 내가 한 네트워크를 제대로 학습해두고 그것을 Transfer 해서 사용하 되었다.
+>       * **가장 좋은 방법은 Fine Tuning**인데, 사실 지금까지 내가 Transfer Learning을 사용하지 않은 이유는 Video Codec이 기본적으로 YUV도메인이기 때문이였는데, 
+>생각해보니 약간 멍청했었던게, 내가 한 네트워크를 제대로 학습해두고 그것을 Transfer 해서 사용하면 되었다.
 >       * 그런데 내 실험은 Input을 바꾸는 경우가 많은데 이 경우에도 Transfer Learning이 유효한지는 논문에 나와있지 않다.
 >       * ETRI는 Transfer Learning에 대해 어떻게 생각하는지 궁금하다.
+>
