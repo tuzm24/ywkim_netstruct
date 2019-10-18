@@ -28,13 +28,6 @@ import math
 logger = LoggingHelper.get_instance().logger
 filename = os.path.basename(__file__)
 
-logger.info(
-    '''
-    아이디어 노트 No.1.
-    QP Input을 SENet의 NN Module로 Control
-    '''
-
-)
 
 class Swish(nn.Module):
     def __init__(self):
@@ -87,7 +80,7 @@ class SqueezeAndExcite(nn.Module):
 
         squeeze_channels = int(squeeze_channels)
         self.se_reduce = nn.Conv2d(channels, squeeze_channels, 1, 1, 0, bias=True)
-        self.non_linear1 = NON_LINEARITY['Swish']
+        self.non_linear1 = Swish()
         self.se_expand = nn.Conv2d(squeeze_channels, channels, 1, 1, 0, bias=True)
         self.non_linear2 = nn.Sigmoid()
 
@@ -328,74 +321,106 @@ class ConvBNReLU(nn.Sequential):
 
 
 class SEConcat(nn.Module):
-    def __init__(self, in_planes, out_planes, squeeze_channels, kernel_size = 3, stride = 1, groups = 1, ispad = True):
+    def __init__(self, channels, se_ratio):
         super(SEConcat, self).__init__()
-        if ispad:
-            padding = (kernel_size - 1) // 2
-        else:
-            padding = 0
-        if not squeeze_channels.is_integer():
-            raise ValueError('channels must be divisible by 1/ratio')
-        squeeze_channels = int(squeeze_channels)
+
+        squeeze_channels = channels // se_ratio
+        self.se_reduce = nn.Conv2d((channels + 1), squeeze_channels, 1, 1, 0, bias=True)
+        self.non_linear1 = Swish()
+        self.se_expand = nn.Conv2d(squeeze_channels, channels, 1, 1, 0, bias=True)
+        self.non_linear2 = nn.Sigmoid()
+
+    def forward(self, x, qp):
+        y = torch.mean(x, (2,3), keepdim=True)
+        y = torch.cat((y, qp), dim = 1)
+        y = self.non_linear1(self.se_reduce(y))
+        y = self.non_linear2(self.se_expand(y))
+        y = x * y
+        return y
 
 
 class InvertedResidual(nn.Module):
-    def __init__(self, inp, oup, stride, expand_ratio):
+    def __init__(self, inp, oup, stride, expand_ratio, SE_ratio):
         super(InvertedResidual, self).__init__()
         self.stride = stride
         assert stride in [1, 2]
 
         hidden_dim = int(round(inp * expand_ratio))
         self.use_res_connect = self.stride == 1 and inp == oup
-
-        layers = []
-        if expand_ratio != 1:
+        self.expand_ratio = expand_ratio
+        inverted_residual1 = []
+        if self.expand_ratio != 1:
             # pw
-            layers.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
-        layers.extend([
+            inverted_residual1.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
+        inverted_residual1.append(
             # dw
             ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
+        )
+        self.SE = SEConcat(hidden_dim, SE_ratio)
             # pw-linear
-            nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
-            nn.BatchNorm2d(oup),
-        ])
-        self.conv = nn.Sequential(*layers)
 
-    def forward(self, x):
+        inverted_residual2 = [
+            nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
+            nn.BatchNorm2d(oup),]
+        self.conv1 = nn.Sequential(*inverted_residual1)
+        self.conv2 = nn.Sequential(*inverted_residual2)
+
+    def forward(self, x, qp):
+        y = self.conv1(x)
+        y = self.SE(y, qp)
         if self.use_res_connect:
-            return x + self.conv(x)
+            return x + self.conv2(y)
         else:
-            return self.conv(x)
+            return self.conv2(y)
+
+class ConvBNReLU_SE(nn.Module):
+    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, groups=1, ispad=True, se_ratio = 4):
+        if ispad:
+            padding = (kernel_size - 1) // 2
+        else:
+            padding = 0
+        super(ConvBNReLU_SE, self).__init__()
+        convlist = [
+        nn.Conv2d(in_planes, out_planes, kernel_size, stride, padding, groups=groups, bias=False),
+        nn.BatchNorm2d(out_planes),
+        nn.ReLU6(inplace=True)]
+        self.conv = nn.Sequential(*convlist)
+        self.se = SEConcat(out_planes, se_ratio)
+
+    def forward(self, x, qp):
+        y = self.conv(x)
+        return self.se(y, qp)
+
 
 class MobileNetV2(nn.Module):
     def __init__(self, input_dim = 3, output_dim = 1, width_mult = 1.0, inverted_residual_setting = None, round_nearest = 8):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
-        input_dim -= 1
-        input_channel = 32
+        const_channel = 32
         if inverted_residual_setting is None:
             inverted_residual_setting = [
-                # t, c, n, s - expand_ratio, output_channel, number_of_layers, stride
-                [1, 24, 1, 1],
-                [6, 24, 6, 1],
+                # t, c, n, s, r - expand_ratio, output_channel, number_of_layers, stride
+                [1, 24, 1, 1, 4],
+                [6, 24, 6, 1, 16],
             ]
-        if len(inverted_residual_setting) == 0 or len(inverted_residual_setting[0]) != 4:
+        if len(inverted_residual_setting) == 0 or len(inverted_residual_setting[0]) != 5:
             raise ValueError("inverted_residual_setting should be non-empty "
-                             "or a 4-element list, got {}".format(inverted_residual_setting))
-        input_channel =  _make_divisble(input_channel * width_mult, round_nearest)
-        features = [ConvBNReLU(input_dim, input_channel, stride=1, ispad = False),
-                    ConvBNReLU(input_channel, input_channel, stride=1, ispad = False)]
+                             "or a 5-element list, got {}".format(inverted_residual_setting))
+        const_channel =  _make_divisble(const_channel * width_mult, round_nearest)
+        self.features = nn.ModuleList()
+        self.features.append(ConvBNReLU_SE(input_dim, const_channel, stride=1, ispad = False, se_ratio=4))
+        self.features.append(ConvBNReLU_SE(const_channel, const_channel, stride=1, ispad = False, se_ratio=4))
 
 
-        for t, c, n, s in inverted_residual_setting:
+        for t, c, n, s, r in inverted_residual_setting:
             output_channel = _make_divisble(c*width_mult, round_nearest)
             for i in range(n):
                 stride = s if i==0 else 1
-                features.append(block(input_channel, output_channel, stride, expand_ratio=t))
-                input_channel = output_channel
+                self.features.append(block(const_channel, output_channel, stride, expand_ratio=t, SE_ratio=r))
+                const_channel = output_channel
 
-        features.append(nn.Conv2d(input_channel, output_dim, 3, stride=1, padding=1, bias=False))
-        self.features = nn.Sequential(*features)
+        self.last_conv = (nn.Conv2d(const_channel, output_dim, 3, stride=1, padding=1, bias=False))
+        # self.features = nn.Sequential(*features)
 
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -410,15 +435,14 @@ class MobileNetV2(nn.Module):
                 nn.init.zeros_(m.bias)
 
 
-    def forward(self,x):
-        qp = x[:,3,3,3]
-        x = x[:,:3,:,:]
-        x = self.features(x)
-        return x
+    def forward(self,x, qp):
+        for conv in self.features:
+            x = conv(x, qp)
+        return self.last_conv(x)
 
 
 class COMMONDATASETTING():
-    DATA_CHANNEL_NUM = 4
+    DATA_CHANNEL_NUM = 3
     OUTPUT_CHANNEL_NUM = 1
     qplist = [22,27,32,37]
     depthlist = [i for i in range(1,7)]
@@ -462,7 +486,7 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
         # data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap,hortrans,vertrans,alfmap], axis=0)
-        qp = self.tulist.getMeanTuValue(0)/52.0
+        qp = np.full((1,1,1), (self.tulist.getMeanTuValue(0) - 29.5)/8.0 , dtype='float32')
         data = np.stack([*self.reshapeRecon(),], axis=0)
         gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
         recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
@@ -470,7 +494,7 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         recon /= 1023.0
         gt /= 1023.0
         gt -= recon
-        return recon.astype('float32'), (qp, data.astype('float32')), gt.astype('float32')
+        return recon.astype('float32'), data.astype('float32'), qp, gt.astype('float32')
 
     def ReverseNorm(self, x, idx):
         mean = torch.from_numpy(np.array(self.mean[idx]))
@@ -487,14 +511,15 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         TestDataBatch.unpackData(self, testFolderPath=testFolderPath)
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
-        qpmap = self.pic.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
-        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
+        # qpmap = self.pic.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
+        qp = np.full((1,1,1), (self.pic.tulist.getMeanTuValue(0)-29.5)/8.0, dtype='float32')
+        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION]], axis = 0)
         orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
         recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
         data = (data - self.mean) / self.std
         orig /= 1023.0
         recon /= 1023.0
-        return recon.astype('float32'), data.astype('float32'), orig.astype('float32')
+        return recon.astype('float32'), data.astype('float32'), qp, orig.astype('float32')
 
 
 
@@ -542,7 +567,8 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = MobileNetV2(dataset.data_channel_num, 1)
     # net.to(device)
-    summary(net, (dataset.data_channel_num,132,132), device='cpu')
+    # print(net)
+    summary(net, [(dataset.data_channel_num,132,132), (1,1,1)], device='cpu')
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
     MSE_loss = nn.MSELoss()
@@ -566,12 +592,13 @@ if '__main__' == __name__:
 
     object_step = dataset.batch_num * dataset.cfg.OBJECT_EPOCH
     tb = Mytensorboard(os.path.splitext(os.path.basename(__file__))[0])
+    logger.info('Training Start')
     for epoch_iter, epoch in enumerate(range(dataset.cfg.OBJECT_EPOCH), 1):
         running_loss = 0.0
         for i in range(dataset.batch_num):
-            (recons, inputs, gts) = next(iter_training)
+            (recons, inputs, qp, gts) = next(iter_training)
 
-            outputs = net(inputs)
+            outputs = net(inputs, qp)
             loss = criterion(outputs, gts)
             MSE = MSE_loss(outputs, gts)
             recon_MSE = torch.mean((gts) ** 2)
@@ -601,8 +628,8 @@ if '__main__' == __name__:
 
         for i in range(valid_dataset.batch_num):
             with torch.no_grad():
-                (recons, inputs, gts) = next(iter_valid)
-                outputs = net(inputs)
+                (recons, inputs, qp, gts) = next(iter_training)
+                outputs = net(inputs, qp)
                 loss = criterion(outputs, gts)
                 recon_loss = torch.mean(torch.abs(gts))
                 MSE = MSE_loss(outputs, gts)
@@ -637,8 +664,8 @@ if '__main__' == __name__:
     mean_testGT_psnr = 0
     for i in range(len(test_loader)):
         with torch.no_grad():
-            (recons, inputs, gts) = next(iter_test)
-            outputs = net(inputs)
+            (recons, inputs, qp, gts) = next(iter_test)
+            outputs = net(inputs, qp)
             MSE = MSE_loss(outputs, gts)
             recon_MSE = torch.mean((gts) ** 2)
             mean_test_psnr += myUtil.psnr(MSE.item())

@@ -13,7 +13,21 @@
 >   
 >
 >       현재 MobileNetwork의 Anchor가 실험 완료되는대로 순차적 실험 예정. 
->![QP_SE](./ImageForGit/QP_SE.PNG)
+>![QP_SE_img](./ImageForGit/QP_SE.PNG)
+```
+    Total params: 82,788
+    Trainable params: 82,788
+    Non-trainable params: 0
+    ----------------------------------------------------------------
+    Input size (MB): 0.20
+    Forward/backward pass size (MB): 875.77
+    Params size (MB): 0.32
+    Estimated Total Size (MB): 876.29
+    ----------------------------------------------------------------
+
+```
+>###   * ~~학습이 안정적으로 안되는 것으로 보임~~
+>###    * SENet 부터 차근차근 연구 필요?
 >
 >### 2. Unfiltered Reconstruction을 활용한 Encoder-Decoder Side Prediction Filtering
 >       Online Training
