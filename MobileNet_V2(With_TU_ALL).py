@@ -395,7 +395,7 @@ class MobileNetV2(nn.Module):
 
 
 class COMMONDATASETTING():
-    DATA_CHANNEL_NUM = 4
+    DATA_CHANNEL_NUM = 9
     OUTPUT_CHANNEL_NUM = 1
     qplist = [22,27,32,37]
     depthlist = [i for i in range(1,7)]
@@ -433,13 +433,15 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
     def unpackData(self, info):
         DataBatch.unpackData(self, info)
         qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
-        # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
-        # depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
-        # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
-        # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
-        # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
-        # data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap,hortrans,vertrans,alfmap], axis=0)
-        data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
+        modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
+        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        modemap[modemap>=34] = 3
+        depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
+        hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
+        vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
+        alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
+        data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap,hortrans,vertrans,alfmap], axis=0)
+        # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
         gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
         recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
         data = (data - self.mean) / self.std
@@ -449,8 +451,8 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         return recon.astype('float32'), data.astype('float32'), gt.astype('float32')
 
     def ReverseNorm(self, x, idx):
-        mean = torch.from_numpy(np.array(self.mean[idx]))
-        std = torch.from_numpy(np.array(self.std[idx]))
+        mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32'))
+        std = torch.from_numpy(np.array(self.std[idx], dtype='float32'))
         return x * std + mean
 
 class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
@@ -463,15 +465,23 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         TestDataBatch.unpackData(self, testFolderPath=testFolderPath)
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
-        qpmap = self.pic.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
-        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
+        qpmap = self.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
+        modemap = self.tulist.getTuMaskFromIndex(1, self.pic.area.height, self.pic.area.width)
+        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        modemap[modemap>=34] = 3
+        depthmap = self.tulist.getTuMaskFromIndex(2, self.pic.area.height, self.pic.area.width)
+        hortrans = self.tulist.getTuMaskFromIndex(3, self.pic.area.height, self.pic.area.width)
+        vertrans = self.tulist.getTuMaskFromIndex(4, self.pic.area.height, self.pic.area.width)
+        alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
+        # qpmap = np.full(qpmap.shape, qpmap[100,100])
+        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap, modemap, depthmap, hortrans,vertrans, alfmap], axis = 0)
         orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
         recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
         data = (data - self.mean) / self.std
         orig /= 1023.0
         recon /= 1023.0
-        return recon.astype('float32'), data.astype('float32'), orig.astype('float32')
-
+        orig -= recon
+        return self.cur_path,recon.astype('float32'), data.astype('float32'), orig.astype('float32')
 
 
 class myDataBatch(Dataset):
@@ -509,7 +519,7 @@ if '__main__' == __name__:
 
     valid_loader = DataLoader(dataset=pt_valid_dataset, batch_size=dataset.batch_size, drop_last=True,
                               shuffle=False, num_workers=NetManager.NUM_WORKER)
-    test_loader = DataLoader(dataset=pt_test_dataset, batch_size=1, drop_last=True, shuffle=False, num_workers=NetManager.NUM_WORKER)
+    test_loader = DataLoader(dataset=pt_test_dataset, batch_size=1, drop_last=True, shuffle=False, num_workers=0)
     # net = DenseNet(dataset.data_channel_num, 1, growth_rate=12, block_config=(4,4,4,4), drop_rate=0.2)
     iter_training = cycle(train_loader)
     iter_valid = cycle(valid_loader)
@@ -551,8 +561,9 @@ if '__main__' == __name__:
         # loss = checkpoint['loss']
         net.eval()
 
+    logger.info('Training Start')
 
-    for epoch_iter, epoch in enumerate(range(dataset.cfg.OBJECT_EPOCH), 1):
+    for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), 1):
         running_loss = 0.0
         for i in range(dataset.batch_num):
             (recons, inputs, gts) = next(iter_training)
@@ -603,6 +614,13 @@ if '__main__' == __name__:
                 if i == 0:
                     tb.batchImageToTensorBoard(tb.Makegrid(recons), tb.Makegrid(outputs), 'CNN_Reconstruction')
                     tb.plotDifferent(tb.Makegrid(outputs), 'CNN_Residual')
+                    if epoch_iter==1:
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'QP_Map', [22, 37], 4)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 3)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 2)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[8], idx=8).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'ALF_IDX', [0, 16], 17)
                     logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
         cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
         tb.plotMSEImage(cumsum_valid, 'Error_Mean')
@@ -630,9 +648,11 @@ if '__main__' == __name__:
 
         with torch.no_grad():
             (path, recons, inputs, gts) = next(iter_test)
-            recons = recons.cuda()
-            inputs = inputs.cuda()
-            gts = gts.cuda()
+
+            if torch.cuda.is_available():
+                recons = recons.cuda()
+                inputs = inputs.cuda()
+                gts = gts.cuda()
             outputs = net(inputs)
             # if cuda_device_count > 1:
             #     outputs = torch.cat(outputs, dim=0)

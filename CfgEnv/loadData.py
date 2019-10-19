@@ -47,6 +47,7 @@ class DataBatch(NetManager):
         self.istraining = istraining
         self.batch_size = batch_size
         self.csv = pd.read_csv(self.csv_path)
+        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET)
         print("[%s DataNum : %d]" %(LearningIndex.INDEX_DIC[istraining], len(self.csv)))
         self.sizeDic = {}
         self.tulen = len(self.TU_ORDER)
@@ -54,8 +55,6 @@ class DataBatch(NetManager):
         if istraining>0:
             self.csv = sklearn.utils.shuffle(self.csv, random_state=42)
         self.batch = self.MakeBatch()
-        if istraining == LearningIndex.VALIDATION and self.VALIDATION_LEN > 0:
-            self.batch = self.batch[:self.VALIDATION_LEN]
         self.batch_num = len(self.batch)
         print("[%s NumberOfBatchs : %d]" %(LearningIndex.INDEX_DIC[istraining], self.batch_num))
         self.batch = np.array(self.batch).reshape(-1, len(self.batch[0][0]))
@@ -258,9 +257,10 @@ class TestDataBatch(NetManager):
 
     #NAME,WIDTH,HEIGHT,X_POS,Y_POS,QP,MODE,DEPTH,HOR_TR,VER_TR
     def unpackData(self, testFolderPath):
+        self.cur_path = testFolderPath
         csv = pd.read_csv(os.path.join(testFolderPath, self.CSV_NAME)).dropna(axis='columns').values
-        width = np.max(csv[:,1].astype('int32') + csv[:, 3].astype('int32'))
-        height = np.max(csv[:,2].astype('int32') + csv[:, 4].astype('int32'))
+        # width = np.max(csv[:,1].astype('int32') + csv[:, 3].astype('int32'))
+        # height = np.max(csv[:,2].astype('int32') + csv[:, 4].astype('int32'))
         # cwidth = width//2
         # cheight = height//2
         # pic = []

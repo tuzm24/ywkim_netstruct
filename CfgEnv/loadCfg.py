@@ -1,7 +1,7 @@
 from CfgEnv.config import Config
 
 import os
-
+from torch.cuda import is_available as checkGPU
 
 
 
@@ -35,7 +35,6 @@ class NetManager(object):
     BIT_DEPTH = cfg.BIT_DEPTH
     IS_ONLY_LUMA = cfg.IS_ONLY_LUMA
 
-    VALIDATION_LEN = cfg.VALIDATION_LEN
 
     #TUDATA
     IS_CONST_TU_DATA = cfg.IS_CONST_TU_DATA
@@ -53,10 +52,15 @@ class NetManager(object):
         cfg.member['step'] = 0
     object_step = 0
     print('Call NetManager')
-
-
     #TRAINING_CFG
     NUM_WORKER = cfg.NUM_WORKER
+
+    if not checkGPU():
+        PRINT_PERIOD = 5
+        BATCH_SIZE = 6
+        cfg.USE_DATASET_SUBSET = 1.0
+        NUM_WORKER = 1
+        OBJECT_EPOCH = 1
 
 
 
