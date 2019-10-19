@@ -603,20 +603,33 @@ if '__main__' == __name__:
         torch.save({
             'epoch': epoch_iter,
             'model_state_dict': net.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict()
+            'optimizer_state_dict': optimizer.state_dict(),
+            'TensorBoardStep':tb.step
         }, NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth')
         lr_scheduler.step()
         logger.info('Epoch %d Finished' % epoch_iter)
 
-
+    MSE_loss = nn.MSELoss()
+    recon_MSE_loss = nn.MSELoss()
+    if torch.cuda.is_available():
+        MSE_loss.cuda()
+        recon_MSE_loss.cuda()
     mean_test_psnr = 0
     mean_testGT_psnr = 0
     for i in range(len(test_loader)):
+
         with torch.no_grad():
-            (recons, inputs, gts) = next(iter_test)
+            (path, recons, inputs, gts) = next(iter_test)
+            recons = recons.cuda()
+            inputs = inputs.cuda()
+            gts = gts.cuda()
             outputs = net(inputs)
-            MSE = MSE_loss(outputs, gts)
+            # if cuda_device_count > 1:
+            #     outputs = torch.cat(outputs, dim=0)
+
+            MSE = MSE_loss(outputs[0], gts)
             recon_MSE = torch.mean((gts) ** 2)
+            logger.info('%s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
             mean_test_psnr += myUtil.psnr(MSE.item())
             mean_testGT_psnr += myUtil.psnr(recon_MSE.item())
-            logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))
+    logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))
