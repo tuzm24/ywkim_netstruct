@@ -593,6 +593,17 @@ if '__main__' == __name__:
     object_step = dataset.batch_num * dataset.cfg.OBJECT_EPOCH
     tb = Mytensorboard(os.path.splitext(os.path.basename(__file__))[0])
     logger.info('Training Start')
+    isLoadModel = False
+    if isLoadModel:
+        PATH = NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth'
+        checkpoint = torch.load(PATH)
+        net.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
+        loss = checkpoint['loss']
+        net.eval()
+
+
     for epoch_iter, epoch in enumerate(range(dataset.cfg.OBJECT_EPOCH), 1):
         running_loss = 0.0
         for i in range(dataset.batch_num):
@@ -654,7 +665,8 @@ if '__main__' == __name__:
         torch.save({
             'epoch': epoch_iter,
             'model_state_dict': net.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict()
+            'optimizer_state_dict': optimizer.state_dict(),
+            'TensorBoardStep':tb.step
         }, NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth')
         lr_scheduler.step()
         logger.info('Epoch %d Finished' % epoch_iter)
