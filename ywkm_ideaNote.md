@@ -13,7 +13,24 @@
 >   
 >
 >       현재 MobileNetwork의 Anchor가 실험 완료되는대로 순차적 실험 예정. 
->![QP_SE](./ImageForGit/QP_SE.PNG)
+>![QP_SE_img](./ImageForGit/QP_SE.PNG)
+```
+    Total params: 82,788
+    Trainable params: 82,788
+    Non-trainable params: 0
+    ----------------------------------------------------------------
+    Input size (MB): 0.20
+    Forward/backward pass size (MB): 875.77
+    Params size (MB): 0.32
+    Estimated Total Size (MB): 876.29
+    ----------------------------------------------------------------
+
+```
+>### 2019년 10월 18일 추가사항
+>- - -
+>####   * ~~학습이 안정적으로 안되는 것으로 보임~~
+>####    * SENet 부터 차근차근 연구 필요?
+>- - -
 >
 >### 2. Unfiltered Reconstruction을 활용한 Encoder-Decoder Side Prediction Filtering
 >       Online Training
@@ -24,4 +41,14 @@
 >   * Training을 할지 최초의 Weight로 회귀할지 Control 하는 것도 좋아보인다. 
 >   * Prediction Block 크기를 어떻게 Control할지도 문제이다. 각각의 네트워크로 처리할지, 네트워크의 입력으로 Control 할지 천천히 생각해보자.
 >   * 당연히 최초의 Network를 TrainingSet으로 학습 시켜야 하며, Validation Set을 이용하여 인코더 Side에서 최적의 LearningRate나 위에서 설명한 loss Threshold를 컨트롤 해야 할 것 같다.
->
+
+
+
+- - - 
+> ### 2019년 10월 19일
+> - - -
+>### 1. 학습을 마치고 Loss가 나는 Training, Validation Set Drop
+>   * Inloop Filtering의 경우 학습을 마치고 Picture 단위로 FCN을 걸고 32, 64, 128block
+>단위로 MSE Loss를 계산하여, flag를 전송, 원래 Recon보다 좋지 않으면 기존의 Recon을 쓰는
+>방식이 유효하다. 이러한 과정에서 생각해볼때, 어느정도 혹은 완전히 학습을 마쳤다고 생각했을때 
+>기존의 Recon보다 Filtering 결과가 안 좋다면, 그 Training Set은 학습하지 않는게 옳을 수 있다.

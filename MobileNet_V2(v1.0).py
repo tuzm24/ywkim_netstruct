@@ -603,7 +603,8 @@ if '__main__' == __name__:
         torch.save({
             'epoch': epoch_iter,
             'model_state_dict': net.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict()
+            'optimizer_state_dict': optimizer.state_dict(),
+            'TensorBoardStep':tb.step
         }, NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth')
         lr_scheduler.step()
         logger.info('Epoch %d Finished' % epoch_iter)
