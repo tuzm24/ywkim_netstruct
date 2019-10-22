@@ -25,6 +25,7 @@ from help_func.help_torch_parallel import DataParallelModel, DataParallelCriteri
 import numpy as np
 import os
 import math
+import torch.nn.functional as F
 logger = LoggingHelper.get_instance().logger
 filename = os.path.basename(__file__)
 
@@ -69,349 +70,76 @@ def Conv1x1Bn(in_channels, out_channels, non_linear='ReLU'):
         nn.ReLU(inplace=True)
     )
 
-class SqueezeAndExcite(nn.Module):
-    def __init__(self, channels, squeeze_channels, se_ratio):
-        super(SqueezeAndExcite, self).__init__()
 
-        squeeze_channels = squeeze_channels * se_ratio
-        if not squeeze_channels.is_integer():
-            raise ValueError('channels must be divisible by 1/ratio')
 
-        squeeze_channels = int(squeeze_channels)
-        self.se_reduce = nn.Conv2d(channels, squeeze_channels, 1, 1, 0, bias=True)
-        self.non_linear1 = NON_LINEARITY['Swish']
-        self.se_expand = nn.Conv2d(squeeze_channels, channels, 1, 1, 0, bias=True)
-        self.non_linear2 = nn.Sigmoid()
 
+class make_dense(nn.Module):
+  def __init__(self, nChannels, growthRate, kernel_size=3):
+    super(make_dense, self).__init__()
+    self.conv = nn.Conv2d(nChannels, growthRate, kernel_size=kernel_size, padding=(kernel_size-1)//2, bias=False)
+  def forward(self, x):
+    out = F.relu(self.conv(x))
+    out = torch.cat((x, out), 1)
+    return out
+
+# Residual dense block (RDB) architecture
+class RDB(nn.Module):
+  def __init__(self, nChannels, nDenselayer, growthRate):
+    super(RDB, self).__init__()
+    nChannels_ = nChannels
+    modules = []
+    for i in range(nDenselayer):
+        modules.append(make_dense(nChannels_, growthRate))
+        nChannels_ += growthRate
+    self.dense_layers = nn.Sequential(*modules)
+    self.conv_1x1 = nn.Conv2d(nChannels_, nChannels, kernel_size=1, padding=0, bias=False)
+  def forward(self, x):
+    out = self.dense_layers(x)
+    out = self.conv_1x1(out)
+    out = out + x
+    return out
+
+# Residual Dense Network
+class RDN(nn.Module):
+    nDenselayer = 6
+    nFeaturemaps = 32
+    growthRate = 16
+
+    def __init__(self, input_channels, output_channels):
+        super(RDN, self).__init__()
+        nChannel = input_channels
+        nDenselayer = self.nDenselayer
+        nFeat = self.nFeaturemaps
+        growthRate = self.growthRate
+
+        # F-1
+        self.conv1 = nn.Conv2d(nChannel, nFeat, kernel_size=3, padding=0, bias=False)
+        # F0
+        self.conv2 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=0, bias=False)
+        # RDBs 3
+        self.RDB1 = RDB(nFeat, nDenselayer, growthRate)
+        self.RDB2 = RDB(nFeat, nDenselayer, growthRate)
+        self.RDB3 = RDB(nFeat, nDenselayer, growthRate)
+        # global feature fusion (GFF)
+        self.GFF_1x1 = nn.Conv2d(nFeat*3, nFeat, kernel_size=1, padding=0, bias=False)
+        self.GFF_3x3 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
+        # Upsampler
+        self.conv_up = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
+        # conv
+        self.conv3 = nn.Conv2d(nFeat, output_channels, kernel_size=3, padding=1, bias=False)
     def forward(self, x):
-        y = torch.mean(x, (2, 3), keepdim=True)
-        y = self.non_linear1(self.se_reduce(y))
-        y = self.non_linear2(self.se_expand(y))
-        y = x * y
-
-        return y
-
-class GroupedConv2d(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
-        super(GroupedConv2d, self).__init__()
-
-        self.num_groups = len(kernel_size)
-        self.split_in_channels = _SplitChannels(in_channels, self.num_groups)
-        self.split_out_channels = _SplitChannels(out_channels, self.num_groups)
-
-        self.grouped_conv = nn.ModuleList()
-        for i in range(self.num_groups):
-            self.grouped_conv.append(nn.Conv2d(
-                self.split_in_channels[i],
-                self.split_out_channels[i],
-                kernel_size[i],
-                stride=stride,
-                padding=padding,
-                bias=False
-            ))
-
-    def forward(self, x):
-        if self.num_groups == 1:
-            return self.grouped_conv[0](x)
-
-        x_split = torch.split(x, self.split_in_channels, dim=1)
-        x = [conv(t) for conv, t in zip(self.grouped_conv, x_split)]
-        x = torch.cat(x, dim=1)
-
-        return x
-
-class MDConv(nn.Module):
-    def __init__(self, channels, kernel_size, stride):
-        super(MDConv, self).__init__()
-
-        self.num_groups = len(kernel_size)
-        self.split_channels = _SplitChannels(channels, self.num_groups)
-
-        self.mixed_depthwise_conv = nn.ModuleList()
-        for i in range(self.num_groups):
-            self.mixed_depthwise_conv.append(nn.Conv2d(
-                self.split_channels[i],
-                self.split_channels[i],
-                kernel_size[i],
-                stride=stride,
-                padding=kernel_size[i]//2,
-                groups=self.split_channels[i],
-                bias=False
-            ))
-
-    def forward(self, x):
-        if self.num_groups == 1:
-            return self.mixed_depthwise_conv[0](x)
-
-        x_split = torch.split(x, self.split_channels, dim=1)
-        x = [conv(t) for conv, t in zip(self.mixed_depthwise_conv, x_split)]
-        x = torch.cat(x, dim=1)
-
-        return x
-
-class MixNetBlock(nn.Module):
-    def __init__(
-        self,
-        in_channels,
-        out_channels,
-        kernel_size=[3],
-        expand_ksize=[1],
-        project_ksize=[1],
-        stride=1,
-        expand_ratio=1,
-        non_linear='ReLU',
-        se_ratio=0.0
-    ):
-
-        super(MixNetBlock, self).__init__()
-
-        expand = (expand_ratio != 1)
-        expand_channels = in_channels * expand_ratio
-        se = (se_ratio != 0.0)
-        self.residual_connection = (stride == 1 and in_channels == out_channels)
-
-        conv = []
-
-        if expand:
-            # expansion phase
-            pw_expansion = nn.Sequential(
-                GroupedConv2d(in_channels, expand_channels, expand_ksize),
-                nn.BatchNorm2d(expand_channels),
-                NON_LINEARITY[non_linear]
-            )
-            conv.append(pw_expansion)
-
-        # depthwise convolution phase
-        dw = nn.Sequential(
-            MDConv(expand_channels, kernel_size, stride),
-            nn.BatchNorm2d(expand_channels),
-            NON_LINEARITY[non_linear]
-        )
-        conv.append(dw)
-
-        if se:
-            # squeeze and excite
-            squeeze_excite = SqueezeAndExcite(expand_channels, in_channels, se_ratio)
-            conv.append(squeeze_excite)
-
-        # projection phase
-        pw_projection = nn.Sequential(
-            GroupedConv2d(expand_channels, out_channels, project_ksize),
-            nn.BatchNorm2d(out_channels)
-        )
-        conv.append(pw_projection)
-
-        self.conv = nn.Sequential(*conv)
-
-    def forward(self, x):
-        if self.residual_connection:
-            return x + self.conv(x)
-        else:
-            return self.conv(x)
-
-
-
-class MixNet(nn.Module):
-    mymixnet = [(24, 24, [3],       [1],    [1],  1, 1, 'ReLU', 0.0),
-                (24, 24, [3,5,7],   [1,1], [1,1], 1, 3, 'ReLU', 0.0),
-                (24, 24, [3],       [1,1], [1,1], 1, 3, 'ReLU', 0.0),
-                (24, 24, [3,5,7,9], [1],    [1],  1, 3, 'Swish', 0.5),
-                (24, 24, [3,5],     [1,1], [1,1], 1, 3, 'Swish', 0.5),
-                (24, 24, [3,5,7], [1],      [1], 1, 3, 'Swish', 0.5),
-                (24, 24, [3,5,7,9], [1],   [1,1], 1, 3, 'Swish', 0.5),
-                (24, 24, [3,5,7,9], [1],   [1,1], 1, 3, 'Swish', 0.5)]
-
-
-    def __init__(self, input_channel=3, output_channel=1, stem_channel=24, depth_multiplier=1.0):
-        super(MixNet, self).__init__()
-        config = self.mymixnet
-        stem_channel=24
-        depth_multiplier=1.0
-        # dropout_rate = 0.25
-
-        if depth_multiplier != 1.0:
-            stem_channel = _RoundChannels(stem_channel*depth_multiplier)
-        for i, conf in enumerate(config):
-            conf_ls = list(conf)
-            conf_ls[0] = _RoundChannels(conf_ls[0]*depth_multiplier)
-            conf_ls[1] = _RoundChannels(conf_ls[1]*depth_multiplier)
-            config[i] = tuple(conf_ls)
-
-        self.stem_conv = Conv3x3Bn(input_channel, stem_channel, 1)
-        layers = []
-        for in_channels, out_channels, kernel_size, expand_ksize, \
-            project_ksize, stride, expand_ratio, non_linear, se_ratio in config:
-            layers.append(MixNetBlock(
-                in_channels,
-                out_channels,
-                kernel_size=kernel_size,
-                expand_ksize=expand_ksize,
-                project_ksize=project_ksize,
-                stride=stride,
-                expand_ratio=expand_ratio,
-                non_linear=non_linear,
-                se_ratio=se_ratio
-            ))
-        self.layers = nn.Sequential(*layers)
-        self.last_conv = Conv3x3Bn(config[-1][1], output_channel, stride=1)
-        self._initialize_weights()
-
-    def forward(self, x):
-        x = self.stem_conv(x)
-        x = self.layers(x)
-        x = self.last_conv(x)
-        return x
-
-
-
-    def _initialize_weights(self):
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2.0 / n))
-                if m.bias is not None:
-                    m.bias.data.zero_()
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-            elif isinstance(m, nn.Linear):
-                n = m.weight.size(1)
-                m.weight.data.normal_(0, 0.01)
-                m.bias.data.zero_()
-
-
-class depthwise_separable_conv(nn.Module):
-    def __init__(self, nin, kernels_per_layer, nout):
-        super(depthwise_separable_conv, self).__init__()
-        self.depthwise = nn.Conv2d(nin, nin * kernels_per_layer, kernel_size=3, padding=1, groups=nin)
-        self.pointwise = nn.Conv2d(nin * kernels_per_layer, nout, kernel_size=1)
-
-    def forward(self, x):
-        return self.pointwise(self.depthwise(x))
-
-
-def _bn_function_factory(norm, relu, conv):
-    def bn_function(*inputs):
-        concated_features = torch.cat(inputs, 1)
-        bottleneck_output = conv(relu(norm(concated_features)))
-        return bottleneck_output
-
-    return bn_function
-
-def _make_divisble(v, divisor, min_value=None):
-    if min_value is None:
-        min_value = divisor
-    new_v = max(min_value, int(v+divisor/2)//divisor*divisor)
-    if new_v < 0.9*v:
-        new_v +=divisor
-    return new_v
-
-class ConvBNReLU(nn.Sequential):
-    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, groups=1, ispad = True):
-        if ispad:
-            padding = (kernel_size - 1) // 2
-        else:
-            padding = 0
-        super(ConvBNReLU, self).__init__(
-            nn.Conv2d(in_planes, out_planes, kernel_size, stride, padding, groups=groups, bias=False),
-            nn.BatchNorm2d(out_planes),
-            nn.ReLU6(inplace=True)
-        )
-
-
-class InvertedResidual(nn.Module):
-    def __init__(self, inp, oup, stride, expand_ratio):
-        super(InvertedResidual, self).__init__()
-        self.stride = stride
-        assert stride in [1, 2]
-
-        hidden_dim = int(round(inp * expand_ratio))
-        self.use_res_connect = self.stride == 1 and inp == oup
-
-        layers = []
-        if expand_ratio != 1:
-            # pw
-            layers.append(ConvBNReLU(inp, hidden_dim, kernel_size=1))
-        layers.extend([
-            # dw
-            ConvBNReLU(hidden_dim, hidden_dim, stride=stride, groups=hidden_dim),
-            # pw-linear
-            nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
-            nn.BatchNorm2d(oup),
-        ])
-        self.conv = nn.Sequential(*layers)
-
-    def forward(self, x):
-        if self.use_res_connect:
-            return x + self.conv(x)
-        else:
-            return self.conv(x)
-
-class InputConv(nn.Module):
-    def __init__(self):
-        super(InputConv, self).__init__()
-        self.inputConv = ConvBNReLU(9, 32, stride=1, ispad = False)
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out')
-                if m.bias is not None:
-                    nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.ones_(m.weight)
-                nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.zeros_(m.bias)
-    def forward(self,x):
-        return x
-
-class MobileNetV2(nn.Module):
-    def __init__(self, input_dim = 3, output_dim = 1, width_mult = 1.0, inverted_residual_setting = None, round_nearest = 8):
-        super(MobileNetV2, self).__init__()
-        block = InvertedResidual
-        input_channel = 32
-        input_dim = 4
-        if inverted_residual_setting is None:
-            inverted_residual_setting = [
-                # t, c, n, s - expand_ratio, output_channel, number_of_layers, stride
-                [1, 24, 1, 1],
-                [6, 24, 6, 1],
-            ]
-        if len(inverted_residual_setting) == 0 or len(inverted_residual_setting[0]) != 4:
-            raise ValueError("inverted_residual_setting should be non-empty "
-                             "or a 4-element list, got {}".format(inverted_residual_setting))
-        input_channel =  _make_divisble(input_channel * width_mult, round_nearest)
-        features = [ConvBNReLU(input_dim, input_channel, stride=1, ispad = False),
-                    ConvBNReLU(input_channel, input_channel, stride=1, ispad = False)]
-
-
-        for t, c, n, s in inverted_residual_setting:
-            output_channel = _make_divisble(c*width_mult, round_nearest)
-            for i in range(n):
-                stride = s if i==0 else 1
-                features.append(block(input_channel, output_channel, stride, expand_ratio=t))
-                input_channel = output_channel
-
-        features.append(nn.Conv2d(input_channel, output_dim, 3, stride=1, padding=1, bias=False))
-        self.features = nn.Sequential(*features)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out')
-                if m.bias is not None:
-                    nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.ones_(m.weight)
-                nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.zeros_(m.bias)
-
-
-    def forward(self,x):
-        x = self.features(x)
-        return x
-
+        self.firstlayer  = F.relu(self.conv1(x))
+        self.secondlayer = F.relu(self.conv2(self.firstlayer))
+        self.F_1 = self.RDB1(self.secondlayer)
+        self.F_2 = self.RDB2(self.F_1)
+        self.F_3 = self.RDB3(self.F_2)
+        self.FF = torch.cat((self.F_1, self.F_2, self.F_3), 1)
+        self.FdLF = F.relu(self.GFF_1x1(self.FF))
+        self.FGF = F.relu(self.GFF_3x3(self.FdLF))
+        self.FDF = self.FGF + self.firstlayer
+        self.finallayer = self.conv_up(self.FDF)
+        self.output = self.conv3(self.finallayer)
+        return self.output
 
 class COMMONDATASETTING():
     DATA_CHANNEL_NUM = 9
@@ -545,7 +273,7 @@ if '__main__' == __name__:
     iter_test = cycle(test_loader)
 
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
-    net = MobileNetV2(dataset.data_channel_num, 1)
+    net = RDN(dataset.data_channel_num, 1)
     # net.to(device)
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
@@ -578,9 +306,6 @@ if '__main__' == __name__:
         # epoch = checkpoint['epoch']
         # loss = checkpoint['loss']
         net.eval()
-    inputconv= InputConv().cuda()
-    net._modules['module'].features._modules['0'] = inputconv
-    net.module.features._modules['0'] = inputconv
     summary(net, (dataset.data_channel_num,132,132), device='cpu')
     logger.info('Training Start')
 

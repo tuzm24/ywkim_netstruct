@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tensorboardX import SummaryWriter
 import math
+from PIL import Image
+
 
 class Mytensorboard(NetManager):
     def __init__(self, comment=''):
@@ -23,9 +25,17 @@ class Mytensorboard(NetManager):
         img = np.clip(img, 0, 255).astype(int)
         self.writer.add_image(name, img, global_step=self.step)
 
+    def saveImageFromTest(self, recon, resi, name):
+        img = (recon.cpu().detach().numpy() + resi.cpu().detach().numpy())*255.0
+        img = np.clip(img, 0, 255).astype(np.uint8)
+        img = Image.fromarray(img[0,0])
+        img.save(name + 'png')
+
+
     @staticmethod
-    def Makegrid(imgs, nrow = 5):
-        nrow = math.ceil(math.sqrt(imgs.shape[0]))
+    def Makegrid(imgs, nrow = None):
+        if nrow is None:
+            nrow = math.ceil(math.sqrt(imgs.shape[0]))
         return vutils.make_grid(imgs, nrow)
 
     def setObjectStep(self, num_set):
