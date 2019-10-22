@@ -142,7 +142,7 @@ class RDN(nn.Module):
         return self.output
 
 class COMMONDATASETTING():
-    DATA_CHANNEL_NUM = 9
+    DATA_CHANNEL_NUM = 4
     OUTPUT_CHANNEL_NUM = 1
     qplist = [22,27,32,37]
     depthlist = [i for i in range(1,7)]
@@ -180,14 +180,14 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
     def unpackData(self, info):
         DataBatch.unpackData(self, info)
         qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
-        modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
-        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
-        modemap[modemap>=34] = 3
-        depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
-        hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
-        vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
-        alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
-        data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap,hortrans,vertrans,alfmap], axis=0)
+        # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
+        # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        # modemap[modemap>=34] = 3
+        # depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
+        # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
+        # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
+        # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
+        data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
         # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
         gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
         recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
@@ -213,15 +213,15 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
         qpmap = self.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
-        modemap = self.tulist.getTuMaskFromIndex(1, self.pic.area.height, self.pic.area.width)
-        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
-        modemap[modemap>=34] = 3
-        depthmap = self.tulist.getTuMaskFromIndex(2, self.pic.area.height, self.pic.area.width)
-        hortrans = self.tulist.getTuMaskFromIndex(3, self.pic.area.height, self.pic.area.width)
-        vertrans = self.tulist.getTuMaskFromIndex(4, self.pic.area.height, self.pic.area.width)
-        alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
+        # modemap = self.tulist.getTuMaskFromIndex(1, self.pic.area.height, self.pic.area.width)
+        # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        # modemap[modemap>=34] = 3
+        # depthmap = self.tulist.getTuMaskFromIndex(2, self.pic.area.height, self.pic.area.width)
+        # hortrans = self.tulist.getTuMaskFromIndex(3, self.pic.area.height, self.pic.area.width)
+        # vertrans = self.tulist.getTuMaskFromIndex(4, self.pic.area.height, self.pic.area.width)
+        # alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
         # qpmap = np.full(qpmap.shape, qpmap[100,100])
-        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap, modemap, depthmap, hortrans,vertrans, alfmap], axis = 0)
+        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
         orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
         recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
         data = (data - self.mean) / self.std
@@ -362,11 +362,11 @@ if '__main__' == __name__:
                     tb.plotDifferent(tb.Makegrid(outputs), 'CNN_Residual')
                     if epoch_iter==1:
                         tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'QP_Map', [22, 37], 4)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 2)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[8], idx=8).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'ALF_IDX', [0, 16], 17)
+                        # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
+                        # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
+                        # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
+                        # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 2)
+                        # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[8], idx=8).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'ALF_IDX', [0, 16], 17)
                     logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
         cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
         tb.plotMSEImage(cumsum_valid, 'Error_Mean')
