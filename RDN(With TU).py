@@ -302,10 +302,14 @@ if '__main__' == __name__:
         PATH = './'+NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth'
         checkpoint = torch.load(PATH)
         net.load_state_dict(checkpoint['model_state_dict'])
-        # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        # epoch = checkpoint['epoch']
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
         # loss = checkpoint['loss']
+        tb.step = checkpoint['TensorBoardStep']
         net.eval()
+        for g in optimizer.param_groups:
+            g['lr'] = 0.0001
+
     summary(net, (dataset.data_channel_num,132,132), device='cpu')
     logger.info('Training Start')
 

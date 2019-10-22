@@ -347,30 +347,11 @@ class InvertedResidual(nn.Module):
         else:
             return self.conv(x)
 
-class InputConv(nn.Module):
-    def __init__(self):
-        super(InputConv, self).__init__()
-        self.inputConv = ConvBNReLU(9, 32, stride=1, ispad = False)
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out')
-                if m.bias is not None:
-                    nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.ones_(m.weight)
-                nn.init.zeros_(m.bias)
-            elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
-                nn.init.zeros_(m.bias)
-    def forward(self,x):
-        return x
-
 class MobileNetV2(nn.Module):
     def __init__(self, input_dim = 3, output_dim = 1, width_mult = 1.0, inverted_residual_setting = None, round_nearest = 8):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
         input_channel = 32
-        input_dim = 4
         if inverted_residual_setting is None:
             inverted_residual_setting = [
                 # t, c, n, s - expand_ratio, output_channel, number_of_layers, stride
@@ -547,6 +528,7 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = MobileNetV2(dataset.data_channel_num, 1)
     # net.to(device)
+    summary(net, (dataset.data_channel_num,132,132), device='cpu')
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
     MSE_loss = nn.MSELoss()
@@ -564,8 +546,7 @@ if '__main__' == __name__:
 
     optimizer = optim.Adam(net.parameters(), lr=dataset.cfg.INIT_LEARNING_RATE)
     lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
-                                                  milestones=[int(dataset.cfg.OBJECT_EPOCH * 0.5),
-                                                              int(dataset.cfg.OBJECT_EPOCH * 0.75)],
+                                                  milestones=[int(dataset.cfg.OBJECT_EPOCH * 0.5)],
                                                   gamma=0.1, last_epoch=-1)
 
     object_step = dataset.batch_num * dataset.cfg.OBJECT_EPOCH
@@ -574,14 +555,13 @@ if '__main__' == __name__:
         PATH = './'+NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth'
         checkpoint = torch.load(PATH)
         net.load_state_dict(checkpoint['model_state_dict'])
-        # optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        # epoch = checkpoint['epoch']
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch'],
+        tb.step = checkpoint['TensorBoardStep']
         # loss = checkpoint['loss']
         net.eval()
-    inputconv= InputConv().cuda()
-    net._modules['module'].features._modules['0'] = inputconv
-    net.module.features._modules['0'] = inputconv
-    summary(net, (dataset.data_channel_num,132,132), device='cpu')
+        for g in optimizer.param_groups:
+            g['lr'] = 0.0001
     logger.info('Training Start')
 
     for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), 1):
@@ -639,8 +619,8 @@ if '__main__' == __name__:
                         tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'QP_Map', [22, 37], 4)
                         tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
                         tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 2)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 3)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 3)
                         tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[8], idx=8).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'ALF_IDX', [0, 16], 17)
                     logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
         cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
@@ -665,7 +645,6 @@ if '__main__' == __name__:
         recon_MSE_loss.cuda()
     mean_test_psnr = 0
     mean_testGT_psnr = 0
-    ctusize = 128
     for i in range(len(test_loader)):
 
         with torch.no_grad():
@@ -679,30 +658,9 @@ if '__main__' == __name__:
             # if cuda_device_count > 1:
             #     outputs = torch.cat(outputs, dim=0)
 
-
-
             MSE = MSE_loss(outputs[0], gts)
             recon_MSE = torch.mean((gts) ** 2)
-            logger.info('ALL : %s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
+            logger.info('%s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
             mean_test_psnr += myUtil.psnr(MSE.item())
             mean_testGT_psnr += myUtil.psnr(recon_MSE.item())
-
-            for y in range(outputs.shape[2]):
-                for x in range(outputs.shape[3]):
-                    width = outputs.shape[2] - x if (x+ctusize)>outputs.shape[2] else ctusize
-                    height = outputs.shzpe[3] - y if (y+ctusize)>outputs.shape[3] else ctusize
-                    width += x
-                    height +=y
-                    if MSE_loss(outputs[:,:,y:height,x:width], gts[:,:, y:height, x:width]) > torch.mean(gts[:,:,y:height,x:width]**2):
-                        outputs[:,:,y:height,x:width] = gts[:,:,y:height,x:width]
-
-
-            logger.info('CTU %s : %s(%s) : %s %s' %(ctusize ,path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
-
-
-
-            outputs = outputs.cpu().numpy()[0,0]
-            n_gts = gts.cpu().numpy()[0,0]
-
-
     logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))
