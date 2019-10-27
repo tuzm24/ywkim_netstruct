@@ -103,7 +103,7 @@ class RDB(nn.Module):
 class RDN(nn.Module):
     nDenselayer = 6
     nFeaturemaps = 32
-    growthRate = 16
+    growthRate = 24
 
     def __init__(self, input_channels, output_channels):
         super(RDN, self).__init__()
@@ -120,8 +120,9 @@ class RDN(nn.Module):
         self.RDB1 = RDB(nFeat, nDenselayer, growthRate)
         self.RDB2 = RDB(nFeat, nDenselayer, growthRate)
         self.RDB3 = RDB(nFeat, nDenselayer, growthRate)
+        self.RDB4 = RDB(nFeat, nDenselayer, growthRate)
         # global feature fusion (GFF)
-        self.GFF_1x1 = nn.Conv2d(nFeat*3, nFeat, kernel_size=1, padding=0, bias=False)
+        self.GFF_1x1 = nn.Conv2d(nFeat*4, nFeat, kernel_size=1, padding=0, bias=False)
         self.GFF_3x3 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
         # Upsampler
         self.conv_up = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
@@ -133,10 +134,11 @@ class RDN(nn.Module):
         self.F_1 = self.RDB1(self.secondlayer)
         self.F_2 = self.RDB2(self.F_1)
         self.F_3 = self.RDB3(self.F_2)
-        self.FF = torch.cat((self.F_1, self.F_2, self.F_3), 1)
+        self.F_4 = self.RDB4(self.F_3)
+        self.FF = torch.cat((self.F_1, self.F_2, self.F_3, self.F_4), 1)
         self.FdLF = F.relu(self.GFF_1x1(self.FF))
         self.FGF = F.relu(self.GFF_3x3(self.FdLF))
-        self.FDF = self.FGF + self.firstlayer
+        self.FDF = self.FGF + self.secondlayer
         self.finallayer = self.conv_up(self.FDF)
         self.output = self.conv3(self.finallayer)
         return self.output
@@ -198,8 +200,8 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         return recon.astype('float32'), data.astype('float32'), gt.astype('float32')
 
     def ReverseNorm(self, x, idx):
-        mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32'))
-        std = torch.from_numpy(np.array(self.std[idx], dtype='float32'))
+        mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32')).cuda()
+        std = torch.from_numpy(np.array(self.std[idx], dtype='float32')).cuda()
         return x * std + mean
 
 class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
@@ -228,7 +230,7 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         orig /= 1023.0
         recon /= 1023.0
         orig -= recon
-        return self.cur_path,recon.astype('float32'), data.astype('float32'), orig.astype('float32')
+        return self.cur_path, recon.astype('float32'), data.astype('float32'), orig.astype('float32')
 
 
 class myDataBatch(Dataset):
@@ -275,6 +277,7 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = RDN(dataset.data_channel_num, 1)
     # net.to(device)
+    summary(net, (dataset.data_channel_num,132,132), device='cpu')
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
     MSE_loss = nn.MSELoss()
@@ -286,10 +289,9 @@ if '__main__' == __name__:
             criterion = DataParallelCriterion(criterion).cuda()
             MSE_loss = DataParallelCriterion(nn.MSELoss()).cuda()
         else:
-            net.cuda()
-            criterion.cuda()
-            MSE_loss.cuda()
-
+            net = net.cuda()
+            criterion = criterion.cuda()
+            MSE_loss = MSE_loss.cuda()
     optimizer = optim.Adam(net.parameters(), lr=dataset.cfg.INIT_LEARNING_RATE)
     lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                   milestones=[int(dataset.cfg.OBJECT_EPOCH * 0.5),
@@ -307,10 +309,9 @@ if '__main__' == __name__:
         # loss = checkpoint['loss']
         tb.step = checkpoint['TensorBoardStep']
         net.eval()
-        for g in optimizer.param_groups:
-            g['lr'] = 0.0001
+        # for g in optimizer.param_groups:
+        #     g['lr'] = 0.0001
 
-    summary(net, (dataset.data_channel_num,132,132), device='cpu')
     logger.info('Training Start')
 
     for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), 1):
@@ -318,6 +319,10 @@ if '__main__' == __name__:
         for i in range(dataset.batch_num):
             (recons, inputs, gts) = next(iter_training)
 
+            if torch.cuda.is_available():
+                recons = recons.cuda()
+                inputs = inputs.cuda()
+                gts = gts.cuda()
             outputs = net(inputs)
             loss = criterion(outputs, gts)
             MSE = MSE_loss(outputs, gts)
@@ -336,7 +341,7 @@ if '__main__' == __name__:
                                     (epoch_iter,i+1,
                                      dataset.batch_num, running_loss / dataset.PRINT_PERIOD))
                 running_loss = 0.0
-            del recons, inputs, gts
+            # del recons, inputs, gts
             tb.step += 1  # Must Used
 
         mean_loss_cnn = 0
@@ -349,6 +354,11 @@ if '__main__' == __name__:
         for i in range(valid_dataset.batch_num):
             with torch.no_grad():
                 (recons, inputs, gts) = next(iter_valid)
+
+                if torch.cuda.is_available():
+                    recons = recons.cuda()
+                    inputs = inputs.cuda()
+                    gts = gts.cuda()
                 outputs = net(inputs)
                 loss = criterion(outputs, gts)
                 recon_loss = torch.mean(torch.abs(gts))
@@ -410,7 +420,7 @@ if '__main__' == __name__:
 
 
 
-            MSE = MSE_loss(outputs[0], gts)
+            MSE = MSE_loss(outputs, gts)
             recon_MSE = torch.mean((gts) ** 2)
             logger.info('ALL : %s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
             mean_test_psnr += myUtil.psnr(MSE.item())

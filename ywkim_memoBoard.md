@@ -89,3 +89,24 @@ class MyModel(nn.Module):
 >       * 그런데 내 실험은 Input을 바꾸는 경우가 많은데 이 경우에도 Transfer Learning이 유효한지는 논문에 나와있지 않다.
 >       * ETRI는 Transfer Learning에 대해 어떻게 생각하는지 궁금하다.
 >
+>
+>
+>```
+>
+> 2019년 10월 25일
+> 
+- - -
+
+> 1. Channel 개수 C, layer 개수 D와 CNN 네트워크 복잡성에 관하여.
+>       * 이미지의 width와 height는 고정이라고 볼 수 있다.
+>       * layer당 Input Feature Map이 동일한 Network라고 가정하면 (Output Channel도 당연히 같다.) Channel 개수 C는 전체 연산량에 정비례한다.
+>       * layer 개수는 어떨까. 처음과 마지막 layer를 제외하면 layer 개수가 늘어나면 전체 연산량이 정비례 할 것이다.
+>       * RDB 등의 Channel Concat layer에서는 어떨까. RDB 내부 layer의 개수를 n, growth_rate = g, input layer의 개수를 il, output layer를 ol이라 하면,
+>         il*g + (il+g)*g + (il+2g)*g +  . . . + (il + (n-2)g)*g + (il+(n-1)*g)*ol = ((n-1)*il + (g*(n-1)*n)/2)*g + (il + (n-1)*g)*ol 이므로
+>         RDN 내부 growth_rate에 O(n^2), layer 개수 n에 O(n^2)을 가짐.
+>
+>2. layer 수에 따른 성능 변화 및 Global Residual Connection에 대하여...
+>
+>       * 현재 실험하는 RDN 구조는 다음과 같다.
+>
+
