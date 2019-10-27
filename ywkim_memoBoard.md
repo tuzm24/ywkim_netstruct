@@ -117,11 +117,13 @@ class MyModel(nn.Module):
 
 > 1. RDB 실험결과
 >   * Input
+
 >       ![RDN_img](./ImageForGit/RDN%20Network.PNG)
 >       * Input 은 동일하게 132x132 크기의 CTU를 네트워크 초기에 Padding 없는
 >Convolution을 통해 128x128 Luma로 회귀하는 네트워크 이다.
 >
 >   * Network
+
 >       ![RDN_img](./ImageForGit/RDB.PNG)
 >
 >       ![RDN_img](./ImageForGit/RDN%20Network2.PNG)
@@ -139,6 +141,7 @@ class MyModel(nn.Module):
 >
 >
 >  2. UpSampling method
+
 >       ![RDN_img](./ImageForGit/nnPixelShuffle.PNG)
 >       * "Real-Time Single Image and Video Super-Resolution Using an Efficient
 Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
@@ -151,6 +154,7 @@ Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
 >       * RDB에 DownSampling과 Upsampling을 적용하여 다시
 >
 >   4. 직관성 있는 그림 메모
+>
 >       ![RDN_img](./ImageForGit/CNN_Image1.PNG)
 >
 >       ![RDN_img](./ImageForGit/CNN_Image2.PNG)
