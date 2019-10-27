@@ -110,3 +110,30 @@ class MyModel(nn.Module):
 >       * 현재 실험하는 RDN 구조는 다음과 같다.
 >
 
+>```
+>
+> 2019년 10월 27일
+> 
+- - -
+
+> 1. RDB 실험결과
+>   * Input
+>       ![RDN_img](./ImageForGit/RDN%20Network.PNG)
+>       * Input 은 동일하게 132x132 크기의 CTU를 네트워크 초기에 Padding 없는
+>Convolution을 통해 128x128 Luma로 회귀하는 네트워크 이다.
+>
+>   * Network
+>       ![RDN_img](./ImageForGit/RDB.PNG)
+>
+>       ![RDN_img](./ImageForGit/RDN%20Network2.PNG)
+>       * Network의 구조는 다음과 같다. 가장 유의깊게 봐야 하는 부분은, Network Output이 Residual임에도 불구하고, Network Output을 생성하는 Convolution 이전에 Globally한 Residual connection이 필요하였다.
+>       * Globally한  Residual connection이 없으면 성능개선이 전혀 없었다.
+>       * Output이 Residual이 아닌 경우에도 성능 개선이 없었다.       
+>       * 심지어 RDB는 내부에도 Residual connection이 필요하다.
+>       * Padding을 날리기 위한 3x3 Conv layer 2개를 1개의 5x5 Conv를 Padding 없이 사용하여 보았을때도 성능저하가 극심하였다.
+>   * 처음에는 비교적 깊은 네트워크를 차용하였다.
+>   1. 일반 Convolution featuermap : 32, RDN 갯수 : 3, RDN 내부 layer 개수 : 6, growth rate : 16
+>       * 평균 0.15dB PSNR gain
+>   2. 일반 Convolution featuermap : 32, RDN 갯수 : 4, RDN 내부 layer 개수 : 6, growth rate : 24
+>       * 평균 0.20dB PSNR gain
+>

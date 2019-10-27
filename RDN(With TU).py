@@ -128,6 +128,8 @@ class RDN(nn.Module):
         self.conv_up = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
         # conv
         self.conv3 = nn.Conv2d(nFeat, output_channels, kernel_size=3, padding=1, bias=False)
+
+
     def forward(self, x):
         self.firstlayer  = F.relu(self.conv1(x))
         self.secondlayer = F.relu(self.conv2(self.firstlayer))
