@@ -47,7 +47,7 @@ class DataBatch(NetManager):
         self.istraining = istraining
         self.batch_size = batch_size
         self.csv = pd.read_csv(self.csv_path)
-        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET)
+        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET, random_state=np.random.RandomState(42))
         print("[%s DataNum : %d]" %(LearningIndex.INDEX_DIC[istraining], len(self.csv)))
         self.sizeDic = {}
         self.tulen = len(self.TU_ORDER)

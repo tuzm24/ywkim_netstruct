@@ -1,15 +1,15 @@
 NET_INFO_PATH : ./data_config.yml
 #Basic Path
-DATASET_NAME : 128x128_FIX
+DATASET_NAME : 128x128_FIX_NOPADDING_SEQ
 
-TRAINING_ORG_PATH : [D:/origCfP]
-TEST_ORG_PATH : [D:/origCfP]
-VALIDATION_ORG_PATH : []
+TRAINING_ORG_PATH : [F:\UHD, F:\FHD]
+TEST_ORG_PATH : []
+VALIDATION_ORG_PATH : [F:\UHD, F:\FHD]
 DECODE_LOG_PATH : ./build_data/logs
 
-TRAINING_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
-TEST_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
-VALIDATION_BIN_PATH : [C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin]
+TRAINING_BIN_PATH : [C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\FHD, C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\UHD]
+TEST_BIN_PATH : []
+VALIDATION_BIN_PATH : [C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\VALIDATION]
 
 ADDITION_DATA : 1
 IS_ONLY_ONE_INTRA : 0 #default zero, only use when you get png data
@@ -30,8 +30,8 @@ CSV_NAME : block_info.csv
 
 
 #Dataset Number
-TARGET_DATASET_NUM : 1000 # Training + Validation Set
-VALIDATION_DATSET_NUM : 100
+TARGET_DATASET_NUM : 200000 # Training + Validation Set
+VALIDATION_DATSET_NUM : 30000
 TARGET_TESTSET_NUM : 2 # [0 : All Frame, Others : A few frames ahead each Test Sequence]
 
 #Dataset Shape Setting
@@ -66,7 +66,7 @@ QP : [22, 27, 32, 37]
 MODE : 1 # [0 : Intra&Inter], [1 : Only Intra], [2 : Only Inter]
 INTRA_MODE : [] # if Empty, All mode
 INTER_MODE : []
-PARALLEL_DECODE : 1 # [1 : None parrallel processing], [Others : Thread number]
+PARALLEL_DECODE : 10 # [1 : None parrallel processing], [Others : Thread number]
 INTRA_TEMPORAL_SUBSAMPLE_RATIO : 8
 DECODER_BIT_DEPTH : 10
 
@@ -76,9 +76,9 @@ TU_DATA_OTHERS: ['QP', 'MODE', 'DEPTH', 'HOR_TR', 'VER_TR'] # data order [width,
 
 
 #Padding Setting
-LUMA_PAD : [2,2,2,2] # [0 : None], [others : size] # [up, down, left, right]
-CHROMA_PAD : [1,1,1,1] # [0 : None], [others : size]
-PIC_BOUNDARY_PAD : 1 # [-1 : minus one], [0 : Zeros], [1 : Same], [2 : without boundary block]
+LUMA_PAD : [0,0,0,0] # [0 : None], [others : size] # [up, down, left, right]
+CHROMA_PAD : [0,0,0,0] # [0 : None], [others : size]
+PIC_BOUNDARY_PAD : 0 # [-1 : minus one], [0 : Zeros], [1 : Same], [2 : without boundary block]
 
 
 #Compensate Dataset Probabilty

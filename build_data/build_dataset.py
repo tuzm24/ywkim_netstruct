@@ -274,8 +274,8 @@ class imgInfo(BuildData):
                     np.array((self.const_width if (x + self.const_width) <= self.width else (self.width - x),
                               self.const_height if (y + self.const_height) <= self.height else (self.height - y),
                               x, y, self.qp))
-                    for y in range(0, (self.height//self.const_height)*self.const_height, self.const_height)
-                    for x in range(0, (self.width//self.const_width)*self.const_width, self.const_width)]
+                    for y in range(0, ((self.height-1)//self.const_height)*self.const_height, self.const_height)
+                    for x in range(0, ((self.width-1)//self.const_width)*self.const_width, self.const_width)]
 
                 pos_list = TuList(np.array(pos_list).T)
                 # pic.tulist = copy.deepcopy(YSplitInfo)
@@ -971,9 +971,9 @@ if __name__ == '__main__':
     # os.chdir("../")
     print(os.getcwd())
     sp = SplitManager()
-    # sp.getTrainingset()
-    sp.getTestset()
-    # sp.getValidationset()
+    sp.getTrainingset()
+    # sp.getTestset()
+    sp.getValidationset()
     # st = time.time()
     # fsize = os.path.getsize('./ywkim_AI_MAIN10_FoodMarket4_3840x2160_60_10b_S02_27.bin')
     # im =  open('./ywkim_AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin', 'rb')

@@ -1,8 +1,8 @@
 *딥러닝 실험 노트*
 =============
->
-> 2019년 10월 16일
-> 
+- - -
+###2019년 10월 16일
+
 - - -
 > 1. pytorch
 >   * 각각의 배치마다 gpu에 네트워크를 gpu에 올린다. 즉 batchsize*netparameters가 gpu 위에 올라가는 듯 하다. (아래 예제 참조)
@@ -46,9 +46,9 @@ Residual의 Transform 신호는 DC에 몰리게 되고,
 하지만 Pixel Domain에서의 MSE는 매우 차이가 크다.
 ----------------------------------------------------------------
 ```
->
-> 2019년 10월 17일
-> 
+- - -
+###2019년 10월 17일
+
 - - -
 > 1. Video Codec
 >   * Prediction 관련...
@@ -91,10 +91,9 @@ class MyModel(nn.Module):
 >
 >
 >
->```
->
-> 2019년 10월 25일
-> 
+- - -
+###2019년 10월 25일
+
 - - -
 
 > 1. Channel 개수 C, layer 개수 D와 CNN 네트워크 복잡성에 관하여.
@@ -110,10 +109,10 @@ class MyModel(nn.Module):
 >       * 현재 실험하는 RDN 구조는 다음과 같다.
 >
 
->```
->
-> 2019년 10월 27일
-> 
+
+- - -
+###2019년 10월 27일
+
 - - -
 
 > 1. RDB 실험결과
@@ -136,4 +135,24 @@ class MyModel(nn.Module):
 >       * 평균 0.15dB PSNR gain
 >   2. 일반 Convolution featuermap : 32, RDN 갯수 : 4, RDN 내부 layer 개수 : 6, growth rate : 24
 >       * 평균 0.20dB PSNR gain
+>
+>
+>
+>  2. UpSampling method
+>       ![RDN_img](./ImageForGit/nnPixelShuffle.PNG)
+>       * "Real-Time Single Image and Video Super-Resolution Using an Efficient
+Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
+>       * Pytorch의 경우 nn.PixelShuffle(scale)을 사용하면 된다.
+>       * Upsampling method에 대해서는 딱히 비교한 논문을 찾아보지 못했지만, transpose(deconvolution) 방법이 한때 각광 받았으나, 계단 현상이 생긴다는 말이 있다.
+>       * ~~반대되는 연산을 아직 찾지 못했다.~~ (help_torch.py에 직접구현 - UnPixelShuffle())
+>   
+>  3. 새로운 RDB 실험 시작
+>       * TrainingSet을 DIV-2K와 MPEG Dataset을 섞어서 다시 진행
+>       * RDB에 DownSampling과 Upsampling을 적용하여 다시
+>
+>   4. 직관성 있는 그림 메모
+>       ![RDN_img](./ImageForGit/CNN_Image1.PNG)
+>
+>       ![RDN_img](./ImageForGit/CNN_Image2.PNG)
+>       출처 : http://openaccess.thecvf.com/content_cvpr_2017_workshops/w12/papers/Lim_Enhanced_Deep_Residual_CVPR_2017_paper.pdf
 >

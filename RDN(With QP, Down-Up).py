@@ -18,7 +18,7 @@ from help_func.help_python import myUtil
 from help_func.CompArea import LearningIndex
 from help_func.CompArea import PictureFormat
 from CfgEnv.loadData import TestDataBatch
-
+from help_func.help_torch import torchUtil
 from itertools import cycle
 from visual_tool.Tensorboard import Mytensorboard
 from help_func.help_torch_parallel import DataParallelModel, DataParallelCriterion
@@ -62,20 +62,17 @@ class RDB(nn.Module):
 # Residual Dense Network
 class RDN(nn.Module):
     nDenselayer = 6
-    nFeaturemaps = 32
+    nFeaturemaps = 32*2
     growthRate = 24
 
     def __init__(self, input_channels, output_channels):
         super(RDN, self).__init__()
-        nChannel = input_channels
+        nChannel = (input_channels-3) + 3*4
         nDenselayer = self.nDenselayer
         nFeat = self.nFeaturemaps
         growthRate = self.growthRate
-
         # F-1
-        self.conv1 = nn.Conv2d(nChannel, nFeat, kernel_size=3, padding=0, bias=False)
-        # F0
-        self.conv2 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=0, bias=False)
+        self.conv1 = nn.Conv2d(nChannel, nFeat, kernel_size=3, padding=1, bias=False)
         # RDBs 3
         self.RDB1 = RDB(nFeat, nDenselayer, growthRate)
         self.RDB2 = RDB(nFeat, nDenselayer, growthRate)
@@ -85,25 +82,26 @@ class RDN(nn.Module):
         self.GFF_1x1 = nn.Conv2d(nFeat*4, nFeat, kernel_size=1, padding=0, bias=False)
         self.GFF_3x3 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
         # Upsampler
-        self.conv_up = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
+        self.conv_up = nn.PixelShuffle(2)
         # conv
-        self.conv3 = nn.Conv2d(nFeat, output_channels, kernel_size=3, padding=1, bias=False)
-
+        self.conv3 = nn.Conv2d(nFeat//4, output_channels, kernel_size=3, padding=1, bias=False)
 
     def forward(self, x):
-        firstlayer  = F.relu(self.conv1(x))
-        secondlayer = F.relu(self.conv2(firstlayer))
-        F_1 = self.RDB1(secondlayer)
+        downsampledYUV = torchUtil.UnPixelShuffle(x[:,:3,:,:], 2)
+        downsampledOthers = F.max_pool2d(x[:,3:,:,:], 2)
+        myinput = torch.cat((downsampledYUV, downsampledOthers), dim=1)
+        firstlayer  = F.relu(self.conv1(myinput))
+        F_1 = self.RDB1(firstlayer)
         F_2 = self.RDB2(F_1)
         F_3 = self.RDB3(F_2)
         F_4 = self.RDB4(F_3)
         FF = torch.cat((F_1, F_2, F_3, F_4), 1)
         FdLF = F.relu(self.GFF_1x1(FF))
         FGF = F.relu(self.GFF_3x3(FdLF))
-        FDF = FGF + secondlayer
-        finallayer = self.conv_up(FDF)
+        finallayer = self.conv_up(FGF)
         output = self.conv3(finallayer)
-        return self.output
+        FDF = output + x[:,:1,:,:]
+        return FDF
 
 class COMMONDATASETTING():
     DATA_CHANNEL_NUM = 4
@@ -239,7 +237,7 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = RDN(dataset.data_channel_num, 1)
     # net.to(device)
-    summary(net, (dataset.data_channel_num,132,132), device='cpu')
+    summary(net, (dataset.data_channel_num,128,128), device='cpu')
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
     MSE_loss = nn.MSELoss()
