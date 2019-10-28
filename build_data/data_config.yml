@@ -3,12 +3,12 @@ NET_INFO_PATH : ./data_config.yml
 DATASET_NAME : 128x128_FIX_NOPADDING_SEQ
 
 TRAINING_ORG_PATH : [F:\UHD, F:\FHD]
-TEST_ORG_PATH : []
+TEST_ORG_PATH : [F:\ctc]
 VALIDATION_ORG_PATH : [F:\UHD, F:\FHD]
 DECODE_LOG_PATH : ./build_data/logs
 
 TRAINING_BIN_PATH : [C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\FHD, C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\UHD]
-TEST_BIN_PATH : []
+TEST_BIN_PATH : [C:\Users\tuzm2\Desktop\VTM6.1bin\test]
 VALIDATION_BIN_PATH : [C:\Users\tuzm2\Desktop\ywkim\VTM6.1bin\VALIDATION]
 
 ADDITION_DATA : 1
