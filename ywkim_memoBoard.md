@@ -151,8 +151,9 @@ Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
 >   
 >  3. 새로운 RDB 실험 시작
 >       * TrainingSet을 DIV-2K와 MPEG Dataset을 섞어서 다시 진행
->       * RDB에 DownSampling과 Upsampling을 적용하여 다시
->
+>       * RDB에 DownSampling과 Upsampling을 적용하여 다시 (일반 Convolution featuremap : 64, RDN 갯수 : 4, 내부 layer 갯수 : 6, growth rate: 24)
+>           * 실험결과 : 0.08 PSNR Gain
+>       * 왜 잘 안됫을까... 다른 논문이나 Ntire 2019 에서는 Width, Height를 줄인다음에 다시 늘리는 것이 성능이 좋은 것 으로 보이는데.. Net이 좀 더 깊어야 되거나 학습을 좀 더 안정적으로 할 수 있는 기믹이 필요해 보이기도 한다.
 >   4. 직관성 있는 그림 메모
 >
 >       ![RDN_img](./ImageForGit/CNN_Image1.PNG)
@@ -160,3 +161,11 @@ Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
 >       ![RDN_img](./ImageForGit/CNN_Image2.PNG)
 >       출처 : http://openaccess.thecvf.com/content_cvpr_2017_workshops/w12/papers/Lim_Enhanced_Deep_Residual_CVPR_2017_paper.pdf
 >
+>
+>
+- - -
+###2019년 10월 27일
+
+- - -
+
+>1. 
