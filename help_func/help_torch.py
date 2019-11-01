@@ -4,6 +4,9 @@ from tqdm import tqdm
 import math
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
+
+
 class Swish(nn.Module):
     def __init__(self):
         super(Swish, self).__init__()
@@ -46,6 +49,35 @@ class torchUtil:
             cnt += nb_pixels
         torchUtil.logger.info('Finish calculate data mean and std')
         return fst_moment.cpu(), torch.sqrt(snd_moment - fst_moment ** 2).cpu()
+
+    @staticmethod
+    def Calc_Pearson_Correlation(loader, dataidx, opt='mean'):
+        def maxCountValue(arr1d):
+            brr, idxs = np.unique(arr1d, return_counts=True)
+            return brr[np.argmax(idxs)]
+
+        torchUtil.logger.info('Calculating data mean and std')
+        dataidx +=3
+        x = []
+        y = []
+        for _, data, gt in tqdm(loader):
+            b, c, h, w = data.shape
+            data = data.to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+            gt = gt.to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+            gtmse = torch.sum(gt[:,0,:,:]**2, dim = [1,2])
+            y.append(gtmse.view(-1).numpy())
+            if opt =='mean':
+                datamean = torch.mean(data[:,dataidx,:,:], dim=[1,2])
+                x.append(datamean.view(-1).numpy())
+            if opt == 'max':
+                data = data[:,dataidx,:,:].numpy().reshape((b,-1))
+                x.append(np.apply_along_axis(maxCountValue, 1, data))
+
+        y = np.array(y).reshape(-1)
+        x = np.array(x).reshape(-1)
+        return np.corrcoef(x,y)[0][1]
 
     @staticmethod
     def _RoundChannels(c, divisor=8, min_value=None):

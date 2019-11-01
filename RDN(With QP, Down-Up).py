@@ -63,7 +63,7 @@ class RDB(nn.Module):
 class RDN(nn.Module):
     nDenselayer = 6
     nFeaturemaps = 32*2
-    growthRate = 24
+    growthRate = 32
 
     def __init__(self, input_channels, output_channels):
         super(RDN, self).__init__()
@@ -122,13 +122,13 @@ class COMMONDATASETTING():
         std[std == 0] = 1
 
 
-
+import copy
 class _DataBatch(DataBatch, COMMONDATASETTING):
     def __init__(self, istraining, batch_size):
         DataBatch.__init__(self, istraining, batch_size)
         self.data_channel_num = COMMONDATASETTING.DATA_CHANNEL_NUM
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
-        self.data_padding = 2
+        self.data_padding = 0
 
     def getInputDataShape(self):
         return (self.batch_size, self.data_channel_num, self.batch[0][2], self.batch[0][1])
@@ -151,8 +151,8 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
         data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
         # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
-        gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
-        recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
+        gt = (np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0))
+        recon = copy.deepcopy(data[:self.output_channel_num])
         data = (data - self.mean) / self.std
         recon /= 1023.0
         gt /= 1023.0
@@ -184,8 +184,8 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         # alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
         # qpmap = np.full(qpmap.shape, qpmap[100,100])
         data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
-        orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
-        recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
+        orig = np.stack([*(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:])])
+        recon = copy.deepcopy(data[:self.output_channel_num])
         data = (data - self.mean) / self.std
         orig /= 1023.0
         recon /= 1023.0
@@ -222,17 +222,17 @@ if '__main__' == __name__:
         exit()
 
     valid_dataset = _DataBatch(LearningIndex.VALIDATION, _DataBatch.BATCH_SIZE)
-    test_dataset = _TestSetBatch()
+    # test_dataset = _TestSetBatch()
     pt_valid_dataset = myDataBatch(dataset=valid_dataset)
-    pt_test_dataset = myDataBatch(dataset=test_dataset)
+    # pt_test_dataset = myDataBatch(dataset=test_dataset)
 
     valid_loader = DataLoader(dataset=pt_valid_dataset, batch_size=dataset.batch_size, drop_last=True,
                               shuffle=False, num_workers=NetManager.NUM_WORKER)
-    test_loader = DataLoader(dataset=pt_test_dataset, batch_size=1, drop_last=True, shuffle=False, num_workers=0)
+    # test_loader = DataLoader(dataset=pt_test_dataset, batch_size=1, drop_last=True, shuffle=False, num_workers=0)
     # net = DenseNet(dataset.data_channel_num, 1, growth_rate=12, block_config=(4,4,4,4), drop_rate=0.2)
     iter_training = cycle(train_loader)
     iter_valid = cycle(valid_loader)
-    iter_test = cycle(test_loader)
+    # iter_test = cycle(test_loader)
 
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = RDN(dataset.data_channel_num, 1)
@@ -335,7 +335,7 @@ if '__main__' == __name__:
                     tb.batchImageToTensorBoard(tb.Makegrid(recons), tb.Makegrid(outputs), 'CNN_Reconstruction')
                     tb.plotDifferent(tb.Makegrid(outputs), 'CNN_Residual')
                     if epoch_iter==1:
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'QP_Map', [22, 37], 4)
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=0, length=128).narrow(dim =3, start=0, length=128), 'QP_Map', [22, 37], 4)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
@@ -357,51 +357,51 @@ if '__main__' == __name__:
         lr_scheduler.step()
         logger.info('Epoch %d Finished' % epoch_iter)
 
-    MSE_loss = nn.MSELoss()
-    recon_MSE_loss = nn.MSELoss()
-    if torch.cuda.is_available():
-        MSE_loss.cuda()
-        recon_MSE_loss.cuda()
-    mean_test_psnr = 0
-    mean_testGT_psnr = 0
-    ctusize = 128
-    for i in range(len(test_loader)):
-
-        with torch.no_grad():
-            (path, recons, inputs, gts) = next(iter_test)
-
-            if torch.cuda.is_available():
-                recons = recons.cuda()
-                inputs = inputs.cuda()
-                gts = gts.cuda()
-            outputs = net(inputs)
-            # if cuda_device_count > 1:
-            #     outputs = torch.cat(outputs, dim=0)
-
-
-
-            MSE = MSE_loss(outputs, gts)
-            recon_MSE = torch.mean((gts) ** 2)
-            logger.info('ALL : %s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
-            mean_test_psnr += myUtil.psnr(MSE.item())
-            mean_testGT_psnr += myUtil.psnr(recon_MSE.item())
-
-            for y in range(outputs.shape[2]):
-                for x in range(outputs.shape[3]):
-                    width = outputs.shape[2] - x if (x+ctusize)>outputs.shape[2] else ctusize
-                    height = outputs.shzpe[3] - y if (y+ctusize)>outputs.shape[3] else ctusize
-                    width += x
-                    height +=y
-                    if MSE_loss(outputs[:,:,y:height,x:width], gts[:,:, y:height, x:width]) > torch.mean(gts[:,:,y:height,x:width]**2):
-                        outputs[:,:,y:height,x:width] = gts[:,:,y:height,x:width]
-
-
-            logger.info('CTU %s : %s(%s) : %s %s' %(ctusize ,path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
-
-
-
-            outputs = outputs.cpu().numpy()[0,0]
-            n_gts = gts.cpu().numpy()[0,0]
-
-
-    logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))
+    # MSE_loss = nn.MSELoss()
+    # recon_MSE_loss = nn.MSELoss()
+    # if torch.cuda.is_available():
+    #     MSE_loss.cuda()
+    #     recon_MSE_loss.cuda()
+    # mean_test_psnr = 0
+    # mean_testGT_psnr = 0
+    # ctusize = 128
+    # for i in range(len(test_loader)):
+    #
+    #     with torch.no_grad():
+    #         (path, recons, inputs, gts) = next(iter_test)
+    #
+    #         if torch.cuda.is_available():
+    #             recons = recons.cuda()
+    #             inputs = inputs.cuda()
+    #             gts = gts.cuda()
+    #         outputs = net(inputs)
+    #         # if cuda_device_count > 1:
+    #         #     outputs = torch.cat(outputs, dim=0)
+    #
+    #
+    #
+    #         MSE = MSE_loss(outputs, gts)
+    #         recon_MSE = torch.mean((gts) ** 2)
+    #         logger.info('ALL : %s(%s) : %s %s' %(path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
+    #         mean_test_psnr += myUtil.psnr(MSE.item())
+    #         mean_testGT_psnr += myUtil.psnr(recon_MSE.item())
+    #
+    #         for y in range(outputs.shape[2]):
+    #             for x in range(outputs.shape[3]):
+    #                 width = outputs.shape[2] - x if (x+ctusize)>outputs.shape[2] else ctusize
+    #                 height = outputs.shzpe[3] - y if (y+ctusize)>outputs.shape[3] else ctusize
+    #                 width += x
+    #                 height +=y
+    #                 if MSE_loss(outputs[:,:,y:height,x:width], gts[:,:, y:height, x:width]) > torch.mean(gts[:,:,y:height,x:width]**2):
+    #                     outputs[:,:,y:height,x:width] = gts[:,:,y:height,x:width]
+    #
+    #
+    #         logger.info('CTU %s : %s(%s) : %s %s' %(ctusize ,path, i, myUtil.psnr(MSE.item()), myUtil.psnr(recon_MSE.item())))
+    #
+    #
+    #
+    #         outputs = outputs.cpu().numpy()[0,0]
+    #         n_gts = gts.cpu().numpy()[0,0]
+    #
+    #
+    # logger.info("%s %s" % (mean_test_psnr / len(test_loader), mean_testGT_psnr / len(test_loader)))
