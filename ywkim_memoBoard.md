@@ -164,8 +164,17 @@ Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
 >
 >
 - - -
-###2019년 10월 27일
+###2019년 11월 2일
 
 - - -
 
->1. 
+>1. 피어슨 상관 계수.
+>   - QP 값과 VVC Error Residual MSE 사이의 상관계수 : 0.5476
+>   - 전체 QP에서 CTU 내부 Depth의 평균과 VVC Error Resiudal MSE : 0.1886 
+>       - QP : 22 : 0.5369
+>       - QP : 27 : 0.4024
+>       - QP : 32 : 0.5617
+>       - QP : 37 : 0.6722
+>   - BayesianOptimization를 통해 a*QP + b*depth_mean = w라 할때, w와 VVC Error Residual MSE 의 Correlation이 최대가 되는 a, b를 찾음
+>       - a = 0.2817, b = 0.8561, correlation = 0.6748
+>       - b를 1로 고정할때 : a = 0.3290, correlation = 0.6748

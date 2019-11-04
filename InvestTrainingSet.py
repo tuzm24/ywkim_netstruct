@@ -11,29 +11,35 @@ from help_func.help_torch import torchUtil
 import os
 import math
 
+import torch.nn as nn
+from bayes_opt import BayesianOptimization
+
 logger = LoggingHelper.get_instance().logger
 filename = os.path.basename(__file__)
+
 
 class COMMONDATASETTING():
     DATA_CHANNEL_NUM = 4
     OUTPUT_CHANNEL_NUM = 1
-    qplist = [22,27,32,37]
-    depthlist = [i for i in range(1,7)]
-    modelist = [i for i in range(0,67)]
-    translist = [0,2]
+    qplist = [22, 27, 32, 37]
+    depthlist = [i for i in range(1, 7)]
+    modelist = [i for i in range(0, 67)]
+    translist = [0, 2]
     mean = NetManager.cfg.DATAMEAN[:DATA_CHANNEL_NUM]
     std = NetManager.cfg.DATASTD[:DATA_CHANNEL_NUM]
-    alflist = [i for i in range(0,17)]
+    alflist = [i for i in range(0, 17)]
     if not mean and not std:
         mean = 0
         std = 1
     else:
-        mean = (np.array(list(mean))).reshape((len(mean), 1 , 1))
+        mean = (np.array(list(mean))).reshape((len(mean), 1, 1))
         std = (np.array(list(std))).reshape((len(std), 1, 1))
         std[std == 0] = 1
 
 
 import copy
+
+
 class _DataBatch(DataBatch, COMMONDATASETTING):
     def __init__(self, istraining, batch_size):
         DataBatch.__init__(self, istraining, batch_size)
@@ -44,10 +50,9 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
     def getInputDataShape(self):
         return (self.batch_size, self.data_channel_num, self.batch[0][2], self.batch[0][1])
 
-
     def getOutputDataShape(self):
-        return (self.output_channel_num, self.batch[0][2]- self.data_padding*2, self.batch[0][1] - self.data_padding*2)
-
+        return (
+        self.output_channel_num, self.batch[0][2] - self.data_padding * 2, self.batch[0][1] - self.data_padding * 2)
 
     # self.info - 0 : filename, 1 : width, 2: height, 3: qp, 4: mode, 5: depth ...
     def unpackData(self, info):
@@ -86,10 +91,26 @@ class myDataBatch(Dataset):
         return len(self.dataset.batch)
 
 
+def getCorrelation(mse, qp, depth, alpha, beta):
+    weight = qp*alpha + depth + beta
+    return np.corrcoef(mse, weight)[0][1]
+
+
 if '__main__' == __name__:
     dataset = _DataBatch(LearningIndex.TRAINING, _DataBatch.BATCH_SIZE)
     pt_dataset = myDataBatch(dataset=dataset)
     train_loader = DataLoader(dataset=pt_dataset, batch_size=dataset.batch_size, drop_last=True, shuffle=True,
                               num_workers=NetManager.NUM_WORKER)
-    qpcor = torchUtil.Calc_Pearson_Correlation(train_loader, 0)
-    print(qpcor)
+    mse, qp, depth = torchUtil.Calc_Pearson_Correlation(train_loader, 2)
+    inputs = np.array(list(zip(qp, depth)))
+    bayes_optimizer = BayesianOptimization(
+        f = getCorrelation,
+        pbounds = {
+            'alpha' : (0,1),
+            'beta' : (0,1)
+        },
+        random_state=42
+    )
+    bayes_optimizer.maximize(init_points=3, n_iter=27, acq='ei', xi=0.01)
+    for i, res in enumerate(bayes_optimizer.res):
+        print('Iteration {}: \n\t{}'.format(i, res))
