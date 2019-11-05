@@ -548,7 +548,7 @@ class imgInfo(BuildData):
                     np.array((self.const_width if (x + self.const_width) <= self.width else (self.width - x),
                               self.const_height if (y + self.const_height) <= self.height else (self.height - y),
                               x, y, self.qp))
-                    for y in range(0, self.height, self.const_height) for x in range(0, self.width, self.const_width)]
+                    for y in range(0, self.height-1, self.const_height) for x in range(0, self.width-1, self.const_width)]
                 pos_list = np.array(pos_list).T
 
                 pos_list = TuList(pos_list)

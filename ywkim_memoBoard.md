@@ -178,3 +178,37 @@ Sub-Pixel Convolutional Neural Network" 해당 논문을 참고.
 >   - BayesianOptimization를 통해 a*QP + b*depth_mean = w라 할때, w와 VVC Error Residual MSE 의 Correlation이 최대가 되는 a, b를 찾음
 >       - a = 0.2817, b = 0.8561, correlation = 0.6748
 >       - b를 1로 고정할때 : a = 0.3290, correlation = 0.6748
+>
+
+- - -
+###2019년 11월 5일
+
+- - -
+
+>1. Pytorch Memory 관련..
+>   - 지금까지 잘 못 생각 하고 있었던 것이 pytorch나 tensorflow에서 한번의 conv1가 끝나고나면,
+>다음 conv2를 진핼할때 이전 conv1의 input 값을 gpu에서 memory free를 해주는 줄 알았다. 하지만 메모리는 누적된다.
+>왜냐하면 BackProp를 할때 전체 그래프의 계산 값이 필요하기 때문이다.
+```
+# input이 3840*2160 사이즈 이미지이고 conv할때마다 32개의 feature map을 사용한다고 가정
+def forward(self, x):
+    firstlayer  = F.relu(self.conv1(x)) # 1.06Gb의 GPU 메모리 사용
+    secondlayer = F.relu(self.conv2(firstlayer)) # 1.06Gb의 GPU 메모리 사용(누적 2.12)
+    out = torch.cat((firstlayer, secondlayer), 1) # 2.12Gb의 GPU 메모리 사용(누적 4.24)
+```
+>   - 위의 코드를보면 torch.cat은 memory copy이기 때문에 메모리를 또 할당하게 된다.
+>   - 이 할당된 메모리는 loss.backward()나 해당 Dataloader 다음 iterator에서 덮어 씌워진다.
+>   - 위 코드는 다음과 같이 수정하면 memory efficiency 하게 사용 가능하다. (물론 conv1을 2번 계산 하므로 time efficiency 하진 않다. )
+```
+def forward(self, x):
+    out = torch.cat(F.relu(self.conv2(F.relu(self.conv1(x))), F.relu(self.conv1(x))))
+```
+>2. Pytorch Load 관련..
+```
+pretrained_net = torch.load('./models/RRDB_ESRGAN_x4.pth') # net.state_dic()과 똑같이 load함
+net.state_dic()['trunk_conv.weight'] = pretrained_net['model.1.sub.23.weight'] # 이런식으로 conv layer하나씩 복사 가능
+
+checkpoint = torch.load(PATH) 
+net.load_state_dict(checkpoint['model_state_dict']) #이런 식으로 전체 parameter를 한번에 load도 가능
+```
+

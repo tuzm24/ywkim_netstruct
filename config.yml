@@ -25,8 +25,8 @@ INIT_LEARNING_RATE: 0.001
 PRINT_PERIOD: 600
 BATCH_SIZE: 64
 SET_NEW_MEAN_STD: 0
-LOAD_SAVE_MODEL: 0
-USE_DATASET_SUBSET : 0.3
+LOAD_SAVE_MODEL: 1
+USE_DATASET_SUBSET : 0.1
 
 
 #Framework
@@ -34,7 +34,7 @@ FRAMEWORK: 1  # 0 : tensorflow , 1 : pytorch
 
 
 OBJECT_EPOCH: 200
-NUM_WORKER: 12
+NUM_WORKER: 1
 
 #tensorboard
 #PLOT_LIST : ['Reconstruction', 'CNN_Recon'] #[0 : 'Prediction', 1 : 'Reconstruction', 2 : 'UnfilteredRecon', 3 : 'CNN_Recon']

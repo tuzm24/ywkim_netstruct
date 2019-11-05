@@ -29,7 +29,7 @@ import torch.nn.functional as F
 logger = LoggingHelper.get_instance().logger
 filename = os.path.basename(__file__)
 
-
+import copy
 
 
 
@@ -53,8 +53,6 @@ class RDB(nn.Module):
         nChannels_ += growthRate
     self.dense_layers = nn.Sequential(*modules)
     self.conv_1x1 = nn.Conv2d(nChannels_, nChannels, kernel_size=1, padding=0, bias=False)
-
-
   def forward(self, x):
     out = self.dense_layers(x)
     out = self.conv_1x1(out)
@@ -75,9 +73,9 @@ class RDN(nn.Module):
         growthRate = self.growthRate
 
         # F-1
-        self.conv1 = nn.Conv2d(nChannel, nFeat, kernel_size=3, padding=0, bias=False)
+        self.conv1 = nn.Conv2d(nChannel, nFeat, kernel_size=3, padding=1, bias=False)
         # F0
-        self.conv2 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=0, bias=False)
+        self.conv2 = nn.Conv2d(nFeat, nFeat, kernel_size=3, padding=1, bias=False)
         # RDBs 3
         self.RDB1 = RDB(nFeat, nDenselayer, growthRate)
         self.RDB2 = RDB(nFeat, nDenselayer, growthRate)
@@ -132,7 +130,7 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         DataBatch.__init__(self, istraining, batch_size)
         self.data_channel_num = COMMONDATASETTING.DATA_CHANNEL_NUM
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
-        self.data_padding = 2
+        self.data_padding = 0
 
     def getInputDataShape(self):
         return (self.batch_size, self.data_channel_num, self.batch[0][2], self.batch[0][1])
@@ -143,6 +141,26 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
 
 
     # self.info - 0 : filename, 1 : width, 2: height, 3: qp, 4: mode, 5: depth ...
+    # def unpackData(self, info):
+    #     DataBatch.unpackData(self, info)
+    #     qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
+    #     # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
+    #     # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+    #     # modemap[modemap>=34] = 3
+    #     # depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
+    #     # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
+    #     # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
+    #     # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
+    #     data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
+    #     # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
+    #     gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
+    #     recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
+    #     data = (data - self.mean) / self.std
+    #     recon /= 1023.0
+    #     gt /= 1023.0
+    #     gt -= recon
+    #     return recon.astype('float32'), data.astype('float32'), gt.astype('float32')
+
     def unpackData(self, info):
         DataBatch.unpackData(self, info)
         qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
@@ -155,8 +173,8 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
         data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
         # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
-        gt = self.dropPadding(np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0), 2)
-        recon = self.dropPadding(data[:self.output_channel_num], 2, isDeepCopy=True)
+        gt = (np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0))
+        recon = copy.deepcopy(data[:self.output_channel_num])
         data = (data - self.mean) / self.std
         recon /= 1023.0
         gt /= 1023.0
@@ -174,6 +192,7 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         self.data_channel_num = COMMONDATASETTING.DATA_CHANNEL_NUM
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
 
+
     def unpackData(self, testFolderPath):
         TestDataBatch.unpackData(self, testFolderPath=testFolderPath)
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
@@ -188,14 +207,13 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         # alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
         # qpmap = np.full(qpmap.shape, qpmap[100,100])
         data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
-        orig = np.stack([*self.pic.dropPadding(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:], 2, isDeepCopy=False)])
-        recon = self.dropPadding(data[:self.output_channel_num], pad=2, isDeepCopy=True)
+        orig = np.stack([*(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:])])
+        recon = copy.deepcopy(data[:self.output_channel_num])
         data = (data - self.mean) / self.std
         orig /= 1023.0
         recon /= 1023.0
         orig -= recon
         return self.cur_path, recon.astype('float32'), data.astype('float32'), orig.astype('float32')
-
 
 class myDataBatch(Dataset):
     def __init__(self, dataset):
@@ -241,7 +259,6 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = RDN(dataset.data_channel_num, 1)
     # net.to(device)
-    summary(net, (dataset.data_channel_num,132,132), device='cpu')
     cuda_device_count = torch.cuda.device_count()
     criterion = nn.L1Loss()
     MSE_loss = nn.MSELoss()
@@ -264,19 +281,27 @@ if '__main__' == __name__:
 
     object_step = dataset.batch_num * dataset.cfg.OBJECT_EPOCH
     tb = Mytensorboard(os.path.splitext(os.path.basename(__file__))[0])
+    valid_psnr = 0
     if NetManager.cfg.LOAD_SAVE_MODEL:
         PATH = './'+NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth'
-        checkpoint = torch.load(PATH)
+        if torch.cuda.is_available():
+            checkpoint = torch.load(PATH)
+        else:
+            checkpoint = torch.load(PATH, map_location=torch.device('cpu'))
         net.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch = checkpoint['epoch']
         # loss = checkpoint['loss']
         tb.step = checkpoint['TensorBoardStep']
-        net.eval()
+        if 'valid_psnr' in checkpoint:
+            valid_psnr = checkpoint['valid_psnr']
         # for g in optimizer.param_groups:
         #     g['lr'] = 0.0001
-
+    summary(net, (dataset.data_channel_num,128,128), device='cpu')
     logger.info('Training Start')
+    net.train()
+
+
 
     for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), 1):
         running_loss = 0.0
@@ -334,12 +359,14 @@ if '__main__' == __name__:
                 mean_loss_recon += recon_loss.item()
                 if cuda_device_count > 1:
                     outputs = torch.cat(outputs, dim=0)
-                cumsum_valid += (outputs**2).sum(dim=0)
+                cumsum_valid += (outputs ** 2).sum(dim=0)
                 if i == 0:
                     tb.batchImageToTensorBoard(tb.Makegrid(recons), tb.Makegrid(outputs), 'CNN_Reconstruction')
                     tb.plotDifferent(tb.Makegrid(outputs), 'CNN_Residual')
-                    if epoch_iter==1:
-                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'QP_Map', [22, 37], 4)
+                    if epoch_iter == 1:
+                        tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[3], idx=3).narrow(dim=2, start=0,
+                                                                                                length=128).narrow(
+                            dim=3, start=0, length=128), 'QP_Map', [22, 37], 4)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
                         # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
@@ -348,16 +375,24 @@ if '__main__' == __name__:
                     logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
         cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
         tb.plotMSEImage(cumsum_valid, 'Error_Mean')
+        if valid_psnr < (mean_psnr_cnn / len(valid_loader)):
+            torch.save({
+                'epoch': epoch_iter,
+                'model_state_dict': net.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'TensorBoardStep': tb.step,
+                'valid_psnr': valid_psnr
+            }, NetManager.MODEL_PATH + '/' + os.path.splitext(os.path.basename(__file__))[0] + '_model.pth')
+            save_str = 'Save'
+        else:
+            save_str = 'No Save'
+        valid_psnr = mean_psnr_cnn / len(valid_loader)
+
         logger.info('[epoch : %d] Recon_loss : %.7f, Recon_PSNR : %.7f' % (
-        epoch_iter, mean_loss_recon / len(valid_loader), mean_psnr_recon / len(valid_loader)))
-        logger.info('[epoch : %d] CNN_loss   : %.7f, CNN_PSNR :   %.7f' % (
-        epoch_iter, mean_loss_cnn / len(valid_loader), mean_psnr_cnn / len(valid_loader)))
-        torch.save({
-            'epoch': epoch_iter,
-            'model_state_dict': net.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'TensorBoardStep':tb.step
-        }, NetManager.MODEL_PATH + '/'+ os.path.splitext(os.path.basename(__file__))[0] +'_model.pth')
+            epoch_iter, mean_loss_recon / len(valid_loader), mean_psnr_recon / len(valid_loader)))
+        logger.info('[epoch : %d] CNN_loss   : %.7f, CNN_PSNR :   %.7f   [%s]' % (
+            epoch_iter, mean_loss_cnn / len(valid_loader), mean_psnr_cnn / len(valid_loader), save_str))
+
         lr_scheduler.step()
         logger.info('Epoch %d Finished' % epoch_iter)
 
@@ -369,8 +404,8 @@ if '__main__' == __name__:
     mean_test_psnr = 0
     mean_testGT_psnr = 0
     ctusize = 128
+    net.eval()
     for i in range(len(test_loader)):
-
         with torch.no_grad():
             (path, recons, inputs, gts) = next(iter_test)
 
