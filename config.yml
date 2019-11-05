@@ -3,7 +3,7 @@ EXPERIMENT_NAME: ywkim_test
 
 
 #path
-DATASET_PATH: ./Dataset/128x128_FIX
+DATASET_PATH: ./Dataset/128x128_FIX_NOPADDING_SEQ
 TENSORBOARD_PATH: ./tensorboard/
 CSV_NAME: block_info.csv
 SAVE_PATH: model
@@ -23,18 +23,18 @@ BIT_DEPTH: 10
 #Condition
 INIT_LEARNING_RATE: 0.001
 PRINT_PERIOD: 600
-BATCH_SIZE: 64
+BATCH_SIZE: 1024
 SET_NEW_MEAN_STD: 0
-LOAD_SAVE_MODEL: 1
-USE_DATASET_SUBSET : 0.1
+LOAD_SAVE_MODEL: 0
+USE_DATASET_SUBSET : 1.0
 
 
 #Framework
 FRAMEWORK: 1  # 0 : tensorflow , 1 : pytorch
 
 
-OBJECT_EPOCH: 200
-NUM_WORKER: 1
+OBJECT_EPOCH: 150
+NUM_WORKER: 12
 
 #tensorboard
 #PLOT_LIST : ['Reconstruction', 'CNN_Recon'] #[0 : 'Prediction', 1 : 'Reconstruction', 2 : 'UnfilteredRecon', 3 : 'CNN_Recon']

@@ -790,8 +790,9 @@ class imgInfo(BuildData):
         for tu in real_tulist.T:
             YUV[tu[3]:tu[3] + tu[1], tu[2], 0] = 0
             YUV[tu[3], tu[2]:tu[2] + tu[0], 0] = 0
-            YUV[tu[3] + tu[1], tu[2]:tu[2] + tu[0], 0] = 0
-            YUV[tu[3]:tu[3] + tu[1], tu[2] + tu[0], 0] = 0
+            if tu[2]+tu[0] <YUV.shape[1] and tu[3] + tu[1] < YUV.shape[0]:
+                YUV[tu[3] + tu[1], tu[2]:tu[2] + tu[0], 0] = 0
+                YUV[tu[3]:tu[3] + tu[1], tu[2] + tu[0], 0] = 0
         if select_mark:
             for tu in candi_list.T:
                 YUV[tu[3]:tu[3] + tu[1], tu[2]:tu[2] + tu[0], 1] = self.COLOR_BLUE[1]
@@ -971,9 +972,9 @@ if __name__ == '__main__':
     # os.chdir("../")
     print(os.getcwd())
     sp = SplitManager()
-    sp.getTrainingset()
-    # sp.getTestset()
-    sp.getValidationset()
+    # sp.getTrainingset()
+    sp.getTestset()
+    # sp.getValidationset()
     # st = time.time()
     # fsize = os.path.getsize('./ywkim_AI_MAIN10_FoodMarket4_3840x2160_60_10b_S02_27.bin')
     # im =  open('./ywkim_AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin', 'rb')

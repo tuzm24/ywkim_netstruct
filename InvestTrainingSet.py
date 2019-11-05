@@ -91,9 +91,7 @@ class myDataBatch(Dataset):
         return len(self.dataset.batch)
 
 
-def getCorrelation(mse, qp, depth, alpha, beta):
-    weight = qp*alpha + depth + beta
-    return np.corrcoef(mse, weight)[0][1]
+
 
 
 if '__main__' == __name__:
@@ -101,16 +99,21 @@ if '__main__' == __name__:
     pt_dataset = myDataBatch(dataset=dataset)
     train_loader = DataLoader(dataset=pt_dataset, batch_size=dataset.batch_size, drop_last=True, shuffle=True,
                               num_workers=NetManager.NUM_WORKER)
-    mse, qp, depth = torchUtil.Calc_Pearson_Correlation(train_loader, 2)
-    inputs = np.array(list(zip(qp, depth)))
+    mse, qp, depth = torchUtil.Calc_Pearson_Correlation(train_loader, np.array([0,2]))
+    # inputs = np.array(list(zip(qp, depth)))
+
+
+    def getCorrelation(alpha):
+        weight = qp * alpha + depth
+        return np.corrcoef(mse, weight)[0][1]
     bayes_optimizer = BayesianOptimization(
         f = getCorrelation,
         pbounds = {
             'alpha' : (0,1),
-            'beta' : (0,1)
         },
         random_state=42
     )
-    bayes_optimizer.maximize(init_points=3, n_iter=27, acq='ei', xi=0.01)
+    bayes_optimizer.maximize(init_points=10, n_iter=1000, acq='ei', xi=0.01)
     for i, res in enumerate(bayes_optimizer.res):
-        print('Iteration {}: \n\t{}'.format(i, res))
+        logger.info('Iteration %s: \n\t%s' %(i, res))
+    logger.info('Final result: %s' %bayes_optimizer.max)
