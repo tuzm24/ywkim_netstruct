@@ -212,3 +212,92 @@ checkpoint = torch.load(PATH)
 net.load_state_dict(checkpoint['model_state_dict']) #이런 식으로 전체 parameter를 한번에 load도 가능
 ```
 
+- - -
+###2019년 11월 6일
+
+- - -
+
+>1. Pytorch memory efficiency 조사
+>   - training 할때는 차이가 없다. Graph에서 BackProp할때 값을 사용해야 하기 때문.
+```
+import torch
+import torch.nn as nn
+from torchsummary import summary
+import torch.nn.functional as F
+
+class test1(nn.Module):
+    ch = 128
+    def __init__(self):
+        super(test1, self).__init__()
+        self.conv1 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        self.conv3 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+
+    def forward(self, x):
+        # 2044MiB
+        x  = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = self.conv3(x)
+        return x # 5260MiB
+
+class test2(nn.Module):
+    ch = 128
+    def __init__(self):
+        super(test2, self).__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False),
+            nn.ReLU(inplace=False),
+            nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False),
+            nn.ReLU(inplace=False),
+            nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False))
+    def forward(self,x):
+        # 2044MiB
+        x = self.features(x)
+        return x # 4282MiB
+
+class test3(nn.Module):
+    ch = 128
+    def __init__(self):
+        super(test3, self).__init__()
+        self.conv1 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        self.conv2 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        self.conv3 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+
+    def forward(self, x):
+        # 2044MiB
+        x = self.conv3(F.relu(self.conv2(F.relu(self.conv1(x)))))
+        return x # 4282MiB
+
+
+class test4(nn.Module):
+    ch = 128
+    def __init__(self):
+        super(test4, self).__init__()
+        conv1 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        conv2 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        conv3 = nn.Conv2d(self.ch, self.ch, kernel_size=3, padding=1, bias=False)
+        layers = [conv1, conv2, conv3]
+        self.module_list = nn.ModuleList(layers)
+
+    def forward(self,x):
+        for layer in self.module_list:
+            x = layer(x)
+        return x # 4282MiB
+
+if '__main__' == __name__:
+    with torch.no_grad():
+        # net = test1()
+        # net.cuda()
+        # summary(net, (128,1000,1000), device='cuda')
+        # net2 = test2()
+        # net2.cuda()
+        # summary(net2, (128,1000,1000), device='cuda')
+        # net3 = test3()
+        # net3.cuda()
+        # summary(net3, (128,1000,1000), device='cuda')
+        net4 = test4()
+        net4.cuda()
+        net4.eval()
+        summary(net4, (128,1000,1000), device='cuda')
+
+```

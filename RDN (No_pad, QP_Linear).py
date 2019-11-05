@@ -406,9 +406,9 @@ if '__main__' == __name__:
                 'valid_psnr': valid_psnr
             }, NetManager.MODEL_PATH + '/' + os.path.splitext(os.path.basename(__file__))[0] + '_model.pth')
             save_str = 'Save'
-            valid_psnr = mean_psnr_cnn / len(valid_loader)
         else:
             save_str = 'No Save'
+        valid_psnr = mean_psnr_cnn / len(valid_loader)
 
         logger.info('[epoch : %d] Recon_loss : %.7f, Recon_PSNR : %.7f' % (
             epoch_iter, mean_loss_recon / len(valid_loader), mean_psnr_recon / len(valid_loader)))
