@@ -28,7 +28,7 @@ import math
 import torch.nn.functional as F
 logger = LoggingHelper.get_instance().logger
 filename = os.path.basename(__file__)
-
+from collections import OrderedDict
 import copy
 
 
@@ -182,8 +182,12 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         return recon.astype('float32'), data.astype('float32'), gt.astype('float32')
 
     def ReverseNorm(self, x, idx):
-        mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32')).cuda()
-        std = torch.from_numpy(np.array(self.std[idx], dtype='float32')).cuda()
+        if torch.cuda.is_available():
+            mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32')).cuda()
+            std = torch.from_numpy(np.array(self.std[idx], dtype='float32')).cuda()
+        else:
+            mean = torch.from_numpy(np.array(self.mean[idx], dtype='float32'))
+            std = torch.from_numpy(np.array(self.std[idx], dtype='float32'))
         return x * std + mean
 
 class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
@@ -288,13 +292,31 @@ if '__main__' == __name__:
             checkpoint = torch.load(PATH)
         else:
             checkpoint = torch.load(PATH, map_location=torch.device('cpu'))
-        net.load_state_dict(checkpoint['model_state_dict'])
+        try:
+            net.load_state_dict(checkpoint['model_state_dict'])
+        except Exception as e:
+            logger.info('Not equal GPU Number.. %s' %e)
+            if cuda_device_count == 1:
+                new_state_dict = OrderedDict()
+                for k, v in checkpoint['model_state_dict'].items():
+                    name = k[7:] # remove `module.`
+                    new_state_dict[name] = v
+                # load params
+                net.load_state_dict(new_state_dict)
+            else:
+                new_state_dict = OrderedDict()
+                for k, v in checkpoint['model_state_dict'].items():
+                    name = 'module.'+k # remove `module.`
+                    new_state_dict[name] = v
+                net.load_state_dict(new_state_dict)
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
-        # loss = checkpoint['loss']
-        tb.step = checkpoint['TensorBoardStep']
-        if 'valid_psnr' in checkpoint:
-            valid_psnr = checkpoint['valid_psnr']
+        if NetManager.cfg.LOAD_SAVE_MODEL == 1:
+            epoch = checkpoint['epoch']
+            tb.step = checkpoint['TensorBoardStep']
+            if 'valid_psnr' in checkpoint:
+                valid_psnr = checkpoint['valid_psnr']
+            logger.info('It is Transfer Learning...')
+        logger.info('Load the saved checkpoint')
         # for g in optimizer.param_groups:
         #     g['lr'] = 0.0001
     summary(net, (dataset.data_channel_num,128,128), device='cpu')
