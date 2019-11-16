@@ -5,7 +5,15 @@ import math
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-
+from CfgEnv.loadCfg import NetManager
+from collections import OrderedDict
+from help_func.help_torch_parallel import DataParallelModel, DataParallelCriterion
+import os
+import torch.optim as optim
+from visual_tool.Tensorboard import Mytensorboard
+from itertools import cycle
+from help_func.help_python import myUtil
+from help_func.__init__ import ExecFileName
 
 class Swish(nn.Module):
     def __init__(self):
@@ -211,4 +219,258 @@ class CBAM(nn.Module):
         return x_out
 
 
+class NetTrainAndTest:
+    logger = LoggingHelper.get_instance().logger
+    def __init__(self, net,train_loader, valid_loader, test_loader,mainloss = 'l1', opt = 'adam'):
+        self.net = net
+        self.name = ExecFileName.filename
+        self.train_loader = train_loader
+        self.valid_loader = valid_loader
+        self.test_loader = test_loader
 
+        self.train_batch_num, self.train_iter = self.getBatchNumAndCycle(self.train_loader)
+        self.valid_batch_num, self.valid_iter = self.getBatchNumAndCycle(self.valid_loader)
+        self.test_batch_num, self.test_iter = self.getBatchNumAndCycle(self.test_loader)
+
+        if torch.cuda.is_available():
+            self.iscuda = True
+            self.cuda_device_count = torch.cuda.device_count()
+        else:
+            self.iscuda = False
+            self.cuda_device_count = 0
+        self.criterion = self.setloss()
+        self.ResultMSELoss = self.setloss('l2')
+        self.GTMSELoss = self.setloss('l2')
+        if self.iscuda:
+            self.GTMSELoss = self.GTMSELoss.cuda()
+            if self.cuda_device_count>1:
+                self.net = DataParallelModel(net).cuda()
+                self.criterion = DataParallelCriterion(self.criterion).cuda()
+                self.ResultMSELoss = DataParallelCriterion(self.ResultMSELoss).cuda()
+            else:
+                self.net = self.net.cuda()
+                self.criterion = self.criterion.cuda()
+                self.ResultMSELoss = self.ResultMSELoss.cuda()
+        self.optimizer = self.setopt(opt)(self.net.parameters(), lr = NetManager.cfg.INIT_LEARNING_RATE)
+        self.lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=self.optimizer,
+                                                      milestones=[int(NetManager.cfg.OBJECT_EPOCH * 0.5),
+                                                                  int(NetManager.cfg.OBJECT_EPOCH * 0.75)],
+                                                      gamma=0.1, last_epoch=-1)
+
+        self.tb = Mytensorboard(self.name)
+        self.highestScore = 0
+        self.epoch = 0
+        self.load_model()
+
+    @staticmethod
+    def setopt(opt = 'adam'):
+        if opt == 'adam':
+            return optim.Adam
+        else:
+            assert 0, 'The Optimizer is ambiguous'
+
+    @staticmethod
+    def getBatchNumAndCycle(dataloader):
+        if dataloader is not None:
+            return dataloader.dataset.batch_num, cycle(dataloader)
+        else:
+            return None, None
+
+
+    @staticmethod
+    def setloss(loss = 'l1'):
+        loss = loss.lower()
+        if loss == 'l1':
+            return nn.L1Loss
+        elif loss == 'l2':
+            return nn.MSELoss()
+        else:
+            assert 0, 'The loss is ambiguous'
+
+
+    def test(self):
+        MSE_loss = nn.MSELoss()
+        recon_MSE_loss = nn.MSELoss()
+        if torch.cuda.is_available():
+            MSE_loss.cuda()
+            recon_MSE_loss.cuda()
+        self.net.eval()
+        test_psnr_mean = []
+        for sequencedir, pocdics in self.test_loader.dataset.dataset.seqdic.items():
+            total_psnr = []
+            self.logger.info('%s' %sequencedir)
+            for i, (pocpath, filelist) in enumerate(pocdics.items()):
+                pocwidth = pocpath.split('_')[-1]
+                pocheight = pocpath.split('_')[-2]
+                gtbuf = np.full((pocheight, pocwidth), np.nan)
+                resibuf = np.full((pocheight, pocwidth), np.nan)
+                reconbuf = np.full((pocheight, pocwidth), np.nan)
+                for filename in filelist:
+                    ypos, xpos, h, w = filename.split('.')[0].split('_')
+                    recons, inputs, gts = next(self.test_iter)
+                    gtbuf[ypos:ypos+h, xpos:xpos+w] = gts[0].cpu().numpy()
+                    reconbuf[ypos:ypos+h, xpos:xpos+w] = recons[0].cpu().numpy()
+                    if self.iscuda:
+                        recons.cuda()
+                        inputs.cuda()
+                        gts.cuda()
+                    outputs = self.net(inputs)
+                    resibuf[ypos:ypos+h, xpos:xpos+w] = outputs[0].cpu().numpy()
+                if np.any(np.isnan(resibuf)):
+                    self.logger.error('Nan is exists in array')
+                    continue
+                if i==0:
+                    self.tb.SaveImageToTensorBoard('Recon/'+pocpath, gtbuf + resibuf)
+                    self.tb.SaveImageToTensorBoard('Residual/' + pocpath, resibuf)
+
+                poc_mse = (gtbuf - resibuf) ** 2
+                poc_psnr = myUtil.psnr(poc_mse)
+
+
+
+
+    def load_model(self):
+        if NetManager.cfg.LOAD_SAVE_MODEL:
+            PATH = './' + NetManager.MODEL_PATH + '/' + self.name + '_model.pth'
+            if self.iscuda:
+                checkpoint = torch.load(PATH)
+            else:
+                checkpoint = torch.load(PATH, map_location=torch.device('cpu'))
+            try:
+                self.net.load_state_dict(checkpoint['model_state_dict'])
+            except Exception as e:
+                self.logger.info('Not equal GPU Number.. %s' % e)
+                if self.cuda_device_count == 1:
+                    new_state_dict = OrderedDict()
+                    for k, v in checkpoint['model_state_dict'].items():
+                        name = k[7:]  # remove `module.`
+                        new_state_dict[name] = v
+                    # load params
+                    self.net.load_state_dict(new_state_dict)
+                else:
+                    new_state_dict = OrderedDict()
+                    for k, v in checkpoint['model_state_dict'].items():
+                        name = 'module.' + k  # remove `module.`
+                        new_state_dict[name] = v
+                    self.net.load_state_dict(new_state_dict)
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            if NetManager.cfg.LOAD_SAVE_MODEL == 1:
+                self.epoch = checkpoint['epoch']
+                self.tb.step = checkpoint['TensorBoardStep']
+                if 'valid_psnr' in checkpoint:
+                    self.highestScore = checkpoint['valid_psnr']
+                self.logger.info('It is Transfer Learning...')
+            self.logger.info('Load the saved checkpoint')
+            # for g in optimizer.param_groups:
+            #     g['lr'] = 0.0001
+
+    def save_model(self):
+        torch.save({
+            'epoch': self.epoch,
+            'model_state_dict': self.net.state_dict(),
+            'optimizer_state_dict': self.optimizer.state_dict(),
+            'TensorBoardStep': self.tb.step,
+            'valid_psnr': self.highestScore
+        }, NetManager.MODEL_PATH + '/' + self.name + '_model.pth')
+
+
+    def train(self, input_channel_list = None):
+        dataset = self.train_loader.dataset.dataset
+        for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), self.epoch):
+            running_loss = 0.0
+            for i in range(dataset.batch_num):
+                (recons, inputs, gts) = next(self.train_iter)
+
+                if torch.cuda.is_available():
+                    # recons = recons.cuda()
+                    inputs = inputs.cuda()
+                    gts = gts.cuda()
+                outputs = self.net(inputs)
+                loss = self.criterion(outputs, gts)
+                MSE = self.ResultMSELoss(outputs, gts)
+                recon_MSE = torch.mean((gts) ** 2)
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
+                running_loss += MSE.item()
+                self.tb.SetLoss('CNN', MSE.item())
+                self.tb.SetLoss('Recon', recon_MSE.item())
+                self.tb.plotScalars()
+                if i % NetManager.PRINT_PERIOD == NetManager.PRINT_PERIOD - 1:
+                    self.logger.info('[Epoch : %d, %5d/%d] loss: %.7f' %
+                                (epoch_iter, i + 1,
+                                 dataset.batch_num, running_loss / dataset.PRINT_PERIOD))
+                    running_loss = 0.0
+                # del recons, inputs, gts
+                self.tb.step += 1  # Must Used
+            if self.valid_loader is not None:
+                self.valid(epoch_iter, input_channel_list)
+            self.lr_scheduler.step(epoch_iter)
+            self.epoch += 1
+            self.logger.info('Epoch %d Finished' % epoch_iter)
+
+    def valid(self, epoch_iter, input_channel_list = None):
+        mean_loss_cnn = 0
+        mean_psnr_cnn = 0
+        mean_loss_recon = 0
+        mean_psnr_recon = 0
+        valid_dataset = self.valid_loader.dataset.dataset
+        cumsum_valid = torch.zeros(valid_dataset.getOutputDataShape()).to(
+            torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+
+        if input_channel_list is None:
+            input_channel_list = list()
+            for i in range(valid_dataset.data_channel_num):
+                input_channel_list.append(str(i) + '_channel')
+
+
+        for i in range(valid_dataset.batch_num):
+            with torch.no_grad():
+                (recons, inputs, gts) = next(self.valid_iter)
+
+                if torch.cuda.is_available():
+                    recons = recons.cuda()
+                    inputs = inputs.cuda()
+                    gts = gts.cuda()
+                outputs = self.net(inputs)
+                loss = self.criterion(outputs, gts)
+                recon_loss = torch.mean(torch.abs(gts))
+                MSE = self.ResultMSELoss(outputs, gts)
+                recon_MSE = torch.mean((gts) ** 2)
+                mean_psnr_cnn += myUtil.psnr(MSE.item())
+                mean_psnr_recon += myUtil.psnr(recon_MSE.item())
+                mean_loss_cnn += loss.item()
+                mean_loss_recon += recon_loss.item()
+                if self.cuda_device_count > 1:
+                    outputs = torch.cat(outputs, dim=0)
+                cumsum_valid += (outputs ** 2).sum(dim=0)
+                if i == 0:
+                    self.tb.batchImageToTensorBoard(self.tb.Makegrid(recons), self.tb.Makegrid(outputs), 'CNN_Reconstruction')
+                    self.tb.plotDifferent(self.tb.Makegrid(outputs), 'CNN_Residual')
+                    self.tb.plotDifferent(self.tb.Makegrid(outputs), 'CNN_Residual', percentile=100)
+                    if epoch_iter == 1:
+                        for channel, channel_name in enumerate(input_channel_list):
+                            self.tb.plotMap(valid_dataset.ReverseNorm(
+                                inputs.split(1, dim=1)[3], idx=channel).narrow(dim=2, start=0,                                                                                              length=128).narrow(
+                                dim=3, start=0, length=128), channel_name)
+                            # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[4], idx=4).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Mode_Map', [0, 3], 4)
+                            # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[5], idx=5).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Depth_Map', [1, 6], 6)
+                            # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[6], idx=6).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Hor_Trans', [0, 2], 2)
+                            # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[7], idx=7).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'Ver_Trans', [0, 2], 2)
+                            # tb.plotMap(dataset.ReverseNorm(inputs.split(1, dim=1)[8], idx=8).narrow(dim =2, start=2, length=128).narrow(dim =3, start=2, length=128), 'ALF_IDX', [0, 16], 17)
+                    self.logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
+        cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
+        self.tb.plotMSEImage(cumsum_valid, 'Error_MSE')
+        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE')
+        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=80)
+        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=100)
+        if self.highestScore < (mean_psnr_cnn / len(self.valid_loader)):
+            self.save_model()
+            save_str = 'Save'
+            self.highestScore = mean_psnr_cnn / len(self.valid_loader)
+        else:
+            save_str = 'No Save'
+        self.logger.info('[epoch : %d] Recon_loss : %.7f, Recon_PSNR : %.7f' % (
+            epoch_iter, mean_loss_recon / len(self.valid_loader), mean_psnr_recon / len(self.valid_loader)))
+        self.logger.info('[epoch : %d] CNN_loss   : %.7f, CNN_PSNR :   %.7f   [%s]' % (
+            epoch_iter, mean_loss_cnn / len(self.valid_loader), mean_psnr_cnn / len(self.valid_loader), save_str))

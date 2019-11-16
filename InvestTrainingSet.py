@@ -117,3 +117,4 @@ if '__main__' == __name__:
     for i, res in enumerate(bayes_optimizer.res):
         logger.info('Iteration %s: \n\t%s' %(i, res))
     logger.info('Final result: %s' %bayes_optimizer.max)
+

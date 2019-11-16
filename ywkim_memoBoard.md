@@ -301,3 +301,30 @@ if '__main__' == __name__:
         summary(net4, (128,1000,1000), device='cuda')
 
 ```
+
+
+
+- - -
+###2019년 11월 16일
+
+- - -
+
+> 1. [논문리뷰예정] The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks pytorch
+>   - 매우 핫한 논문이였는데 왜 이제야 리뷰 하는지는 잘 모르겠다.
+>   - 요즘 ETRI 과제 마무리 때문에 바쁜데 다다음주 쯤에 세세하게 읽어 봐야겠다.
+>
+> 2. Learning rate Warmup
+>   - 이것도 최근에 안 쓰는데가 없다는데 나는 얼마 전에 접했다. 관련해서 항상 최신 논문을 탐구하는 자세를 가지자.
+>   - 간단하게 설명하면 Task의 Distribution이 너무 복잡할 경우, 네트워크가 초반에 빠르게 특정 영역으로 OverFitting되는 문제가 있는데 이를 해결하기 위함이다.
+>   - 초기 learning rate를 0으로 설정하고, 이를 천천히 목표 learning rate로 회복 시키는 것이다. 예제에서는 100 epoch이면 10epoch에 거쳐서 회복 시키는것 같다.
+>   - https://github.com/ildoonet/pytorch-gradual-warmup-lr 해당 깃에서 소스를 가져와 프로젝트에 포함 시켰으며, 예제 코드는 아래와 같다.
+```
+from warmup_scheduler import GradualWarmupScheduler
+
+scheduler_cosine = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, max_epoch)
+scheduler_warmup = GradualWarmupScheduler(optimizer, multiplier=8, total_epoch=10, after_scheduler=scheduler_cosine)
+
+for epoch in range(train_epoch):
+    scheduler_warmup.step()     # 10 epoch warmup, after that schedule as after_scheduler
+    ...
+```

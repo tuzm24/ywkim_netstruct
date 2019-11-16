@@ -33,6 +33,8 @@ import copy
 
 
 
+
+
 class make_dense(nn.Module):
   def __init__(self, nChannels, growthRate, kernel_size=3):
     super(make_dense, self).__init__()
@@ -197,8 +199,8 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         self.output_channel_num = COMMONDATASETTING.OUTPUT_CHANNEL_NUM
 
 
-    def unpackData(self, testFolderPath):
-        TestDataBatch.unpackData(self, testFolderPath=testFolderPath)
+    def unpackDatafromCTU(self, idx):
+        TestDataBatch.unpackDatafromCTU(self, idx=idx)
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
         qpmap = self.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
@@ -217,7 +219,7 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         orig /= 1023.0
         recon /= 1023.0
         orig -= recon
-        return self.cur_path, recon.astype('float32'), data.astype('float32'), orig.astype('float32')
+        return recon.astype('float32'), data.astype('float32'), orig.astype('float32')
 
 class myDataBatch(Dataset):
     def __init__(self, dataset):
@@ -230,6 +232,8 @@ class myDataBatch(Dataset):
 
     def __len__(self):
         return len(self.dataset.batch)
+
+
 
 
 
