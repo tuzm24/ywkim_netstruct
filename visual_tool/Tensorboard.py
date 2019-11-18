@@ -90,7 +90,7 @@ class Mytensorboard(NetManager):
 
 
     def plotMSEImage(self, resi, name):
-        img = (resi.cpu().detach().numpy())*1023.0*1023.0
+        img = ((resi.cpu().detach().numpy())**2)*1023.0*1023.0
         fig, ax= plt.subplots()
         if img.min()<0 and img.max()>0:
             mymax = max(abs(img.min()), img.max())
@@ -133,11 +133,12 @@ class Mytensorboard(NetManager):
     def plotMap(self, img, name, vminmax = None, color_num = None):
         img = self.Makegrid(img)
         fig, ax= plt.subplots()
+        img = img.cpu()
         if vminmax is None:
             vminmax = (img.min(), img.max())
         if color_num is None:
             color_num = len(img.unique())
-        imgs = ax.imshow((img.cpu().numpy()[0]).astype(int), vmin=vminmax[0], vmax=vminmax[1], interpolation='nearest',
+        imgs = ax.imshow((img.numpy()[0]).astype(int), vmin=vminmax[0], vmax=vminmax[1], interpolation='nearest',
                    cmap=plt.cm.get_cmap('viridis', color_num))
         v1 = np.round(np.linspace(vminmax[0], vminmax[1], 10, endpoint=True))
         cb = fig.colorbar(imgs, ticks=v1)

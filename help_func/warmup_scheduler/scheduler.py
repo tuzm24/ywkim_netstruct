@@ -30,7 +30,7 @@ class GradualWarmupScheduler(_LRScheduler):
                     self.finished = True
                 return self.after_scheduler.get_lr()
             return [base_lr * self.multiplier for base_lr in self.base_lrs]
-        self.tb.SetLearningRate(self.base_lrs[0] * ((self.multiplier - 1.) * self.last_epoch / self.total_epoch + 1.))
+        self.tb.SetLearningRate(1000.0*self.base_lrs[0] * ((self.multiplier - 1.) * self.last_epoch / self.total_epoch + 1.))
         return [base_lr * ((self.multiplier - 1.) * self.last_epoch / self.total_epoch + 1.) for base_lr in self.base_lrs]
 
     def step_ReduceLROnPlateau(self, metrics, epoch=None):

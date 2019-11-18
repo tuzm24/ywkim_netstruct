@@ -14,6 +14,7 @@ from help_func.help_python import myUtil
 from help_func.__init__ import ExecFileName
 from help_func.warmup_scheduler import GradualWarmupScheduler
 from copy import deepcopy
+from torchsummary import summary
 
 
 class Swish(nn.Module):
@@ -229,6 +230,7 @@ class NetTrainAndTest:
     logger = LoggingHelper.get_instance().logger
     def __init__(self, net, train_loader, valid_loader, test_loader, mainloss = 'l1', opt = 'adam'):
         self.net = net
+
         self.name = ExecFileName.filename
         self.train_loader = train_loader
         self.valid_loader = valid_loader
@@ -269,7 +271,7 @@ class NetTrainAndTest:
         self.lr_after_dscheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, NetManager.OBJECT_EPOCH)
         self.lr_scheduler = GradualWarmupScheduler(self.optimizer, multiplier=10, total_epoch=10, after_scheduler=self.lr_after_dscheduler)
         self.highestScore = 0
-        self.epoch = 2
+        self.epoch = 0
         self.load_model()
 
     @staticmethod
@@ -450,7 +452,7 @@ class NetTrainAndTest:
                 mean_loss_recon += recon_loss.item()
                 if self.cuda_device_count > 1:
                     outputs = torch.cat(outputs, dim=0)
-                cumsum_valid += (outputs ** 2).sum(dim=0)
+                cumsum_valid += torch.abs(outputs).sum(dim=0)
                 if i == 0:
                     self.tb.batchImageToTensorBoard(self.tb.Makegrid(recons), self.tb.Makegrid(outputs), 'CNN_Reconstruction')
                     self.tb.plotDifferent(self.tb.Makegrid(outputs), 'CNN_Residual')
