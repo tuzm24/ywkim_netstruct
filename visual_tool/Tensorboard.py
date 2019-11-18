@@ -99,10 +99,10 @@ class Mytensorboard(NetManager):
         img = (resi.cpu().detach().numpy())*1023.0
         np.abs(img, out = img)
         fig, ax= plt.subplots()
-        percentile = percentile + (100-percentile)//2
-        np.clip(img,
-              np.percentile(img, 100 - percentile, interpolation='higher'),
-              np.percentile(img, percentile, interpolation='lower'), out=img)
+        if percentile <100:
+            np.clip(img,
+                  0,
+                  np.percentile(img, percentile, interpolation='lower'), out=img)
         mymin = img.min()
         mymax = img.max()
         imgs = ax.imshow((img[0]).astype(int), vmin=mymin, vmax=mymax, interpolation='nearest',

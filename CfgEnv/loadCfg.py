@@ -44,6 +44,10 @@ class NetManager(object):
     PRINT_PERIOD = cfg.PRINT_PERIOD
     BATCH_SIZE = cfg.BATCH_SIZE
 
+    TEST_BY_BLOCKED = cfg.TEST_BY_BLOCKED
+    TEST_BY_BLOCKED_WIDTH = cfg.TEST_BY_BLOCKED_WIDTH
+    TEST_BY_BLOCKED_HEIGHT = cfg.TEST_BY_BLOCKED_HEIGHT
+
     #tensorboard
     if cfg.isExist('step'):
         step = cfg.step

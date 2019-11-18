@@ -1,19 +1,20 @@
 import torch
 from help_func.logging import LoggingHelper
 from tqdm import tqdm
-import math
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 from CfgEnv.loadCfg import NetManager
 from collections import OrderedDict
 from help_func.help_torch_parallel import DataParallelModel, DataParallelCriterion
-import os
 import torch.optim as optim
 from visual_tool.Tensorboard import Mytensorboard
 from itertools import cycle
 from help_func.help_python import myUtil
 from help_func.__init__ import ExecFileName
+from help_func.warmup_scheduler import GradualWarmupScheduler
+from copy import deepcopy
+
 
 class Swish(nn.Module):
     def __init__(self):
@@ -221,12 +222,15 @@ class CBAM(nn.Module):
 
 class NetTrainAndTest:
     logger = LoggingHelper.get_instance().logger
-    def __init__(self, net,train_loader, valid_loader, test_loader,mainloss = 'l1', opt = 'adam'):
+    def __init__(self, net, train_loader, valid_loader, test_loader, mainloss = 'l1', opt = 'adam'):
         self.net = net
         self.name = ExecFileName.filename
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.test_loader = test_loader
+
+        self.data_padding = self.train_loader.dataset.dataset.data_padding
+        self.data_channel_num = self.train_loader.dataset.dataset.output_channel_num
 
         self.train_batch_num, self.train_iter = self.getBatchNumAndCycle(self.train_loader)
         self.valid_batch_num, self.valid_iter = self.getBatchNumAndCycle(self.valid_loader)
@@ -238,7 +242,7 @@ class NetTrainAndTest:
         else:
             self.iscuda = False
             self.cuda_device_count = 0
-        self.criterion = self.setloss()
+        self.criterion = self.setloss(mainloss)
         self.ResultMSELoss = self.setloss('l2')
         self.GTMSELoss = self.setloss('l2')
         if self.iscuda:
@@ -252,14 +256,15 @@ class NetTrainAndTest:
                 self.criterion = self.criterion.cuda()
                 self.ResultMSELoss = self.ResultMSELoss.cuda()
         self.optimizer = self.setopt(opt)(self.net.parameters(), lr = NetManager.cfg.INIT_LEARNING_RATE)
-        self.lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=self.optimizer,
-                                                      milestones=[int(NetManager.cfg.OBJECT_EPOCH * 0.5),
-                                                                  int(NetManager.cfg.OBJECT_EPOCH * 0.75)],
-                                                      gamma=0.1, last_epoch=-1)
-
+        # self.lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=self.optimizer,
+        #                                               milestones=[int(NetManager.cfg.OBJECT_EPOCH * 0.5),
+        #                                                           int(NetManager.cfg.OBJECT_EPOCH * 0.75)],
+        #                                               gamma=0.1, last_epoch=-1)
+        self.lr_after_dscheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, NetManager.OBJECT_EPOCH)
+        self.lr_scheduler = GradualWarmupScheduler(self.optimizer, multiplier=10, total_epoch=10, after_scheduler=self.lr_after_dscheduler)
         self.tb = Mytensorboard(self.name)
         self.highestScore = 0
-        self.epoch = 0
+        self.epoch = 2
         self.load_model()
 
     @staticmethod
@@ -272,7 +277,7 @@ class NetTrainAndTest:
     @staticmethod
     def getBatchNumAndCycle(dataloader):
         if dataloader is not None:
-            return dataloader.dataset.batch_num, cycle(dataloader)
+            return dataloader.dataset.dataset.batch_num, cycle(dataloader)
         else:
             return None, None
 
@@ -281,50 +286,47 @@ class NetTrainAndTest:
     def setloss(loss = 'l1'):
         loss = loss.lower()
         if loss == 'l1':
-            return nn.L1Loss
+            return nn.L1Loss()
         elif loss == 'l2':
             return nn.MSELoss()
         else:
             assert 0, 'The loss is ambiguous'
 
-
     def test(self):
+        def block_based_test():
+            _, c, h, w = recons.shape
+            data_list = list()
+            pos_list = [
+                np.array((NetManager.TEST_BY_BLOCKED_WIDTH if (x + NetManager.TEST_BY_BLOCKED_WIDTH) <= w else (w - x),
+                          NetManager.TEST_BY_BLOCKED_HEIGHT if (y + NetManager.TEST_BY_BLOCKED_HEIGHT) <= h else (h - y),
+                          x, y))
+                for y in range(0, h - 1, NetManager.TEST_BY_BLOCKED_HEIGHT)
+                for x in range(0, w - 1, NetManager.TEST_BY_BLOCKED_WIDTH)]
+            # inputs = F.pad(inputs, pad_opt)
+            # for pos in pos_list:
+
+
         MSE_loss = nn.MSELoss()
         recon_MSE_loss = nn.MSELoss()
-        if torch.cuda.is_available():
+        if self.iscuda:
             MSE_loss.cuda()
             recon_MSE_loss.cuda()
         self.net.eval()
-        test_psnr_mean = []
-        for sequencedir, pocdics in self.test_loader.dataset.dataset.seqdic.items():
-            total_psnr = []
-            self.logger.info('%s' %sequencedir)
-            for i, (pocpath, filelist) in enumerate(pocdics.items()):
-                pocwidth = pocpath.split('_')[-1]
-                pocheight = pocpath.split('_')[-2]
-                gtbuf = np.full((pocheight, pocwidth), np.nan)
-                resibuf = np.full((pocheight, pocwidth), np.nan)
-                reconbuf = np.full((pocheight, pocwidth), np.nan)
-                for filename in filelist:
-                    ypos, xpos, h, w = filename.split('.')[0].split('_')
-                    recons, inputs, gts = next(self.test_iter)
-                    gtbuf[ypos:ypos+h, xpos:xpos+w] = gts[0].cpu().numpy()
-                    reconbuf[ypos:ypos+h, xpos:xpos+w] = recons[0].cpu().numpy()
-                    if self.iscuda:
-                        recons.cuda()
-                        inputs.cuda()
-                        gts.cuda()
-                    outputs = self.net(inputs)
-                    resibuf[ypos:ypos+h, xpos:xpos+w] = outputs[0].cpu().numpy()
-                if np.any(np.isnan(resibuf)):
-                    self.logger.error('Nan is exists in array')
-                    continue
-                if i==0:
-                    self.tb.SaveImageToTensorBoard('Recon/'+pocpath, gtbuf + resibuf)
-                    self.tb.SaveImageToTensorBoard('Residual/' + pocpath, resibuf)
 
-                poc_mse = (gtbuf - resibuf) ** 2
-                poc_psnr = myUtil.psnr(poc_mse)
+        if NetManager.TEST_BY_BLOCKED:
+            (h_pad, w_pad, no_h_pad, no_w_pad) = self.invest_net_pad(self.net, (self.data_channel_num, 100,100), set_zero=True, device=self.iscuda)
+            pad_opt = [w_pad, w_pad, h_pad, h_pad]
+
+        test_psnr_mean = []
+        with torch.no_grad():
+            for i in range(len(self.test_loader)):
+                current_path = self.test_loader.dataset.dataset.batch[i]
+                (recons, inputs, gts) = next(self.test_iter)
+                if torch.cuda.is_available():
+                    recons = recons.cuda()
+                    inputs = inputs.cuda()
+                    gts = gts.cuda()
+
 
 
 
@@ -376,11 +378,11 @@ class NetTrainAndTest:
 
     def train(self, input_channel_list = None):
         dataset = self.train_loader.dataset.dataset
+        self.logger.info('Training Start')
         for epoch_iter, epoch in enumerate(range(NetManager.OBJECT_EPOCH), self.epoch):
             running_loss = 0.0
             for i in range(dataset.batch_num):
                 (recons, inputs, gts) = next(self.train_iter)
-
                 if torch.cuda.is_available():
                     # recons = recons.cuda()
                     inputs = inputs.cuda()
@@ -461,8 +463,8 @@ class NetTrainAndTest:
                     self.logger.info("[epoch:%d] Finish Plot Image" % epoch_iter)
         cumsum_valid /= (valid_dataset.batch_num * valid_dataset.batch_size)
         self.tb.plotMSEImage(cumsum_valid, 'Error_MSE')
-        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE')
-        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=80)
+        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=90)
+        self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=95)
         self.tb.plotMAEImage(cumsum_valid, 'Error_MAE', percentile=100)
         if self.highestScore < (mean_psnr_cnn / len(self.valid_loader)):
             self.save_model()
@@ -474,3 +476,87 @@ class NetTrainAndTest:
             epoch_iter, mean_loss_recon / len(self.valid_loader), mean_psnr_recon / len(self.valid_loader)))
         self.logger.info('[epoch : %d] CNN_loss   : %.7f, CNN_PSNR :   %.7f   [%s]' % (
             epoch_iter, mean_loss_cnn / len(self.valid_loader), mean_psnr_cnn / len(self.valid_loader), save_str))
+
+
+    @staticmethod
+    def invest_net_pad(model, input_size, batch_size=-1, set_zero=False, device=True):
+
+        def register_hook(module):
+
+            def hook(module, input, output):
+                class_name = str(module.__class__).split(".")[-1].split("'")[0]
+                module_idx = len(summary)
+                if class_name == 'Conv2d':
+                    if module.kernel_size[0] != 1 and module.padding[0] == 0:
+                        no_height_pad.append((module.kernel_size[0] + 0.5) // 2)
+                    if module.kernel_size[1] != 1 and module.padding[1] == 0:
+                        no_width_pad.append((module.kernel_size[1] + 0.5) // 2)
+                    h, w = module.padding
+                    width_pad.append(w)
+                    height_pad.append(h)
+                    if set_zero:
+                        module.padding = (0, 0)
+                m_key = "%s-%i" % (class_name, module_idx + 1)
+                summary[m_key] = OrderedDict()
+                summary[m_key]["input_shape"] = list(input[0].size())
+                summary[m_key]["input_shape"][0] = batch_size
+                if isinstance(output, (list, tuple)):
+                    summary[m_key]["output_shape"] = [
+                        [-1] + list(o.size())[1:] for o in output
+                    ]
+                else:
+                    summary[m_key]["output_shape"] = list(output.size())
+                    summary[m_key]["output_shape"][0] = batch_size
+                params = 0
+                if hasattr(module, "weight") and hasattr(module.weight, "size"):
+                    params += torch.prod(torch.LongTensor(list(module.weight.size())))
+                    summary[m_key]["trainable"] = module.weight.requires_grad
+                if hasattr(module, "bias") and hasattr(module.bias, "size"):
+                    params += torch.prod(torch.LongTensor(list(module.bias.size())))
+                summary[m_key]["nb_params"] = params
+
+            if (
+                    not isinstance(module, nn.Sequential)
+                    and not isinstance(module, nn.ModuleList)
+                    and not (module == model)
+            ):
+                hooks.append(module.register_forward_hook(hook))
+
+        device = device.lower()
+        assert device in [
+            "cuda",
+            "cpu",
+        ], "Input device is not valid, please specify 'cuda' or 'cpu'"
+
+        if device == "cuda" and torch.cuda.is_available():
+            dtype = torch.cuda.FloatTensor
+        else:
+            dtype = torch.FloatTensor
+
+        # multiple inputs to the network
+        if isinstance(input_size, tuple):
+            input_size = [input_size]
+
+        # batch_size of 2 for batchnorm
+        x = [torch.rand(2, *in_size).type(dtype) for in_size in input_size]
+        # print(type(x[0]))
+
+        # create properties
+        width_pad = []
+        height_pad = []
+        no_height_pad = []
+        no_width_pad = []
+        summary = OrderedDict()
+        hooks = []
+
+        # register hook
+        model.apply(register_hook)
+
+        # make a forward pass
+        # print(x.shape)
+        model(*x)
+
+        # remove these hooks
+        for h in hooks:
+            h.remove()
+        return int(np.sum(height_pad)), int(np.sum(width_pad)), int(np.sum(no_height_pad)), int(np.sum(no_width_pad))

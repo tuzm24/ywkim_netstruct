@@ -27,7 +27,7 @@ import sklearn
 import copy
 # import torch
 # from CfgEnv.loadCfg import LoggingHelper
-from collections import OrderedDict
+
 
 from help_func.help_python import myUtil
 
@@ -44,11 +44,11 @@ class DataBatch(NetManager):
         elif istraining == LearningIndex.VALIDATION:
             self.data_path = self.VALIDATION_PATH
             self.csv_path = os.path.join(self.VALIDATION_PATH, self.CSV_NAME)
+        rs = np.random.RandomState(42)
         self.istraining = istraining
         self.batch_size = batch_size
         self.csv = pd.read_csv(self.csv_path)
-        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET, random_state=np.random.RandomState(42))
-
+        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET)
         print("[%s DataNum : %d]" %(LearningIndex.INDEX_DIC[istraining], len(self.csv)))
         self.sizeDic = {}
         self.tulen = len(self.TU_ORDER)
@@ -218,22 +218,12 @@ class DataBatch(NetManager):
 
 class TestDataBatch(NetManager):
     def __init__(self):
-        sequencedirs = myUtil.getDirlist(self.TEST_PATH)
-        self.leafdirs = myUtil.getleafDirs(self.TEST_PATH)
-        self.seqdic = OrderedDict()
-        self.batch = []
-        for seq in sequencedirs:
-            self.seqdic[seq] = OrderedDict()
-            for poc in myUtil.getDirlist(seq):
-                filelist = pd.read_csv(os.path.join(poc, self.CSV_NAME)).dropna(axis='columns')
-                filelist = filelist.insert(loc = 0, column='Parent', value=[poc]*len(filelist)).values
-                self.seqdic[seq][poc] = filelist
-                self.batch.append(*filelist)
+        self.batch = myUtil.getleafDirs(self.TEST_PATH)
         self.sizeDic = {}
         self.SetSizeDic()
 
     def SetSizeDic(self):
-        for folderpath in self.leafdirs:
+        for folderpath in self.batch:
             csv = pd.read_csv(os.path.join(folderpath, self.CSV_NAME)).dropna(axis='columns')
             for index, row in csv.iterrows():
                 sizetuple = (row['HEIGHT'], row['WIDTH'])
@@ -268,8 +258,27 @@ class TestDataBatch(NetManager):
 
     #NAME,WIDTH,HEIGHT,X_POS,Y_POS,QP,MODE,DEPTH,HOR_TR,VER_TR
     def unpackData(self, testFolderPath):
-        self.cur_path = testFolderPath
+        # self.cur_path = testFolderPath
         csv = pd.read_csv(os.path.join(testFolderPath, self.CSV_NAME)).dropna(axis='columns').values
+        # width = np.max(csv[:,1].astype('int32') + csv[:, 3].astype('int32'))
+        # height = np.max(csv[:,2].astype('int32') + csv[:, 4].astype('int32'))
+        # cwidth = width//2
+        # cheight = height//2
+        # pic = []
+        # for i in range(PictureFormat.MAX_NUM_COMPONENT):
+        #     if self.PEL_DATA[i]:
+        #         pic.append(np.zeros((height, width)))
+        #         if not self.IS_ONLY_LUMA:
+        #             pic.append(np.zeros(cheight, cwidth))
+        #             pic.append(np.zeros(cheight, cwidth))
+        #         else:
+        #             self.appendNone(2, pic)
+        #     else:
+        #         self.appendNone(3, pic)
+        # picarea = Area(width, height, 0, 0)
+        # self.pic = UnitBuf(ChromaFormat.YCbCr4_2_0, picarea,*pic)
+        # self.tulist = TuList(None)
+        # self.ctulist = TuList(None)
         for info in csv:
             filepath = os.path.join(testFolderPath, info[0])
             split_bin, strdatanum, shortdatanum = self.sizeDic[(info[2], info[1])]
@@ -285,24 +294,6 @@ class TestDataBatch(NetManager):
                     self.tulist = TuList.loadTuList(data)
                 if self.IS_CONST_CTU_DATA:
                     self.ctulist = TuList.loadTuList(data)
-
-    #PARENT, NAME,WIDTH,HEIGHT,X_POS,Y_POS,QP,MODE,DEPTH,HOR_TR,VER_TR
-    def unpackDatafromCTU(self, idx):
-        info = self.batch[idx]
-        filepath = os.path.join(info[0], info[1])
-        split_bin, strdatanum, shortdatanum = self.sizeDic[(info[3], info[2])]
-        with open(filepath, 'rb') as data:
-            pels = np.split(np.array(struct.unpack(strdatanum, data.read(shortdatanum)),
-                                     dtype='float32'), split_bin, axis=0)
-            pelarea = Area(*info[2:6])
-            self.pic = UnitBuf(ChromaFormat.YCbCr4_2_0, pelarea, *pels)
-            # self.pic.CopyAll(pels)
-            if not self.IS_CONST_TU_DATA:
-                self.tulist = TuList(np.array([[*info[:3], 0, 0, *info[4:]]]))
-            else:
-                self.tulist = TuList.loadTuList(data)
-            if self.IS_CONST_CTU_DATA:
-                self.ctulist = TuList.loadTuList(data)
 
     def dropPadding(self, x, pad, isDeepCopy = False):
         if isDeepCopy:
