@@ -69,24 +69,29 @@ class torchUtil:
         dataidx +=3
         x = []
         y = []
+        z = []
         for _, data, gt in tqdm(loader):
             b, c, h, w = data.shape
             data = data.to(
             torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
             gt = gt.to(
             torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
-            gtmse = torch.sum(gt[:,0,:,:]**2, dim = [1,2])
-            y.append(gtmse.view(-1).numpy())
+            gtmse = torch.mean(gt[:,0,:,:]**2, dim = [1,2])
+            x.append(gtmse.view(-1).cpu().numpy())
             if opt =='mean':
-                datamean = torch.mean(data[:,dataidx,:,:], dim=[1,2])
-                x.append(datamean.view(-1).numpy())
+                datamean = torch.mean(data[:,dataidx[0],:,:], dim=[1,2])
+                y.append(datamean.view(-1).cpu().numpy())
             if opt == 'max':
-                data = data[:,dataidx,:,:].numpy().reshape((b,-1))
-                x.append(np.apply_along_axis(maxCountValue, 1, data))
+                data = data[:,dataidx[1],:,:].cpu().numpy().reshape((b,-1))
+                y.append(np.apply_along_axis(maxCountValue, 1, data))
+            if opt =='mean':
+                datamean = torch.mean(data[:,dataidx[1],:,:], dim=[1,2])
+                z.append(datamean.view(-1).cpu().numpy())
 
         y = np.array(y).reshape(-1)
         x = np.array(x).reshape(-1)
-        return np.corrcoef(x,y)[0][1]
+        z = np.array(z).reshape(-1)
+        return x, y, z
 
     @staticmethod
     def _RoundChannels(c, divisor=8, min_value=None):

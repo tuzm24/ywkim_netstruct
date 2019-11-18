@@ -22,7 +22,10 @@ class Mytensorboard(NetManager):
         self.writer.add_image(name, img, global_step=self.step)
 
     def batchImageToTensorBoard(self, recon, resi, name):
-        img = (recon.cpu().detach().numpy() + resi.cpu().detach().numpy())*255.0
+        if recon is not None:
+            img = (recon.cpu().detach().numpy() + resi.cpu().detach().numpy())*255.0
+        else:
+            img = (resi.cpu().detach().numpy())*255.0
         img = np.clip(img, 0, 255).astype(int)
         self.writer.add_image(name, img, global_step=self.step)
 
