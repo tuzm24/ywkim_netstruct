@@ -1,6 +1,6 @@
 from torch.optim.lr_scheduler import _LRScheduler
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-
+from visual_tool.Tensorboard import Mytensorboard
 
 class GradualWarmupScheduler(_LRScheduler):
     """ Gradually warm-up(increasing) learning rate in optimizer.
@@ -19,6 +19,7 @@ class GradualWarmupScheduler(_LRScheduler):
         self.total_epoch = total_epoch
         self.after_scheduler = after_scheduler
         self.finished = False
+        self.tb = Mytensorboard.get_instance()
         super().__init__(optimizer)
 
     def get_lr(self):
@@ -29,7 +30,7 @@ class GradualWarmupScheduler(_LRScheduler):
                     self.finished = True
                 return self.after_scheduler.get_lr()
             return [base_lr * self.multiplier for base_lr in self.base_lrs]
-
+        self.tb.SetLearningRate(self.base_lrs[0] * ((self.multiplier - 1.) * self.last_epoch / self.total_epoch + 1.))
         return [base_lr * ((self.multiplier - 1.) * self.last_epoch / self.total_epoch + 1.) for base_lr in self.base_lrs]
 
     def step_ReduceLROnPlateau(self, metrics, epoch=None):

@@ -9,11 +9,19 @@ import torch
 
 
 class Mytensorboard(NetManager):
+    INSTANCE = None
     def __init__(self, comment=''):
         self.writer = SummaryWriter(comment='_'+comment)
         self.writerLayout = {'Loss': {},
                         'PSNR': {}}
         self.step = 0
+
+    @classmethod
+    def get_instance(cls, comment=''):
+        if cls.INSTANCE is None:
+            cls.INSTANCE = Mytensorboard(comment=comment)
+        return cls.INSTANCE
+
     def plotToTensorboard(self, fig, name):
         self.writer.add_figure(name, fig, global_step=self.step, close=True)
 
@@ -142,4 +150,7 @@ class Mytensorboard(NetManager):
 
     def SetPSNR(self, name, value):
         self.writerLayout['PSNR'][name] = value
+
+    def SetLearningRate(self, value):
+        self.writer.add_scalars('LearningRate', {'lr': value}, self.step)
 

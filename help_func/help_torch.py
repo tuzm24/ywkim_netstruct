@@ -265,9 +265,9 @@ class NetTrainAndTest:
         #                                               milestones=[int(NetManager.cfg.OBJECT_EPOCH * 0.5),
         #                                                           int(NetManager.cfg.OBJECT_EPOCH * 0.75)],
         #                                               gamma=0.1, last_epoch=-1)
+        self.tb = Mytensorboard.get_instance(self.name)
         self.lr_after_dscheduler = torch.optim.lr_scheduler.CosineAnnealingLR(self.optimizer, NetManager.OBJECT_EPOCH)
         self.lr_scheduler = GradualWarmupScheduler(self.optimizer, multiplier=10, total_epoch=10, after_scheduler=self.lr_after_dscheduler)
-        self.tb = Mytensorboard(self.name)
         self.highestScore = 0
         self.epoch = 2
         self.load_model()
