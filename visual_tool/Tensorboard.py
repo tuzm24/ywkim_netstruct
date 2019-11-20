@@ -131,11 +131,11 @@ class Mytensorboard(NetManager):
     plotMap(qpmap, 'QPMap', vminmax = [22, 37], color_num = 4)
     """
     def plotMap(self, img, name, vminmax = None, color_num = None):
+        if vminmax is None:
+            vminmax = (img.min(), img.max())
         img = self.Makegrid(img)
         fig, ax= plt.subplots()
         img = img.cpu()
-        if vminmax is None:
-            vminmax = (img.min(), img.max())
         if color_num is None:
             color_num = len(img.unique())
         imgs = ax.imshow((img.numpy()[0]).astype(int), vmin=vminmax[0], vmax=vminmax[1], interpolation='nearest',
