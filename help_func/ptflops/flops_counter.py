@@ -5,7 +5,7 @@ import torch.nn as nn
 import numpy as np
 
 
-def get_model_complexity_info(model, input_res,
+def get_model_complexity_info(model, input_res, pos=None,
                               print_per_layer_stat=True,
                               as_strings=True,
                               input_constructor=None, ost=sys.stdout):
@@ -24,8 +24,10 @@ def get_model_complexity_info(model, input_res,
                                              device=next(flops_model.parameters()).device)
         except StopIteration:
             batch = torch.ones(()).new_empty((1, *input_res))
-
-        _ = flops_model(batch)
+        if pos is not None:
+            _ = flops_model(batch, pos[1], pos[0])
+        else:
+            _ = flops_model(batch)
 
     if print_per_layer_stat:
         print_model_with_flops(flops_model, ost=ost)
