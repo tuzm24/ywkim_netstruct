@@ -48,7 +48,7 @@ class DataBatch(NetManager):
         self.istraining = istraining
         self.batch_size = batch_size
         self.csv = pd.read_csv(self.csv_path)
-        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET)
+        self.csv = self.csv.sample(frac=NetManager.cfg.USE_DATASET_SUBSET, random_state=rs)
         print("[%s DataNum : %d]" %(LearningIndex.INDEX_DIC[istraining], len(self.csv)))
         self.sizeDic = {}
         self.tulen = len(self.TU_ORDER)
@@ -221,6 +221,7 @@ class TestDataBatch(NetManager):
         self.batch = myUtil.getleafDirs(self.TEST_PATH)
         self.sizeDic = {}
         self.SetSizeDic()
+        self.batch_num = len(self.batch)
 
     def SetSizeDic(self):
         for folderpath in self.batch:

@@ -106,7 +106,7 @@ class RDN(nn.Module):
         return output
 
 class COMMONDATASETTING():
-    DATA_CHANNEL_NUM = 4
+    DATA_CHANNEL_NUM = 8
     OUTPUT_CHANNEL_NUM = 1
     qplist = [22,27,32,37]
     depthlist = [i for i in range(1,7)]
@@ -164,14 +164,14 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
     def unpackData(self, info):
         DataBatch.unpackData(self, info)
         qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
-        # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
-        # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
-        # modemap[modemap>=34] = 3
-        # depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
-        # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
-        # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
+        modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
+        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        modemap[modemap>=34] = 3
+        depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
+        hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
+        vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
-        data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
+        data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap, hortrans, vertrans], axis=0)
         # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
         gt = (np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0))
         recon = copy.deepcopy(data[:self.output_channel_num])
@@ -202,22 +202,22 @@ class _TestSetBatch(TestDataBatch, COMMONDATASETTING):
         self.pic.setReshape1dTo2d(PictureFormat.RECONSTRUCTION)
         self.pic.setReshape1dTo2d(PictureFormat.ORIGINAL)
         qpmap = self.tulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
-        # modemap = self.tulist.getTuMaskFromIndex(1, self.pic.area.height, self.pic.area.width)
-        # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
-        # modemap[modemap>=34] = 3
-        # depthmap = self.tulist.getTuMaskFromIndex(2, self.pic.area.height, self.pic.area.width)
-        # hortrans = self.tulist.getTuMaskFromIndex(3, self.pic.area.height, self.pic.area.width)
-        # vertrans = self.tulist.getTuMaskFromIndex(4, self.pic.area.height, self.pic.area.width)
+        modemap = self.tulist.getTuMaskFromIndex(1, self.pic.area.height, self.pic.area.width)
+        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        modemap[modemap>=34] = 3
+        depthmap = self.tulist.getTuMaskFromIndex(2, self.pic.area.height, self.pic.area.width)
+        hortrans = self.tulist.getTuMaskFromIndex(3, self.pic.area.height, self.pic.area.width)
+        vertrans = self.tulist.getTuMaskFromIndex(4, self.pic.area.height, self.pic.area.width)
         # alfmap = self.ctulist.getTuMaskFromIndex(0, self.pic.area.height, self.pic.area.width)
         # qpmap = np.full(qpmap.shape, qpmap[100,100])
-        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap], axis = 0)
+        data = np.stack([*self.pic.pelBuf[PictureFormat.RECONSTRUCTION], qpmap, modemap, depthmap, hortrans, vertrans], axis = 0)
         orig = np.stack([*(np.array(self.pic.pelBuf[PictureFormat.ORIGINAL][0])[np.newaxis,:,:])])
         recon = copy.deepcopy(data[:self.output_channel_num])
         data = (data - self.mean) / self.std
         orig /= 1023.0
         recon /= 1023.0
         orig -= recon
-        return self.cur_path, recon.astype('float32'), data.astype('float32'), orig.astype('float32')
+        return recon.astype('float32'), data.astype('float32'), orig.astype('float32')
 
 class myDataBatch(Dataset):
     def __init__(self, dataset):
@@ -262,5 +262,6 @@ if '__main__' == __name__:
 
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = RDN(dataset.data_channel_num, 1)
-    netmanage = NetTrainAndTest(net, train_loader, valid_loader, test_loader=None)
-    netmanage.train()
+    # netmanage = NetTrainAndTest(net, train_loader, valid_loader, test_loader=None)
+    netmanage = NetTrainAndTest(net, train_loader = None, valid_loader = None, test_loader=test_loader)
+    netmanage.test()

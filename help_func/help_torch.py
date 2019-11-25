@@ -15,7 +15,7 @@ from help_func.__init__ import ExecFileName
 from help_func.warmup_scheduler import GradualWarmupScheduler
 from copy import deepcopy
 from torchsummary import summary
-
+import os
 
 class Swish(nn.Module):
     def __init__(self):
@@ -236,22 +236,19 @@ class NetTrainAndTest:
         self.valid_loader = valid_loader
         self.test_loader = test_loader
 
-        self.data_padding = self.train_loader.dataset.dataset.data_padding
-        self.data_channel_num = self.train_loader.dataset.dataset.output_channel_num
+        # self.data_padding = self.train_loader.dataset.dataset.data_padding
+        if train_loader is not None:
+            self.data_channel_num = self.train_loader.dataset.dataset.DATA_CHANNEL_NUM
+        else:
+            self.data_channel_num = self.test_loader.dataset.dataset.DATA_CHANNEL_NUM
 
         self.train_batch_num, self.train_iter = self.getBatchNumAndCycle(self.train_loader)
         self.valid_batch_num, self.valid_iter = self.getBatchNumAndCycle(self.valid_loader)
         self.test_batch_num, self.test_iter = self.getBatchNumAndCycle(self.test_loader)
-
-        if torch.cuda.is_available():
-            self.iscuda = True
-            self.cuda_device_count = torch.cuda.device_count()
-        else:
-            self.iscuda = False
-            self.cuda_device_count = 0
         self.criterion = self.setloss(mainloss)
         self.ResultMSELoss = self.setloss('l2')
         self.GTMSELoss = self.setloss('l2')
+        self.setGPUnum()
         if self.iscuda:
             self.GTMSELoss = self.GTMSELoss.cuda()
             if self.cuda_device_count>1:
@@ -273,6 +270,15 @@ class NetTrainAndTest:
         self.highestScore = 0
         self.epoch = 0
         self.load_model()
+
+
+    def setGPUnum(self):
+        if torch.cuda.is_available():
+            self.iscuda = True
+            self.cuda_device_count = torch.cuda.device_count()
+        else:
+            self.iscuda = False
+            self.cuda_device_count = 0
 
     @staticmethod
     def setopt(opt = 'adam'):
@@ -312,7 +318,7 @@ class NetTrainAndTest:
             # inputs = F.pad(inputs, pad_opt)
             # for pos in pos_list:
 
-
+        self.load_model(gpunum=1)
         MSE_loss = nn.MSELoss()
         recon_MSE_loss = nn.MSELoss()
         if self.iscuda:
@@ -321,24 +327,34 @@ class NetTrainAndTest:
         self.net.eval()
 
         if NetManager.TEST_BY_BLOCKED:
-            (h_pad, w_pad, no_h_pad, no_w_pad) = self.invest_net_pad(self.net, (self.data_channel_num, 100,100), set_zero=True, device=self.iscuda)
+            (h_pad, w_pad, no_h_pad, no_w_pad) = self.invest_net_pad(self.net, (self.data_channel_num, 100,100), set_zero=False, device=self.iscuda)
             pad_opt = [w_pad, w_pad, h_pad, h_pad]
-
+        seq_paths = myUtil.getDirlist(NetManager.TEST_PATH)
+        seqs_dic = {}
+        for path in seq_paths:
+            seqs_dic[path] = []
         test_psnr_mean = []
         with torch.no_grad():
             for i in range(len(self.test_loader)):
                 current_path = self.test_loader.dataset.dataset.batch[i]
                 (recons, inputs, gts) = next(self.test_iter)
-                if torch.cuda.is_available():
+                if self.iscuda:
                     recons = recons.cuda()
                     inputs = inputs.cuda()
                     gts = gts.cuda()
+                outputs = self.net(inputs)
+                mse = MSE_loss(outputs, gts)
+                seqs_dic[os.path.dirname(current_path)].append(myUtil.psnr(mse))
+        for key, values in seqs_dic.items():
+            mean = np.mean(np.array(values))
+            print('%s : %s' %(key, mean))
 
 
 
 
-
-    def load_model(self):
+    def load_model(self, gpunum = None):
+        if gpunum is not None:
+            self.cuda_device_count = gpunum
         if NetManager.cfg.LOAD_SAVE_MODEL:
             PATH = './' + NetManager.MODEL_PATH + '/' + self.name + '_model.pth'
             if self.iscuda:
@@ -372,6 +388,9 @@ class NetTrainAndTest:
             self.logger.info('Load the saved checkpoint')
             # for g in optimizer.param_groups:
             #     g['lr'] = 0.0001
+        if gpunum is not None:
+            self.setGPUnum()
+
 
     def save_model(self):
         torch.save({
@@ -381,6 +400,7 @@ class NetTrainAndTest:
             'TensorBoardStep': self.tb.step,
             'valid_psnr': self.highestScore
         }, NetManager.MODEL_PATH + '/' + self.name + '_model.pth')
+
 
 
     def train(self, input_channel_list = None):
@@ -528,7 +548,10 @@ class NetTrainAndTest:
                     and not (module == model)
             ):
                 hooks.append(module.register_forward_hook(hook))
-
+        if device:
+            device = 'cuda'
+        else:
+            device = 'cpu'
         device = device.lower()
         assert device in [
             "cuda",

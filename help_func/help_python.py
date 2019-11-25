@@ -91,6 +91,17 @@ class myUtil(object):
                 folders.append(root)
         return folders
 
+    @staticmethod
+    def getlearDirsAndnumbers(dir):
+        folders = []
+        num_folders = []
+        for root, dirs, files in os.walk(dir):
+            if root != dir and dirs:
+                num_folders.append(len(files))
+            if not dirs:
+                folders.append(root)
+        return folders
+
 class SingletonInstane:
   __instance = None
 
