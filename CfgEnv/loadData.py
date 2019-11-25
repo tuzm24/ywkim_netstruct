@@ -54,7 +54,7 @@ class DataBatch(NetManager):
         self.tulen = len(self.TU_ORDER)
         self.csv = self.csv.dropna(axis='columns')
         if istraining>0:
-            self.csv = sklearn.utils.shuffle(self.csv, random_state=42)
+            self.csv = sklearn.utils.shuffle(self.csv, random_state=rs)
         self.batch = self.MakeBatch()
         self.batch_num = len(self.batch)
         print("[%s NumberOfBatchs : %d]" %(LearningIndex.INDEX_DIC[istraining], self.batch_num))
