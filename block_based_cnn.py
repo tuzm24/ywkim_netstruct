@@ -10,12 +10,12 @@ from help_func.help_torch import myUtil
 from PIL import Image
 from torchsummary import summary
 pad_require = 10
-input_height = 1000
-input_width = 1000
-batch_size = 1
+input_height = 1080
+input_width = 1920
+batch_size = 64
 channel_num = 3
-block_size = 32
-iscuda = 0
+block_size = 128
+iscuda = 1
 
 
 def invest_net_pad(model, input_size, batch_size=-1, set_zero=0, device="cuda"):
@@ -170,14 +170,9 @@ class PlainNetwork_nopad(nn.Sequential):
         super(PlainNetwork_nopad, self).__init__()
         convlist = []
         convlist.append(Conv3x3Bn(num_input_features, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
-        convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
+        for i in range(8):
+            convlist.append(Conv3x3Bn(32, 32, 1, 'ReLU', 0))
+
         convlist.append(Conv3x3Bn(32, output_dim, 1, 'ReLU', 0))
         self.layers = nn.Sequential(*convlist)
         for m in self.modules():
@@ -351,7 +346,7 @@ def Calc_Copy_and_divide_inputs(inputs, net, pad_required=10, devide_size=64):
     # if iscuda:
     #     output = output.cuda()
     # output = np.full(inputs.shape, np.nan)
-    img = F.pad(inputs, [pad_required, 0, pad_required, 0])
+    img = F.pad(inputs, [pad_required, pad_required, pad_required, pad_required])
     # temp_input = copy.deepcopy(inputs)
     flops = 0.0
     for dx, dy, x, y in pos_list:
@@ -408,8 +403,9 @@ with torch.no_grad():
     # print(flops)
     # flops = Calc_Copy_and_divide_Recycle(copy.deepcopy(inputs), net_recycle, devide_size=block_size)
     # print(flops)
-    # flops = Calc_Copy_and_divide_inputs(copy.deepcopy(inputs), net_nopad,devide_size=block_size)
-    # print(flops)
+    # flops = Calc_Copy_and_divide_inputs(copy.deepcopy(inputs), net_nopad,pad_required=pad_require,devide_size=block_size)
+    flops = get_model_complexity_info(net_nopad, (channel_num, input_height, input_width), pos=None, as_strings=False, print_per_layer_stat=False)
+    print(flops)
 
 
     # startTime = time.time()
@@ -418,22 +414,28 @@ with torch.no_grad():
     # print(time.time() - startTime)
     #
     # startTime = time.time()
-    # b = net_nopad(F.pad(copy.deepcopy(inputs), [pad_require, pad_require, pad_require ,pad_require]))
-    # b = net_nopad(copy.deepcopy(inputs))
-    # b = net(copy.deepcopy(inputs))
-    b = net_recycle(copy.deepcopy(inputs), 0, 0)
-    # _b = net_recycle(copy.deepcopy(inputs[:,:, 100:900, 100:900]),0 ,0)
-    #
-    # print('')
+    # # b = net_nopad(F.pad(copy.deepcopy(inputs), [pad_require, pad_require, pad_require ,pad_require]))
+    # # b = net_nopad(copy.deepcopy(inputs))
+    # # b = net(copy.deepcopy(inputs))
+    # b = net_recycle(copy.deepcopy(inputs), 0, 0)
     #
     # # c = net_nopad(F.pad(copy.deepcopy(inputs), [10, 10, 10 ,10]))
     # # print(torch.all(torch.eq(b, c)))
     # print(time.time() - startTime)
     # # invest_net_pad(net,(3,100,100), batch_size=-1, set_zero=1, device='cpu')
     #
-    # startTime = time.time()
-    # a = Copy_and_divide_inputs(copy.deepcopy(inputs), net_nopad, devide_size=block_size)
-    # print(time.time() - startTime)
+    # import timeit
+    # print(net_nopad)
+    # start = timeit.default_timer()
+    # a = Copy_and_divide_inputs(copy.deepcopy(inputs), net_nopad, pad_required=pad_require,devide_size=block_size)
+    # stop = timeit.default_timer()
+    # print(stop - start)
+
+    # start = timeit.default_timer()
+    # ct = net_nopad(F.pad(inputs, [pad_require, 0, pad_require, 0]))
+    # stop = timeit.default_timer()
+    # print(stop - start)
+
     # print('오차 : %s' %torch.abs(a-b).sum())
     # print('PSNR : %s' %myUtil.psnr((torch.abs(a-b)**2).mean()))
     # print('오차 : %s' % torch.abs(c - b).sum())
