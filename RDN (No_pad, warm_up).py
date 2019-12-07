@@ -58,7 +58,6 @@ class RDB(nn.Module):
     out = self.conv_1x1(out)
     out = out + x
     return out
-
 # Residual Dense Network
 class RDN(nn.Module):
     nDenselayer = 3
@@ -167,7 +166,7 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
         modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
         modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
         modemap[modemap>=34] = 3
-        depthmap = self.tulist.getTuMaskFromIndex(2, info[2], info[1])
+        depthmap = self.tulist.getTuMaskFromIndex(2, info[2 ], info[1])
         hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
         vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])

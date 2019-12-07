@@ -228,7 +228,7 @@ class CBAM(nn.Module):
 
 class NetTrainAndTest:
     logger = LoggingHelper.get_instance().logger
-    def __init__(self, net, train_loader, valid_loader, test_loader, mainloss = 'l1', opt = 'adam'):
+    def __init__(self, net, train_loader, valid_loader, test_loader, mainloss = 'l1', opt = 'adam', gpunum = None):
         self.net = net
 
         self.name = ExecFileName.filename
@@ -248,7 +248,7 @@ class NetTrainAndTest:
         self.criterion = self.setloss(mainloss)
         self.ResultMSELoss = self.setloss('l2')
         self.GTMSELoss = self.setloss('l2')
-        self.setGPUnum()
+        self.setGPUnum(gpunum)
         if self.iscuda:
             self.GTMSELoss = self.GTMSELoss.cuda()
             if self.cuda_device_count>1:
@@ -272,7 +272,11 @@ class NetTrainAndTest:
         self.load_model()
 
 
-    def setGPUnum(self):
+    def setGPUnum(self, gpunum = None):
+        if gpunum is not None:
+            self.iscuda = True
+            self.cuda_device_count = gpunum
+            return
         if torch.cuda.is_available():
             self.iscuda = True
             self.cuda_device_count = torch.cuda.device_count()
@@ -337,6 +341,8 @@ class NetTrainAndTest:
         with torch.no_grad():
             for i in range(len(self.test_loader)):
                 current_path = self.test_loader.dataset.dataset.batch[i]
+                if current_path in '3840x2160':
+                    pass
                 (recons, inputs, gts) = next(self.test_iter)
                 if self.iscuda:
                     recons = recons.cuda()
@@ -344,7 +350,9 @@ class NetTrainAndTest:
                     gts = gts.cuda()
                 outputs = self.net(inputs)
                 mse = MSE_loss(outputs, gts)
-                seqs_dic[os.path.dirname(current_path)].append(myUtil.psnr(mse))
+                recon_mse = torch.mean((gts) ** 2)
+                print('%s : %s' %(current_path, myUtil.psnr(mse)))
+                seqs_dic[os.path.dirname(current_path)].append((myUtil.psnr(mse), myUtil.psnr(recon_mse)))
         for key, values in seqs_dic.items():
             mean = np.mean(np.array(values))
             print('%s : %s' %(key, mean))
@@ -389,7 +397,7 @@ class NetTrainAndTest:
             # for g in optimizer.param_groups:
             #     g['lr'] = 0.0001
         if gpunum is not None:
-            self.setGPUnum()
+            self.setGPUnum(None)
 
 
     def save_model(self):
@@ -414,7 +422,7 @@ class NetTrainAndTest:
                     # recons = recons.cuda()
                     inputs = inputs.cuda()
                     gts = gts.cuda()
-                outputs = self.net(inputs)
+                outputs = self.net(inputs, gts)
                 loss = self.criterion(outputs, gts)
                 MSE = self.ResultMSELoss(outputs, gts)
                 recon_MSE = torch.mean((gts) ** 2)
@@ -590,3 +598,93 @@ class NetTrainAndTest:
         for h in hooks:
             h.remove()
         return int(np.sum(height_pad)), int(np.sum(width_pad)), int(np.sum(no_height_pad)), int(np.sum(no_width_pad))
+
+
+
+
+class LowerBound(torch.autograd.Function):
+    def forward(ctx, inputs, bound):
+        b = torch.ones(inputs.size()) * bound
+        b = b.to(inputs.device)
+        ctx.save_for_backward(inputs, b)
+        return torch.max(inputs, b)
+
+    def backward(ctx, grad_output):
+        inputs, b = ctx.saved_tensors
+
+        pass_through_1 = inputs >= b
+        pass_through_2 = grad_output < 0
+
+        pass_through = pass_through_1 | pass_through_2
+        return pass_through.type(grad_output.dtype) * grad_output, None
+
+
+class GDN(nn.Module):
+    """Generalized divisive normalization layer.
+    y[i] = x[i] / sqrt(beta[i] + sum_j(gamma[j, i] * x[j]))
+    """
+
+    def __init__(self,
+                 ch,
+                 device,
+                 inverse=False,
+                 beta_min=1e-6,
+                 gamma_init=.1,
+                 reparam_offset=2 ** -18):
+        super(GDN, self).__init__()
+        self.inverse = inverse
+        self.beta_min = beta_min
+        self.gamma_init = gamma_init
+        self.reparam_offset = torch.FloatTensor([reparam_offset])
+
+        self.build(ch, torch.device(device))
+
+    def build(self, ch, device):
+        self.pedestal = self.reparam_offset ** 2
+        self.beta_bound = (self.beta_min + self.reparam_offset ** 2) ** .5
+        self.gamma_bound = self.reparam_offset
+
+        # Create beta param
+        beta = torch.sqrt(torch.ones(ch) + self.pedestal)
+        self.beta = nn.Parameter(beta.to(device))
+
+        # Create gamma param
+        eye = torch.eye(ch)
+        g = self.gamma_init * eye
+        g = g + self.pedestal
+        gamma = torch.sqrt(g)
+
+        self.gamma = nn.Parameter(gamma.to(device))
+        self.pedestal = self.pedestal.to(device)
+
+    def forward(self, inputs):
+        unfold = False
+        if inputs.dim() == 5:
+            unfold = True
+            bs, ch, d, w, h = inputs.size()
+            inputs = inputs.view(bs, ch, d * w, h)
+
+        _, ch, _, _ = inputs.size()
+
+        # Beta bound and reparam
+        beta = LowerBound()(self.beta, self.beta_bound)
+        beta = beta ** 2 - self.pedestal
+
+        # Gamma bound and reparam
+        gamma = LowerBound()(self.gamma, self.gamma_bound)
+        gamma = gamma ** 2 - self.pedestal
+        gamma = gamma.view(ch, ch, 1, 1)
+
+        # Norm pool calc
+        norm_ = nn.functional.conv2d(inputs ** 2, gamma, beta)
+        norm_ = torch.sqrt(norm_)
+
+        # Apply norm
+        if self.inverse:
+            outputs = inputs * norm_
+        else:
+            outputs = inputs / norm_
+
+        if unfold:
+            outputs = outputs.view(bs, ch, d, w, h)
+        return outputs
