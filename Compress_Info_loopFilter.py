@@ -247,7 +247,7 @@ class PixToPixReidualDenseNet(nn.Module):
         return self.features(self.preprocess(x))
 
 class COMMONDATASETTING():
-    DATA_CHANNEL_NUM = 8
+    DATA_CHANNEL_NUM = 4
     OUTPUT_CHANNEL_NUM = 1
     qplist = [22,27,32,37]
     depthlist = [i for i in range(1,7)]
@@ -305,14 +305,14 @@ class _DataBatch(DataBatch, COMMONDATASETTING):
     def unpackData(self, info):
         DataBatch.unpackData(self, info)
         qpmap = self.tulist.getTuMaskFromIndex(0, info[2], info[1])
-        modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
-        modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
-        modemap[modemap>=34] = 3
-        depthmap = self.tulist.getTuMaskFromIndex(2, info[2 ], info[1])
-        hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
-        vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
+        # modemap = self.tulist.getTuMaskFromIndex(1, info[2], info[1])
+        # modemap[np.all([modemap>1, modemap<34], axis = 0)] = 2
+        # modemap[modemap>=34] = 3
+        # depthmap = self.tulist.getTuMaskFromIndex(2, info[2 ], info[1])
+        # hortrans = self.tulist.getTuMaskFromIndex(3, info[2], info[1])
+        # vertrans = self.tulist.getTuMaskFromIndex(4, info[2], info[1])
         # alfmap = self.ctulist.getTuMaskFromIndex(0, info[2], info[1])
-        data = np.stack([*self.reshapeRecon(), qpmap, modemap, depthmap, hortrans, vertrans], axis=0)
+        data = np.stack([*self.reshapeRecon(), qpmap], axis=0)
         # data = np.stack([*self.reshapeRecon(),qpmap], axis=0)
         gt = (np.stack([self.orgY.reshape((self.info[2], self.info[1]))], axis=0))
         recon = copy.deepcopy(data[:self.output_channel_num])
@@ -413,5 +413,6 @@ if '__main__' == __name__:
     # net = MobileNetV2(input_dim=dataset.data_channel_num, output_dim=1)
     net = PixToPixReidualDenseNet(dataset.data_channel_num, 1)
     # netmanage = NetTrainAndTest(net, train_loader, valid_loader, test_loader=None)
-    netmanage = NetTrainAndTest(net, train_loader = None, valid_loader = None, test_loader=test_loader)
+
+    netmanage = NetTrainAndTest(net, train_loader = train_loader, valid_loader = valid_loader, test_loader=None)
     netmanage.test()
