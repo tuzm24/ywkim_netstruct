@@ -1,4 +1,0 @@
-[INFO|MobileNet_V2(With_TU_ALL).py:503] 2019-10-19 20:24:13,970 > 1.1.0
-[INFO|MobileNet_V2(With_TU_ALL).py:505] 2019-10-19 20:24:13,970 > device cpu
-[INFO|MobileNet_V2(With_TU_ALL).py:564] 2019-10-19 20:24:17,045 > Training Start
-[INFO|MobileNet_V2(With_TU_ALL).py:587] 2019-10-19 20:28:37,499 > [Epoch : 1,     5/8] loss: 249.5605499

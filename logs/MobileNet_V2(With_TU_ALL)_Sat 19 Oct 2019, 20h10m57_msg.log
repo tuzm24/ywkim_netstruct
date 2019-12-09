@@ -1,3 +1,0 @@
-[INFO|MobileNet_V2(With_TU_ALL).py:495] 2019-10-19 20:11:00,482 > 1.1.0
-[INFO|MobileNet_V2(With_TU_ALL).py:497] 2019-10-19 20:11:00,482 > device cpu
-[INFO|MobileNet_V2(With_TU_ALL).py:578] 2019-10-19 20:15:36,577 > [Epoch : 1,     5/8] loss: 241.4110352

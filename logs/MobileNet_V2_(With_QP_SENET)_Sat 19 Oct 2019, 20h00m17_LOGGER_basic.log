@@ -1,8 +1,0 @@
-INFO:root:1.1.0
-INFO:root:device cpu
-INFO:root:Training Start
-INFO:root:[Epoch : 1,     5/8] loss: 276.0506256
-INFO:root:[epoch:1] Finish Plot Image
-INFO:root:[epoch : 1] Recon_loss : 0.0113706, Recon_PSNR : 35.4512071
-INFO:root:[epoch : 1] CNN_loss   : 6.9232694, CNN_PSNR :   -20.5264647
-INFO:root:Epoch 1 Finished
