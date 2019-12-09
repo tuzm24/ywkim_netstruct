@@ -1,0 +1,4 @@
+[INFO|build_dataset.py:764] 2019-08-19 11:08:09,664 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin\AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin -i D:/origCfP\CatRobot1_3840x2160p_60_10_709_420.yuv -bd 10
+[INFO|build_dataset.py:765] 2019-08-19 11:08:09,664 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin start
+[INFO|build_dataset.py:769] 2019-08-19 11:09:21,075 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin done
+[INFO|build_dataset.py:223] 2019-08-19 11:09:21,117 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 binfile get training set..

@@ -1,0 +1,5 @@
+[INFO|build_dataset.py:812] 2019-09-27 01:22:28,889 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin\ai_bqterrace_qp_32.bin -i D:/origCfP\BQTerrace_1920x1080_60.yuv -bd 8
+[INFO|build_dataset.py:813] 2019-09-27 01:22:28,890 > ai_bqterrace_qp_32.bin start
+[INFO|build_dataset.py:817] 2019-09-27 01:23:02,295 > ai_bqterrace_qp_32.bin done
+[INFO|build_dataset.py:230] 2019-09-27 01:23:02,303 > ai_bqterrace_qp_32 binfile get training set..
+[INFO|build_dataset.py:255] 2019-09-27 08:10:48,803 >   ai_bqterrace_qp_32 POC 0

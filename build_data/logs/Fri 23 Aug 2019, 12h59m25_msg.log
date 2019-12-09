@@ -1,0 +1,2 @@
+[INFO|build_dataset.py:783] 2019-08-23 12:59:25,692 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin\AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin -i D:/origCfP\CatRobot1_3840x2160p_60_10_709_420.yuv -bd 10
+[INFO|build_dataset.py:784] 2019-08-23 12:59:25,692 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin start

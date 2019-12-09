@@ -1,0 +1,155 @@
+INFO:root:./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin\ai_bqterrace_qp_32.bin -i D:/origCfP\BQTerrace_1920x1080_60.yuv -bd 8
+INFO:root:ai_bqterrace_qp_32.bin start
+INFO:root:ai_bqterrace_qp_32.bin done
+INFO:root:ai_bqterrace_qp_32 binfile get training set..
+INFO:root:  ai_bqterrace_qp_32 POC 0
+INFO:root:  Save to Image : ai_bqterrace_qp_32
+INFO:root:  POC_0 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 1
+INFO:root:  POC_1 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 2
+INFO:root:  POC_2 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 3
+INFO:root:  POC_3 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 4
+INFO:root:  POC_4 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 5
+INFO:root:  POC_5 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 6
+INFO:root:  POC_6 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 7
+INFO:root:  POC_7 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 8
+INFO:root:  POC_8 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 9
+INFO:root:  POC_9 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 10
+INFO:root:  POC_10 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 11
+INFO:root:  POC_11 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 12
+INFO:root:  POC_12 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 13
+INFO:root:  POC_13 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 14
+INFO:root:  POC_14 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 15
+INFO:root:  POC_15 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 16
+INFO:root:  POC_16 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 17
+INFO:root:  POC_17 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 18
+INFO:root:  POC_18 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 19
+INFO:root:  POC_19 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 20
+INFO:root:  POC_20 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 21
+INFO:root:  POC_21 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 22
+INFO:root:  POC_22 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 23
+INFO:root:  POC_23 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 24
+INFO:root:  POC_24 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 25
+INFO:root:  POC_25 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 26
+INFO:root:  POC_26 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 27
+INFO:root:  POC_27 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 28
+INFO:root:  POC_28 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 29
+INFO:root:  POC_29 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 30
+INFO:root:  POC_30 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 31
+INFO:root:  POC_31 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 32
+INFO:root:  POC_32 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 33
+INFO:root:  POC_33 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 34
+INFO:root:  POC_34 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 35
+INFO:root:  POC_35 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 36
+INFO:root:  POC_36 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 37
+INFO:root:  POC_37 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 38
+INFO:root:  POC_38 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 39
+INFO:root:  POC_39 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 40
+INFO:root:  POC_40 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 41
+INFO:root:  POC_41 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 42
+INFO:root:  POC_42 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 43
+INFO:root:  POC_43 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 44
+INFO:root:  POC_44 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 45
+INFO:root:  POC_45 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 46
+INFO:root:  POC_46 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 47
+INFO:root:  POC_47 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 48
+INFO:root:  POC_48 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 49
+INFO:root:  POC_49 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 50
+INFO:root:  POC_50 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 51
+INFO:root:  POC_51 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 52
+INFO:root:  POC_52 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 53
+INFO:root:  POC_53 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 54
+INFO:root:  POC_54 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 55
+INFO:root:  POC_55 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 56
+INFO:root:  POC_56 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 57
+INFO:root:  POC_57 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 58
+INFO:root:  POC_58 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 59
+INFO:root:  POC_59 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 60
+INFO:root:  POC_60 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 61
+INFO:root:  POC_61 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 62
+INFO:root:  POC_62 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 63
+INFO:root:  POC_63 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 64
+INFO:root:  POC_64 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 65
+INFO:root:  POC_65 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 66
+INFO:root:  POC_66 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 67
+INFO:root:  POC_67 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 68
+INFO:root:  POC_68 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 69
+INFO:root:  POC_69 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 70
+INFO:root:  POC_70 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 71
+INFO:root:  POC_71 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 72
+INFO:root:  POC_72 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 73
+INFO:root:  POC_73 finished(ai_bqterrace_qp_32 Cnt : 14)
+INFO:root:  ai_bqterrace_qp_32 POC 74
+INFO:root:  POC_74 finished(ai_bqterrace_qp_32 Cnt : 14)

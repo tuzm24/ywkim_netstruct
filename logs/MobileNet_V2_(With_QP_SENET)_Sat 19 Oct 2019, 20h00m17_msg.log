@@ -1,0 +1,8 @@
+[INFO|MobileNet_V2_(With_QP_SENET).py:542] 2019-10-19 20:00:20,257 > 1.1.0
+[INFO|MobileNet_V2_(With_QP_SENET).py:544] 2019-10-19 20:00:20,258 > device cpu
+[INFO|MobileNet_V2_(With_QP_SENET).py:595] 2019-10-19 20:00:23,365 > Training Start
+[INFO|MobileNet_V2_(With_QP_SENET).py:628] 2019-10-19 20:04:43,291 > [Epoch : 1,     5/8] loss: 276.0506256
+[INFO|MobileNet_V2_(With_QP_SENET).py:658] 2019-10-19 20:07:25,174 > [epoch:1] Finish Plot Image
+[INFO|MobileNet_V2_(With_QP_SENET).py:662] 2019-10-19 20:08:00,362 > [epoch : 1] Recon_loss : 0.0113706, Recon_PSNR : 35.4512071
+[INFO|MobileNet_V2_(With_QP_SENET).py:664] 2019-10-19 20:08:00,376 > [epoch : 1] CNN_loss   : 6.9232694, CNN_PSNR :   -20.5264647
+[INFO|MobileNet_V2_(With_QP_SENET).py:672] 2019-10-19 20:08:00,471 > Epoch 1 Finished

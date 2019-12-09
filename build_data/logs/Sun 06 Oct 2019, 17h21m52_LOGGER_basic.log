@@ -1,0 +1,5 @@
+INFO:root:./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin\AI_BQTerrace_1920x1080_60_32.bin -i D:/origCfP\BQTerrace_1920x1080_60.yuv -bd 8
+INFO:root:AI_BQTerrace_1920x1080_60_32.bin start
+INFO:root:AI_BQTerrace_1920x1080_60_32.bin done
+INFO:root:AI_BQTerrace_1920x1080_60_32 binfile get test set..
+INFO:root:  AI_BQTerrace_1920x1080_60_32 POC 0

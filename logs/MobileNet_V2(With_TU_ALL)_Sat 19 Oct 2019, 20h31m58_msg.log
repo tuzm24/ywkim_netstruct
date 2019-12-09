@@ -1,0 +1,11 @@
+[INFO|MobileNet_V2(With_TU_ALL).py:503] 2019-10-19 20:32:01,161 > 1.1.0
+[INFO|MobileNet_V2(With_TU_ALL).py:505] 2019-10-19 20:32:01,161 > device cpu
+[INFO|MobileNet_V2(With_TU_ALL).py:564] 2019-10-19 20:32:04,152 > Training Start
+[INFO|MobileNet_V2(With_TU_ALL).py:624] 2019-10-19 20:32:12,144 > [epoch:1] Finish Plot Image
+[INFO|MobileNet_V2(With_TU_ALL).py:628] 2019-10-19 20:32:42,474 > [epoch : 1] Recon_loss : 0.0111063, Recon_PSNR : 35.7477279
+[INFO|MobileNet_V2(With_TU_ALL).py:630] 2019-10-19 20:32:42,475 > [epoch : 1] CNN_loss   : 12.5151916, CNN_PSNR :   -24.5676206
+[INFO|MobileNet_V2(With_TU_ALL).py:638] 2019-10-19 20:32:42,516 > Epoch 1 Finished
+[INFO|MobileNet_V2(With_TU_ALL).py:624] 2019-10-19 20:32:47,232 > [epoch:2] Finish Plot Image
+[INFO|MobileNet_V2(With_TU_ALL).py:628] 2019-10-19 20:33:19,706 > [epoch : 2] Recon_loss : 0.0111063, Recon_PSNR : 35.7477279
+[INFO|MobileNet_V2(With_TU_ALL).py:630] 2019-10-19 20:33:19,711 > [epoch : 2] CNN_loss   : 12.5151916, CNN_PSNR :   -24.5676206
+[INFO|MobileNet_V2(With_TU_ALL).py:638] 2019-10-19 20:33:19,743 > Epoch 2 Finished

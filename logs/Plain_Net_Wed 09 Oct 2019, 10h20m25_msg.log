@@ -1,0 +1,4 @@
+[INFO|Plain_Net.py:397] 2019-10-09 10:20:27,665 > 1.1.0
+[INFO|Plain_Net.py:399] 2019-10-09 10:20:27,665 > device cpu
+[INFO|help_torch.py:17] 2019-10-09 10:20:27,706 > Calculating data mean and std
+[INFO|help_torch.py:31] 2019-10-09 10:20:59,889 > Finish calculate data mean and std

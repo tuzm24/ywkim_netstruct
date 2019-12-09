@@ -1,0 +1,3 @@
+[INFO|build_dataset.py:896] 2019-11-02 02:18:10,100 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_Tango2_3840x2160_60fps_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:897] 2019-11-02 02:18:10,100 > AI_Tango2_3840x2160_60fps_10b_S01_27.bin start
+[INFO|build_dataset.py:901] 2019-11-02 02:18:12,355 > AI_Tango2_3840x2160_60fps_10b_S01_27.bin done

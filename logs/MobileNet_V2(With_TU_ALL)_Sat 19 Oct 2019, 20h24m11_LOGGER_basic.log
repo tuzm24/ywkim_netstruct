@@ -1,0 +1,4 @@
+INFO:root:1.1.0
+INFO:root:device cpu
+INFO:root:Training Start
+INFO:root:[Epoch : 1,     5/8] loss: 249.5605499

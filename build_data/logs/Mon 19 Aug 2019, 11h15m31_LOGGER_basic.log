@@ -1,0 +1,4 @@
+INFO:root:AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 binfile get training set..
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 0
+ERROR:root:operands could not be broadcast together with shapes (8294400,) (0,) 
+ERROR:root:   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 poc 0 cannot calc PSNR

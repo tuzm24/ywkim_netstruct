@@ -1,0 +1,155 @@
+[INFO|build_dataset.py:815] 2019-09-30 07:25:41,947 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin\ai_bqterrace_qp_32.bin -i D:/origCfP\BQTerrace_1920x1080_60.yuv -bd 8
+[INFO|build_dataset.py:816] 2019-09-30 07:25:41,947 > ai_bqterrace_qp_32.bin start
+[INFO|build_dataset.py:820] 2019-09-30 07:26:15,385 > ai_bqterrace_qp_32.bin done
+[INFO|build_dataset.py:230] 2019-09-30 07:26:15,547 > ai_bqterrace_qp_32 binfile get training set..
+[INFO|build_dataset.py:255] 2019-09-30 07:26:16,988 >   ai_bqterrace_qp_32 POC 0
+[INFO|build_dataset.py:443] 2019-09-30 07:26:17,601 >   Save to Image : ai_bqterrace_qp_32
+[INFO|build_dataset.py:449] 2019-09-30 07:26:21,082 >   POC_0 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:22,284 >   ai_bqterrace_qp_32 POC 1
+[INFO|build_dataset.py:449] 2019-09-30 07:26:22,849 >   POC_1 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:24,125 >   ai_bqterrace_qp_32 POC 2
+[INFO|build_dataset.py:449] 2019-09-30 07:26:24,685 >   POC_2 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:25,833 >   ai_bqterrace_qp_32 POC 3
+[INFO|build_dataset.py:449] 2019-09-30 07:26:26,393 >   POC_3 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:27,503 >   ai_bqterrace_qp_32 POC 4
+[INFO|build_dataset.py:449] 2019-09-30 07:26:28,058 >   POC_4 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:29,354 >   ai_bqterrace_qp_32 POC 5
+[INFO|build_dataset.py:449] 2019-09-30 07:26:29,978 >   POC_5 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:32,811 >   ai_bqterrace_qp_32 POC 6
+[INFO|build_dataset.py:449] 2019-09-30 07:26:33,701 >   POC_6 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:35,386 >   ai_bqterrace_qp_32 POC 7
+[INFO|build_dataset.py:449] 2019-09-30 07:26:35,998 >   POC_7 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:37,509 >   ai_bqterrace_qp_32 POC 8
+[INFO|build_dataset.py:449] 2019-09-30 07:26:38,114 >   POC_8 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:39,497 >   ai_bqterrace_qp_32 POC 9
+[INFO|build_dataset.py:449] 2019-09-30 07:26:40,108 >   POC_9 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:41,497 >   ai_bqterrace_qp_32 POC 10
+[INFO|build_dataset.py:449] 2019-09-30 07:26:42,084 >   POC_10 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:43,403 >   ai_bqterrace_qp_32 POC 11
+[INFO|build_dataset.py:449] 2019-09-30 07:26:44,011 >   POC_11 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:45,363 >   ai_bqterrace_qp_32 POC 12
+[INFO|build_dataset.py:449] 2019-09-30 07:26:46,008 >   POC_12 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:47,328 >   ai_bqterrace_qp_32 POC 13
+[INFO|build_dataset.py:449] 2019-09-30 07:26:47,955 >   POC_13 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:49,474 >   ai_bqterrace_qp_32 POC 14
+[INFO|build_dataset.py:449] 2019-09-30 07:26:50,154 >   POC_14 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:51,664 >   ai_bqterrace_qp_32 POC 15
+[INFO|build_dataset.py:449] 2019-09-30 07:26:52,270 >   POC_15 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:53,652 >   ai_bqterrace_qp_32 POC 16
+[INFO|build_dataset.py:449] 2019-09-30 07:26:54,263 >   POC_16 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:55,562 >   ai_bqterrace_qp_32 POC 17
+[INFO|build_dataset.py:449] 2019-09-30 07:26:56,162 >   POC_17 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:57,583 >   ai_bqterrace_qp_32 POC 18
+[INFO|build_dataset.py:449] 2019-09-30 07:26:58,193 >   POC_18 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:26:59,595 >   ai_bqterrace_qp_32 POC 19
+[INFO|build_dataset.py:449] 2019-09-30 07:27:00,186 >   POC_19 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:01,458 >   ai_bqterrace_qp_32 POC 20
+[INFO|build_dataset.py:449] 2019-09-30 07:27:02,029 >   POC_20 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:03,275 >   ai_bqterrace_qp_32 POC 21
+[INFO|build_dataset.py:449] 2019-09-30 07:27:03,859 >   POC_21 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:05,153 >   ai_bqterrace_qp_32 POC 22
+[INFO|build_dataset.py:449] 2019-09-30 07:27:05,702 >   POC_22 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:06,937 >   ai_bqterrace_qp_32 POC 23
+[INFO|build_dataset.py:449] 2019-09-30 07:27:07,502 >   POC_23 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:08,771 >   ai_bqterrace_qp_32 POC 24
+[INFO|build_dataset.py:449] 2019-09-30 07:27:09,323 >   POC_24 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:10,555 >   ai_bqterrace_qp_32 POC 25
+[INFO|build_dataset.py:449] 2019-09-30 07:27:11,132 >   POC_25 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:12,371 >   ai_bqterrace_qp_32 POC 26
+[INFO|build_dataset.py:449] 2019-09-30 07:27:12,949 >   POC_26 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:14,171 >   ai_bqterrace_qp_32 POC 27
+[INFO|build_dataset.py:449] 2019-09-30 07:27:14,737 >   POC_27 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:15,994 >   ai_bqterrace_qp_32 POC 28
+[INFO|build_dataset.py:449] 2019-09-30 07:27:16,556 >   POC_28 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:17,823 >   ai_bqterrace_qp_32 POC 29
+[INFO|build_dataset.py:449] 2019-09-30 07:27:18,395 >   POC_29 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:19,665 >   ai_bqterrace_qp_32 POC 30
+[INFO|build_dataset.py:449] 2019-09-30 07:27:20,222 >   POC_30 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:21,446 >   ai_bqterrace_qp_32 POC 31
+[INFO|build_dataset.py:449] 2019-09-30 07:27:22,007 >   POC_31 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:23,249 >   ai_bqterrace_qp_32 POC 32
+[INFO|build_dataset.py:449] 2019-09-30 07:27:23,823 >   POC_32 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:25,041 >   ai_bqterrace_qp_32 POC 33
+[INFO|build_dataset.py:449] 2019-09-30 07:27:25,653 >   POC_33 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:26,897 >   ai_bqterrace_qp_32 POC 34
+[INFO|build_dataset.py:449] 2019-09-30 07:27:27,484 >   POC_34 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:28,771 >   ai_bqterrace_qp_32 POC 35
+[INFO|build_dataset.py:449] 2019-09-30 07:27:29,344 >   POC_35 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:30,594 >   ai_bqterrace_qp_32 POC 36
+[INFO|build_dataset.py:449] 2019-09-30 07:27:31,158 >   POC_36 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:32,417 >   ai_bqterrace_qp_32 POC 37
+[INFO|build_dataset.py:449] 2019-09-30 07:27:32,996 >   POC_37 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:34,306 >   ai_bqterrace_qp_32 POC 38
+[INFO|build_dataset.py:449] 2019-09-30 07:27:34,913 >   POC_38 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:36,214 >   ai_bqterrace_qp_32 POC 39
+[INFO|build_dataset.py:449] 2019-09-30 07:27:36,781 >   POC_39 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:38,086 >   ai_bqterrace_qp_32 POC 40
+[INFO|build_dataset.py:449] 2019-09-30 07:27:38,691 >   POC_40 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:40,152 >   ai_bqterrace_qp_32 POC 41
+[INFO|build_dataset.py:449] 2019-09-30 07:27:40,772 >   POC_41 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:42,113 >   ai_bqterrace_qp_32 POC 42
+[INFO|build_dataset.py:449] 2019-09-30 07:27:42,687 >   POC_42 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:43,978 >   ai_bqterrace_qp_32 POC 43
+[INFO|build_dataset.py:449] 2019-09-30 07:27:44,517 >   POC_43 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:46,017 >   ai_bqterrace_qp_32 POC 44
+[INFO|build_dataset.py:449] 2019-09-30 07:27:46,696 >   POC_44 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:48,198 >   ai_bqterrace_qp_32 POC 45
+[INFO|build_dataset.py:449] 2019-09-30 07:27:48,820 >   POC_45 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:50,258 >   ai_bqterrace_qp_32 POC 46
+[INFO|build_dataset.py:449] 2019-09-30 07:27:50,862 >   POC_46 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:52,284 >   ai_bqterrace_qp_32 POC 47
+[INFO|build_dataset.py:449] 2019-09-30 07:27:52,877 >   POC_47 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:54,315 >   ai_bqterrace_qp_32 POC 48
+[INFO|build_dataset.py:449] 2019-09-30 07:27:54,932 >   POC_48 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:56,373 >   ai_bqterrace_qp_32 POC 49
+[INFO|build_dataset.py:449] 2019-09-30 07:27:56,940 >   POC_49 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:27:58,230 >   ai_bqterrace_qp_32 POC 50
+[INFO|build_dataset.py:449] 2019-09-30 07:27:58,897 >   POC_50 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:00,899 >   ai_bqterrace_qp_32 POC 51
+[INFO|build_dataset.py:449] 2019-09-30 07:28:01,592 >   POC_51 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:03,632 >   ai_bqterrace_qp_32 POC 52
+[INFO|build_dataset.py:449] 2019-09-30 07:28:04,402 >   POC_52 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:06,490 >   ai_bqterrace_qp_32 POC 53
+[INFO|build_dataset.py:449] 2019-09-30 07:28:07,254 >   POC_53 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:08,756 >   ai_bqterrace_qp_32 POC 54
+[INFO|build_dataset.py:449] 2019-09-30 07:28:09,359 >   POC_54 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:10,818 >   ai_bqterrace_qp_32 POC 55
+[INFO|build_dataset.py:449] 2019-09-30 07:28:11,433 >   POC_55 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:12,805 >   ai_bqterrace_qp_32 POC 56
+[INFO|build_dataset.py:449] 2019-09-30 07:28:13,388 >   POC_56 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:14,523 >   ai_bqterrace_qp_32 POC 57
+[INFO|build_dataset.py:449] 2019-09-30 07:28:15,058 >   POC_57 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:16,190 >   ai_bqterrace_qp_32 POC 58
+[INFO|build_dataset.py:449] 2019-09-30 07:28:16,712 >   POC_58 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:17,882 >   ai_bqterrace_qp_32 POC 59
+[INFO|build_dataset.py:449] 2019-09-30 07:28:18,472 >   POC_59 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:19,712 >   ai_bqterrace_qp_32 POC 60
+[INFO|build_dataset.py:449] 2019-09-30 07:28:20,313 >   POC_60 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:21,433 >   ai_bqterrace_qp_32 POC 61
+[INFO|build_dataset.py:449] 2019-09-30 07:28:21,956 >   POC_61 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:23,072 >   ai_bqterrace_qp_32 POC 62
+[INFO|build_dataset.py:449] 2019-09-30 07:28:23,615 >   POC_62 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:24,753 >   ai_bqterrace_qp_32 POC 63
+[INFO|build_dataset.py:449] 2019-09-30 07:28:25,312 >   POC_63 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:26,431 >   ai_bqterrace_qp_32 POC 64
+[INFO|build_dataset.py:449] 2019-09-30 07:28:26,949 >   POC_64 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:28,044 >   ai_bqterrace_qp_32 POC 65
+[INFO|build_dataset.py:449] 2019-09-30 07:28:28,584 >   POC_65 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:29,786 >   ai_bqterrace_qp_32 POC 66
+[INFO|build_dataset.py:449] 2019-09-30 07:28:30,333 >   POC_66 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:31,441 >   ai_bqterrace_qp_32 POC 67
+[INFO|build_dataset.py:449] 2019-09-30 07:28:31,983 >   POC_67 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:33,084 >   ai_bqterrace_qp_32 POC 68
+[INFO|build_dataset.py:449] 2019-09-30 07:28:33,617 >   POC_68 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:34,703 >   ai_bqterrace_qp_32 POC 69
+[INFO|build_dataset.py:449] 2019-09-30 07:28:35,244 >   POC_69 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:36,369 >   ai_bqterrace_qp_32 POC 70
+[INFO|build_dataset.py:449] 2019-09-30 07:28:36,892 >   POC_70 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:38,024 >   ai_bqterrace_qp_32 POC 71
+[INFO|build_dataset.py:449] 2019-09-30 07:28:38,573 >   POC_71 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:39,678 >   ai_bqterrace_qp_32 POC 72
+[INFO|build_dataset.py:449] 2019-09-30 07:28:40,233 >   POC_72 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:41,340 >   ai_bqterrace_qp_32 POC 73
+[INFO|build_dataset.py:449] 2019-09-30 07:28:41,874 >   POC_73 finished(ai_bqterrace_qp_32 Cnt : 14)
+[INFO|build_dataset.py:255] 2019-09-30 07:28:42,974 >   ai_bqterrace_qp_32 POC 74
+[INFO|build_dataset.py:449] 2019-09-30 07:28:43,508 >   POC_74 finished(ai_bqterrace_qp_32 Cnt : 14)

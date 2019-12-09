@@ -1,0 +1,13 @@
+[INFO|build_dataset.py:784] 2019-08-23 13:44:19,272 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:785] 2019-08-23 13:44:19,273 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+[INFO|build_dataset.py:789] 2019-08-23 13:45:12,679 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+[INFO|build_dataset.py:228] 2019-08-23 13:45:12,687 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get training set..
+[INFO|build_dataset.py:251] 2019-08-23 13:45:18,084 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0
+[ERROR|config.py:22] 2019-08-23 13:45:19,412 > Miss no name 'TARGET_DATA_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:19,413 > Miss no name 'VALIDATION_DATASET_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:19,521 > Miss no name 'VALIDATION_DATASET_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:19,524 > Miss no name 'TARGET_DATA_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:25,615 > Miss no name 'TARGET_DATA_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:25,617 > Miss no name 'VALIDATION_DATASET_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:25,727 > Miss no name 'VALIDATION_DATASET_NUM' in config 
+[ERROR|config.py:22] 2019-08-23 13:45:25,729 > Miss no name 'TARGET_DATA_NUM' in config 

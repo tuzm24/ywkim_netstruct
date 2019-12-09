@@ -1,0 +1,5 @@
+[INFO|build_dataset.py:784] 2019-08-23 13:41:06,588 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:785] 2019-08-23 13:41:06,589 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+[INFO|build_dataset.py:789] 2019-08-23 13:42:02,607 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+[INFO|build_dataset.py:228] 2019-08-23 13:42:02,675 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get training set..
+[INFO|build_dataset.py:251] 2019-08-23 13:42:08,071 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0

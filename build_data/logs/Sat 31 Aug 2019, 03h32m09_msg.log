@@ -1,0 +1,20 @@
+[INFO|build_dataset.py:795] 2019-08-31 03:32:09,858 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:796] 2019-08-31 03:32:09,858 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+[INFO|build_dataset.py:800] 2019-08-31 03:33:04,685 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+[INFO|build_dataset.py:228] 2019-08-31 03:33:04,900 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get training set..
+[INFO|build_dataset.py:251] 2019-08-31 03:33:09,274 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0
+[INFO|build_dataset.py:437] 2019-08-31 03:33:10,513 >   Save to Image : AI_MAIN10_Tango2_3840x2160_60_10b_S01_27
+[INFO|build_dataset.py:443] 2019-08-31 03:33:22,754 >   POC_0 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:27,305 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 1
+[INFO|build_dataset.py:443] 2019-08-31 03:33:28,532 >   POC_1 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:33,443 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 2
+[INFO|build_dataset.py:443] 2019-08-31 03:33:34,679 >   POC_2 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:39,003 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 3
+[INFO|build_dataset.py:443] 2019-08-31 03:33:40,244 >   POC_3 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:44,538 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 4
+[INFO|build_dataset.py:443] 2019-08-31 03:33:45,862 >   POC_4 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:50,667 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 5
+[INFO|build_dataset.py:443] 2019-08-31 03:33:51,952 >   POC_5 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:33:56,549 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 6
+[INFO|build_dataset.py:443] 2019-08-31 03:33:58,143 >   POC_6 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 3)
+[INFO|build_dataset.py:251] 2019-08-31 03:34:03,534 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 7

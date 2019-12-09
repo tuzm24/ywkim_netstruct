@@ -1,0 +1,5 @@
+[INFO|Plain_Net.py:397] 2019-10-09 10:26:24,314 > 1.1.0
+[INFO|Plain_Net.py:399] 2019-10-09 10:26:24,315 > device cpu
+[INFO|Plain_Net.py:501] 2019-10-09 10:26:48,983 > [epoch:1] Finish Plot Image
+[INFO|Plain_Net.py:504] 2019-10-09 10:26:51,971 > [epoch : 1] Recon_loss : 0.0109077, Recon_PSNR : 35.0188216
+[INFO|Plain_Net.py:506] 2019-10-09 10:26:51,972 > [epoch : 1] CNN_loss   : 0.1219993, CNN_PSNR :   8.9084471

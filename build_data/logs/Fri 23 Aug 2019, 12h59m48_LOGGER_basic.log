@@ -1,0 +1,26 @@
+INFO:root:./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin\AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin -i D:/origCfP\CatRobot1_3840x2160p_60_10_709_420.yuv -bd 10
+INFO:root:AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin start
+INFO:root:AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin done
+INFO:root:AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 binfile get training set..
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 0
+INFO:root:  Save to Image : AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22
+INFO:root:  POC_0 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 1
+INFO:root:  POC_1 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 2
+INFO:root:  POC_2 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 3
+INFO:root:  POC_3 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 4
+INFO:root:  POC_4 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 5
+INFO:root:  POC_5 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 6
+INFO:root:  POC_6 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 7
+INFO:root:  POC_7 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 8
+INFO:root:  POC_8 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 9
+INFO:root:  POC_9 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 435)
+INFO:root:  AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 10

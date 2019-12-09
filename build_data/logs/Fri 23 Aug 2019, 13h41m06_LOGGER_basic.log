@@ -1,0 +1,5 @@
+INFO:root:./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+INFO:root:AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+INFO:root:AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+INFO:root:AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get training set..
+INFO:root:  AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0

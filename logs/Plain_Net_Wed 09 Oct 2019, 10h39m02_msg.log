@@ -1,0 +1,6 @@
+[INFO|Plain_Net.py:397] 2019-10-09 10:39:04,105 > 1.1.0
+[INFO|Plain_Net.py:399] 2019-10-09 10:39:04,106 > device cpu
+[INFO|Plain_Net.py:501] 2019-10-09 10:39:26,998 > [epoch:1] Finish Plot Image
+[INFO|summary.py:41] 2019-10-09 10:39:29,254 > Summary name Error Mean is illegal; using Error_Mean instead.
+[INFO|Plain_Net.py:505] 2019-10-09 10:39:29,294 > [epoch : 1] Recon_loss : 0.0109077, Recon_PSNR : 35.0188216
+[INFO|Plain_Net.py:507] 2019-10-09 10:39:29,300 > [epoch : 1] CNN_loss   : 0.1969714, CNN_PSNR :   1.5022052

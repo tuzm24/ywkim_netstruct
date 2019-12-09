@@ -1,0 +1,6 @@
+INFO:root:1.1.0
+INFO:root:device cpu
+INFO:root:[epoch:1] Finish Plot Image
+INFO:root:[epoch : 1] Recon_loss : 0.0109077, Recon_PSNR : 35.0188216
+INFO:root:[epoch : 1] CNN_loss   : 0.2507603, CNN_PSNR :   5.8505345
+INFO:root:Epoch 1 Finished

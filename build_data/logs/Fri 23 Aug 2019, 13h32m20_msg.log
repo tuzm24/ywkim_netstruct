@@ -1,0 +1,86 @@
+[INFO|build_dataset.py:783] 2019-08-23 13:32:20,975 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:784] 2019-08-23 13:32:20,975 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+[INFO|build_dataset.py:788] 2019-08-23 13:33:10,266 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+[INFO|build_dataset.py:228] 2019-08-23 13:33:10,481 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get training set..
+[INFO|build_dataset.py:251] 2019-08-23 13:33:17,486 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0
+[INFO|build_dataset.py:437] 2019-08-23 13:33:19,770 >   Save to Image : AI_MAIN10_Tango2_3840x2160_60_10b_S01_27
+[INFO|build_dataset.py:443] 2019-08-23 13:33:34,612 >   POC_0 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:33:39,826 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 1
+[INFO|build_dataset.py:443] 2019-08-23 13:33:42,103 >   POC_1 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:33:47,532 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 2
+[INFO|build_dataset.py:443] 2019-08-23 13:33:49,706 >   POC_2 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:33:54,692 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 3
+[INFO|build_dataset.py:443] 2019-08-23 13:33:56,495 >   POC_3 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:00,963 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 4
+[INFO|build_dataset.py:443] 2019-08-23 13:34:02,768 >   POC_4 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:07,421 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 5
+[INFO|build_dataset.py:443] 2019-08-23 13:34:09,238 >   POC_5 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:13,757 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 6
+[INFO|build_dataset.py:443] 2019-08-23 13:34:15,707 >   POC_6 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:21,021 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 7
+[INFO|build_dataset.py:443] 2019-08-23 13:34:22,965 >   POC_7 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:27,993 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 8
+[INFO|build_dataset.py:443] 2019-08-23 13:34:29,862 >   POC_8 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:34,596 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 9
+[INFO|build_dataset.py:443] 2019-08-23 13:34:36,506 >   POC_9 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:42,031 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 10
+[INFO|build_dataset.py:443] 2019-08-23 13:34:44,139 >   POC_10 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:49,572 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 11
+[INFO|build_dataset.py:443] 2019-08-23 13:34:51,478 >   POC_11 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:34:57,068 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 12
+[INFO|build_dataset.py:443] 2019-08-23 13:34:59,141 >   POC_12 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:04,017 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 13
+[INFO|build_dataset.py:443] 2019-08-23 13:35:06,012 >   POC_13 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:11,080 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 14
+[INFO|build_dataset.py:443] 2019-08-23 13:35:12,873 >   POC_14 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:17,547 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 15
+[INFO|build_dataset.py:443] 2019-08-23 13:35:19,315 >   POC_15 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:24,039 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 16
+[INFO|build_dataset.py:443] 2019-08-23 13:35:25,799 >   POC_16 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:32,227 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 17
+[INFO|build_dataset.py:443] 2019-08-23 13:35:34,023 >   POC_17 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:38,663 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 18
+[INFO|build_dataset.py:443] 2019-08-23 13:35:40,454 >   POC_18 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:45,093 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 19
+[INFO|build_dataset.py:443] 2019-08-23 13:35:46,896 >   POC_19 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:51,577 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 20
+[INFO|build_dataset.py:443] 2019-08-23 13:35:53,390 >   POC_20 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:35:58,059 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 21
+[INFO|build_dataset.py:443] 2019-08-23 13:35:59,885 >   POC_21 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:07,635 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 22
+[INFO|build_dataset.py:443] 2019-08-23 13:36:10,406 >   POC_22 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:16,757 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 23
+[INFO|build_dataset.py:443] 2019-08-23 13:36:19,362 >   POC_23 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:24,387 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 24
+[INFO|build_dataset.py:443] 2019-08-23 13:36:26,354 >   POC_24 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:31,165 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 25
+[INFO|build_dataset.py:443] 2019-08-23 13:36:33,139 >   POC_25 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:38,427 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 26
+[INFO|build_dataset.py:443] 2019-08-23 13:36:40,420 >   POC_26 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:45,601 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 27
+[INFO|build_dataset.py:443] 2019-08-23 13:36:47,648 >   POC_27 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:53,275 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 28
+[INFO|build_dataset.py:443] 2019-08-23 13:36:55,181 >   POC_28 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:36:59,792 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 29
+[INFO|build_dataset.py:443] 2019-08-23 13:37:01,550 >   POC_29 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:06,360 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 30
+[INFO|build_dataset.py:443] 2019-08-23 13:37:08,206 >   POC_30 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:12,934 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 31
+[INFO|build_dataset.py:443] 2019-08-23 13:37:14,981 >   POC_31 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:20,028 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 32
+[INFO|build_dataset.py:443] 2019-08-23 13:37:21,889 >   POC_32 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:26,781 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 33
+[INFO|build_dataset.py:443] 2019-08-23 13:37:28,667 >   POC_33 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:33,567 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 34
+[INFO|build_dataset.py:443] 2019-08-23 13:37:35,394 >   POC_34 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:40,086 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 35
+[INFO|build_dataset.py:443] 2019-08-23 13:37:41,889 >   POC_35 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:251] 2019-08-23 13:37:46,761 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 36
+[INFO|build_dataset.py:443] 2019-08-23 13:37:48,585 >   POC_36 finished(AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 Cnt : 28)
+[INFO|build_dataset.py:783] 2019-08-23 13:37:49,738 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/Codec/VVC4.0/samplebin_one\AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin -i D:/origCfP\Tango2_3840x2160_60fps_10bit_420.yuv -bd 10
+[INFO|build_dataset.py:784] 2019-08-23 13:37:49,738 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin start
+[INFO|build_dataset.py:788] 2019-08-23 13:38:35,843 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin done
+[INFO|build_dataset.py:459] 2019-08-23 13:38:35,864 > AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 binfile get test set..
+[INFO|build_dataset.py:493] 2019-08-23 13:38:40,790 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 0
+[INFO|build_dataset.py:493] 2019-08-23 13:38:57,187 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC 1
+[INFO|build_dataset.py:476] 2019-08-23 13:39:07,683 >   AI_MAIN10_Tango2_3840x2160_60_10b_S01_27 POC is break(POC : 2)

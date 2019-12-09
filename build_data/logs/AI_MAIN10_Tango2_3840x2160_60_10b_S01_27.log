@@ -1,0 +1,228 @@
+
+VVCSoftware: VTM Decoder Version 4.0 [Windows][VS 1916][64 bit] [SIMD=AVX2] 
+ywkim_AI_MAIN10_Tango2_3840x2160_60_10b_S01_27.bin
+POC    0 TId: 0 ( I-SLICE, QP 27 ) [DT  0.831] [L0 ] [L1 ] [:,(unk)] 
+POC    1 TId: 0 ( I-SLICE, QP 27 ) [DT  0.689] [L0 ] [L1 ] [:,(unk)] 
+POC    2 TId: 0 ( I-SLICE, QP 27 ) [DT  0.567] [L0 ] [L1 ] [:,(unk)] 
+POC    3 TId: 0 ( I-SLICE, QP 27 ) [DT  0.426] [L0 ] [L1 ] [:,(unk)] 
+POC    4 TId: 0 ( I-SLICE, QP 27 ) [DT  0.358] [L0 ] [L1 ] [:,(unk)] 
+POC    5 TId: 0 ( I-SLICE, QP 27 ) [DT  0.363] [L0 ] [L1 ] [:,(unk)] 
+POC    6 TId: 0 ( I-SLICE, QP 27 ) [DT  0.483] [L0 ] [L1 ] [:,(unk)] 
+POC    7 TId: 0 ( I-SLICE, QP 27 ) [DT  0.354] [L0 ] [L1 ] [:,(unk)] 
+POC    8 TId: 0 ( I-SLICE, QP 27 ) [DT  0.461] [L0 ] [L1 ] [:,(unk)] 
+POC    9 TId: 0 ( I-SLICE, QP 27 ) [DT  0.450] [L0 ] [L1 ] [:,(unk)] 
+POC   10 TId: 0 ( I-SLICE, QP 27 ) [DT  0.339] [L0 ] [L1 ] [:,(unk)] 
+POC   11 TId: 0 ( I-SLICE, QP 27 ) [DT  0.352] [L0 ] [L1 ] [:,(unk)] 
+POC   12 TId: 0 ( I-SLICE, QP 27 ) [DT  0.357] [L0 ] [L1 ] [:,(unk)] 
+POC   13 TId: 0 ( I-SLICE, QP 27 ) [DT  0.366] [L0 ] [L1 ] [:,(unk)] 
+POC   14 TId: 0 ( I-SLICE, QP 27 ) [DT  0.399] [L0 ] [L1 ] [:,(unk)] 
+POC   15 TId: 0 ( I-SLICE, QP 27 ) [DT  0.547] [L0 ] [L1 ] [:,(unk)] 
+POC   16 TId: 0 ( I-SLICE, QP 27 ) [DT  0.401] [L0 ] [L1 ] [:,(unk)] 
+POC   17 TId: 0 ( I-SLICE, QP 27 ) [DT  0.380] [L0 ] [L1 ] [:,(unk)] 
+POC   18 TId: 0 ( I-SLICE, QP 27 ) [DT  0.374] [L0 ] [L1 ] [:,(unk)] 
+POC   19 TId: 0 ( I-SLICE, QP 27 ) [DT  0.400] [L0 ] [L1 ] [:,(unk)] 
+POC   20 TId: 0 ( I-SLICE, QP 27 ) [DT  0.396] [L0 ] [L1 ] [:,(unk)] 
+POC   21 TId: 0 ( I-SLICE, QP 27 ) [DT  0.386] [L0 ] [L1 ] [:,(unk)] 
+POC   22 TId: 0 ( I-SLICE, QP 27 ) [DT  0.415] [L0 ] [L1 ] [:,(unk)] 
+POC   23 TId: 0 ( I-SLICE, QP 27 ) [DT  0.398] [L0 ] [L1 ] [:,(unk)] 
+POC   24 TId: 0 ( I-SLICE, QP 27 ) [DT  0.399] [L0 ] [L1 ] [:,(unk)] 
+POC   25 TId: 0 ( I-SLICE, QP 27 ) [DT  0.396] [L0 ] [L1 ] [:,(unk)] 
+POC   26 TId: 0 ( I-SLICE, QP 27 ) [DT  0.414] [L0 ] [L1 ] [:,(unk)] 
+POC   27 TId: 0 ( I-SLICE, QP 27 ) [DT  0.404] [L0 ] [L1 ] [:,(unk)] 
+POC   28 TId: 0 ( I-SLICE, QP 27 ) [DT  0.357] [L0 ] [L1 ] [:,(unk)] 
+POC   29 TId: 0 ( I-SLICE, QP 27 ) [DT  0.424] [L0 ] [L1 ] [:,(unk)] 
+POC   30 TId: 0 ( I-SLICE, QP 27 ) [DT  0.400] [L0 ] [L1 ] [:,(unk)] 
+POC   31 TId: 0 ( I-SLICE, QP 27 ) [DT  0.582] [L0 ] [L1 ] [:,(unk)] 
+POC   32 TId: 0 ( I-SLICE, QP 27 ) [DT  0.935] [L0 ] [L1 ] [:,(unk)] 
+POC   33 TId: 0 ( I-SLICE, QP 27 ) [DT  0.759] [L0 ] [L1 ] [:,(unk)] 
+POC   34 TId: 0 ( I-SLICE, QP 27 ) [DT  0.525] [L0 ] [L1 ] [:,(unk)] 
+POC   35 TId: 0 ( I-SLICE, QP 27 ) [DT  0.485] [L0 ] [L1 ] [:,(unk)] 
+POC   36 TId: 0 ( I-SLICE, QP 27 ) [DT  0.399] [L0 ] [L1 ] [:,(unk)] 
+
+ Total Time:       32.583 sec.
+ytu: 16221 /uvtu : 5969
+POC : 0
+  Pred PSNR 23.368394
+  Recon PSNR 41.822750
+  Unfiltered PSNR 41.740558
+ytu: 17076 /uvtu : 6375
+POC : 1
+  Pred PSNR 23.522174
+  Recon PSNR 41.775119
+  Unfiltered PSNR 41.696183
+ytu: 17154 /uvtu : 6199
+POC : 2
+  Pred PSNR 23.775486
+  Recon PSNR 41.718807
+  Unfiltered PSNR 41.640651
+ytu: 17179 /uvtu : 6188
+POC : 3
+  Pred PSNR 23.638565
+  Recon PSNR 41.704216
+  Unfiltered PSNR 41.626049
+ytu: 16906 /uvtu : 6237
+POC : 4
+  Pred PSNR 23.550241
+  Recon PSNR 41.705477
+  Unfiltered PSNR 41.626886
+ytu: 17110 /uvtu : 6442
+POC : 5
+  Pred PSNR 23.519379
+  Recon PSNR 41.653534
+  Unfiltered PSNR 41.576768
+ytu: 16222 /uvtu : 6454
+POC : 6
+  Pred PSNR 23.687312
+  Recon PSNR 41.575662
+  Unfiltered PSNR 41.503332
+ytu: 15328 /uvtu : 6255
+POC : 7
+  Pred PSNR 23.647596
+  Recon PSNR 41.618161
+  Unfiltered PSNR 41.542528
+ytu: 15209 /uvtu : 6247
+POC : 8
+  Pred PSNR 23.577700
+  Recon PSNR 41.608035
+  Unfiltered PSNR 41.530662
+ytu: 16180 /uvtu : 6681
+POC : 9
+  Pred PSNR 23.817339
+  Recon PSNR 41.534543
+  Unfiltered PSNR 41.454320
+ytu: 16652 /uvtu : 6725
+POC : 10
+  Pred PSNR 23.888508
+  Recon PSNR 41.559393
+  Unfiltered PSNR 41.479164
+ytu: 17365 /uvtu : 6595
+POC : 11
+  Pred PSNR 23.747701
+  Recon PSNR 41.566511
+  Unfiltered PSNR 41.486533
+ytu: 18271 /uvtu : 6802
+POC : 12
+  Pred PSNR 23.737658
+  Recon PSNR 41.583434
+  Unfiltered PSNR 41.504003
+ytu: 18263 /uvtu : 7003
+POC : 13
+  Pred PSNR 23.788495
+  Recon PSNR 41.608634
+  Unfiltered PSNR 41.525704
+ytu: 17718 /uvtu : 6709
+POC : 14
+  Pred PSNR 23.866420
+  Recon PSNR 41.664123
+  Unfiltered PSNR 41.584089
+ytu: 18221 /uvtu : 6831
+POC : 15
+  Pred PSNR 23.903406
+  Recon PSNR 41.617893
+  Unfiltered PSNR 41.537420
+ytu: 17750 /uvtu : 6902
+POC : 16
+  Pred PSNR 24.229689
+  Recon PSNR 41.712060
+  Unfiltered PSNR 41.632948
+ytu: 16790 /uvtu : 6608
+POC : 17
+  Pred PSNR 25.456103
+  Recon PSNR 41.741430
+  Unfiltered PSNR 41.670641
+ytu: 18312 /uvtu : 6952
+POC : 18
+  Pred PSNR 24.798697
+  Recon PSNR 41.641247
+  Unfiltered PSNR 41.570120
+ytu: 19161 /uvtu : 6949
+POC : 19
+  Pred PSNR 23.738138
+  Recon PSNR 41.476979
+  Unfiltered PSNR 41.398093
+ytu: 19019 /uvtu : 7244
+POC : 20
+  Pred PSNR 23.913300
+  Recon PSNR 41.457665
+  Unfiltered PSNR 41.381125
+ytu: 19036 /uvtu : 7026
+POC : 21
+  Pred PSNR 24.151720
+  Recon PSNR 41.592202
+  Unfiltered PSNR 41.512087
+ytu: 19381 /uvtu : 6883
+POC : 22
+  Pred PSNR 24.555091
+  Recon PSNR 41.637033
+  Unfiltered PSNR 41.556444
+ytu: 19701 /uvtu : 7280
+POC : 23
+  Pred PSNR 24.067461
+  Recon PSNR 41.588942
+  Unfiltered PSNR 41.504832
+ytu: 19572 /uvtu : 7001
+POC : 24
+  Pred PSNR 23.866314
+  Recon PSNR 41.517458
+  Unfiltered PSNR 41.433759
+ytu: 18832 /uvtu : 6794
+POC : 25
+  Pred PSNR 23.588874
+  Recon PSNR 41.555498
+  Unfiltered PSNR 41.472528
+ytu: 18334 /uvtu : 7006
+POC : 26
+  Pred PSNR 23.647534
+  Recon PSNR 41.558351
+  Unfiltered PSNR 41.469799
+ytu: 17452 /uvtu : 6885
+POC : 27
+  Pred PSNR 23.582094
+  Recon PSNR 41.601556
+  Unfiltered PSNR 41.509091
+ytu: 17453 /uvtu : 6772
+POC : 28
+  Pred PSNR 23.404154
+  Recon PSNR 41.484559
+  Unfiltered PSNR 41.393415
+ytu: 18000 /uvtu : 6955
+POC : 29
+  Pred PSNR 23.387752
+  Recon PSNR 41.522800
+  Unfiltered PSNR 41.431265
+ytu: 19698 /uvtu : 7177
+POC : 30
+  Pred PSNR 23.543137
+  Recon PSNR 41.492546
+  Unfiltered PSNR 41.399107
+ytu: 20969 /uvtu : 7253
+POC : 31
+  Pred PSNR 23.808016
+  Recon PSNR 41.532108
+  Unfiltered PSNR 41.437727
+ytu: 22437 /uvtu : 7361
+POC : 32
+  Pred PSNR 23.742788
+  Recon PSNR 41.497876
+  Unfiltered PSNR 41.404761
+ytu: 22245 /uvtu : 7321
+POC : 33
+  Pred PSNR 23.421984
+  Recon PSNR 41.394292
+  Unfiltered PSNR 41.305523
+ytu: 21056 /uvtu : 6788
+POC : 34
+  Pred PSNR 23.408057
+  Recon PSNR 41.522412
+  Unfiltered PSNR 41.437311
+ytu: 19952 /uvtu : 6462
+POC : 35
+  Pred PSNR 23.399246
+  Recon PSNR 41.613460
+  Unfiltered PSNR 41.532638
+ytu: 18754 /uvtu : 6275
+POC : 36
+  Pred PSNR 23.567539
+  Recon PSNR 41.682402
+  Unfiltered PSNR 41.604864
+Done

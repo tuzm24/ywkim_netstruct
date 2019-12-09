@@ -1,0 +1,531 @@
+
+VVCSoftware: VTM Decoder Version 6.1 [Windows][VS 1916][64 bit] [SIMD=AVX2] 
+ywkim_AI_BQTerrace_1920x1080_60_32.bin
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    0 TId: 0 ( I-SLICE, QP 32 ) [DT  0.319] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    1 TId: 0 ( I-SLICE, QP 32 ) [DT  0.294] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    2 TId: 0 ( I-SLICE, QP 32 ) [DT  0.296] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    3 TId: 0 ( I-SLICE, QP 32 ) [DT  0.264] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    4 TId: 0 ( I-SLICE, QP 32 ) [DT  0.262] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    5 TId: 0 ( I-SLICE, QP 32 ) [DT  0.279] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    6 TId: 0 ( I-SLICE, QP 32 ) [DT  0.242] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    7 TId: 0 ( I-SLICE, QP 32 ) [DT  0.254] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    8 TId: 0 ( I-SLICE, QP 32 ) [DT  0.254] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC    9 TId: 0 ( I-SLICE, QP 32 ) [DT  0.251] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   10 TId: 0 ( I-SLICE, QP 32 ) [DT  0.245] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   11 TId: 0 ( I-SLICE, QP 32 ) [DT  0.237] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   12 TId: 0 ( I-SLICE, QP 32 ) [DT  0.225] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   13 TId: 0 ( I-SLICE, QP 32 ) [DT  0.246] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   14 TId: 0 ( I-SLICE, QP 32 ) [DT  0.257] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   15 TId: 0 ( I-SLICE, QP 32 ) [DT  0.222] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   16 TId: 0 ( I-SLICE, QP 32 ) [DT  0.210] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   17 TId: 0 ( I-SLICE, QP 32 ) [DT  0.218] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   18 TId: 0 ( I-SLICE, QP 32 ) [DT  0.197] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   19 TId: 0 ( I-SLICE, QP 32 ) [DT  0.195] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   20 TId: 0 ( I-SLICE, QP 32 ) [DT  0.186] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   21 TId: 0 ( I-SLICE, QP 32 ) [DT  0.190] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   22 TId: 0 ( I-SLICE, QP 32 ) [DT  0.218] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   23 TId: 0 ( I-SLICE, QP 32 ) [DT  0.199] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   24 TId: 0 ( I-SLICE, QP 32 ) [DT  0.190] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   25 TId: 0 ( I-SLICE, QP 32 ) [DT  0.175] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   26 TId: 0 ( I-SLICE, QP 32 ) [DT  0.191] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   27 TId: 0 ( I-SLICE, QP 32 ) [DT  0.177] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   28 TId: 0 ( I-SLICE, QP 32 ) [DT  0.170] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   29 TId: 0 ( I-SLICE, QP 32 ) [DT  0.179] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   30 TId: 0 ( I-SLICE, QP 32 ) [DT  0.173] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   31 TId: 0 ( I-SLICE, QP 32 ) [DT  0.186] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   32 TId: 0 ( I-SLICE, QP 32 ) [DT  0.185] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   33 TId: 0 ( I-SLICE, QP 32 ) [DT  0.204] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   34 TId: 0 ( I-SLICE, QP 32 ) [DT  0.297] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   35 TId: 0 ( I-SLICE, QP 32 ) [DT  0.222] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   36 TId: 0 ( I-SLICE, QP 32 ) [DT  0.228] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   37 TId: 0 ( I-SLICE, QP 32 ) [DT  0.204] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   38 TId: 0 ( I-SLICE, QP 32 ) [DT  0.236] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   39 TId: 0 ( I-SLICE, QP 32 ) [DT  0.229] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   40 TId: 0 ( I-SLICE, QP 32 ) [DT  0.214] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   41 TId: 0 ( I-SLICE, QP 32 ) [DT  0.240] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   42 TId: 0 ( I-SLICE, QP 32 ) [DT  0.264] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   43 TId: 0 ( I-SLICE, QP 32 ) [DT  0.244] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   44 TId: 0 ( I-SLICE, QP 32 ) [DT  0.233] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   45 TId: 0 ( I-SLICE, QP 32 ) [DT  0.239] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   46 TId: 0 ( I-SLICE, QP 32 ) [DT  0.263] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   47 TId: 0 ( I-SLICE, QP 32 ) [DT  0.238] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   48 TId: 0 ( I-SLICE, QP 32 ) [DT  0.238] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   49 TId: 0 ( I-SLICE, QP 32 ) [DT  0.245] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   50 TId: 0 ( I-SLICE, QP 32 ) [DT  0.261] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   51 TId: 0 ( I-SLICE, QP 32 ) [DT  0.235] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   52 TId: 0 ( I-SLICE, QP 32 ) [DT  0.242] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   53 TId: 0 ( I-SLICE, QP 32 ) [DT  0.240] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   54 TId: 0 ( I-SLICE, QP 32 ) [DT  0.234] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   55 TId: 0 ( I-SLICE, QP 32 ) [DT  0.243] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   56 TId: 0 ( I-SLICE, QP 32 ) [DT  0.235] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   57 TId: 0 ( I-SLICE, QP 32 ) [DT  0.264] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   58 TId: 0 ( I-SLICE, QP 32 ) [DT  0.236] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   59 TId: 0 ( I-SLICE, QP 32 ) [DT  0.247] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   60 TId: 0 ( I-SLICE, QP 32 ) [DT  0.297] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   61 TId: 0 ( I-SLICE, QP 32 ) [DT  0.251] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   62 TId: 0 ( I-SLICE, QP 32 ) [DT  0.271] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   63 TId: 0 ( I-SLICE, QP 32 ) [DT  0.258] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   64 TId: 0 ( I-SLICE, QP 32 ) [DT  0.238] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   65 TId: 0 ( I-SLICE, QP 32 ) [DT  0.253] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   66 TId: 0 ( I-SLICE, QP 32 ) [DT  0.241] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   67 TId: 0 ( I-SLICE, QP 32 ) [DT  0.250] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   68 TId: 0 ( I-SLICE, QP 32 ) [DT  0.263] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   69 TId: 0 ( I-SLICE, QP 32 ) [DT  0.245] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   70 TId: 0 ( I-SLICE, QP 32 ) [DT  0.254] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   71 TId: 0 ( I-SLICE, QP 32 ) [DT  0.233] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   72 TId: 0 ( I-SLICE, QP 32 ) [DT  0.236] [L0 ] [L1 ] [:,(unk)] 
+Note: found NAL_UNIT_ACCESS_UNIT_DELIMITER
+POC   73 TId: 0 ( I-SLICE, QP 32 ) [DT  0.242] [L0 ] [L1 ] [:,(unk)] 
+POC   74 TId: 0 ( I-SLICE, QP 32 ) [DT  0.242] [L0 ] [L1 ] [:,(unk)] 
+
+ Total Time:       21.133 sec.
+cut: 135 / ytu: 27353 /uvtu : 2497
+POC : 0
+  Pred PSNR 24.804672
+  Recon PSNR 36.340840
+  Unfiltered PSNR 36.192173
+cut: 135 / ytu: 27119 /uvtu : 2359
+POC : 1
+  Pred PSNR 24.790653
+  Recon PSNR 36.344192
+  Unfiltered PSNR 36.200034
+cut: 135 / ytu: 26849 /uvtu : 2603
+POC : 2
+  Pred PSNR 24.840189
+  Recon PSNR 36.366119
+  Unfiltered PSNR 36.220649
+cut: 135 / ytu: 26120 /uvtu : 2459
+POC : 3
+  Pred PSNR 24.825806
+  Recon PSNR 36.393311
+  Unfiltered PSNR 36.246936
+cut: 135 / ytu: 26743 /uvtu : 2452
+POC : 4
+  Pred PSNR 24.813334
+  Recon PSNR 36.373588
+  Unfiltered PSNR 36.224719
+cut: 135 / ytu: 26389 /uvtu : 2429
+POC : 5
+  Pred PSNR 24.845897
+  Recon PSNR 36.402397
+  Unfiltered PSNR 36.248870
+cut: 135 / ytu: 25514 /uvtu : 2402
+POC : 6
+  Pred PSNR 24.834478
+  Recon PSNR 36.437913
+  Unfiltered PSNR 36.281816
+cut: 135 / ytu: 24199 /uvtu : 2253
+POC : 7
+  Pred PSNR 24.977671
+  Recon PSNR 36.531131
+  Unfiltered PSNR 36.374468
+cut: 135 / ytu: 24573 /uvtu : 2373
+POC : 8
+  Pred PSNR 24.948398
+  Recon PSNR 36.497218
+  Unfiltered PSNR 36.336023
+cut: 135 / ytu: 23799 /uvtu : 2173
+POC : 9
+  Pred PSNR 25.025836
+  Recon PSNR 36.536221
+  Unfiltered PSNR 36.379219
+cut: 135 / ytu: 23329 /uvtu : 2227
+POC : 10
+  Pred PSNR 24.983161
+  Recon PSNR 36.574271
+  Unfiltered PSNR 36.418886
+cut: 135 / ytu: 22175 /uvtu : 2137
+POC : 11
+  Pred PSNR 25.070886
+  Recon PSNR 36.633045
+  Unfiltered PSNR 36.479796
+cut: 135 / ytu: 20849 /uvtu : 2128
+POC : 12
+  Pred PSNR 25.211215
+  Recon PSNR 36.736751
+  Unfiltered PSNR 36.578340
+cut: 135 / ytu: 20653 /uvtu : 2061
+POC : 13
+  Pred PSNR 25.279403
+  Recon PSNR 36.724784
+  Unfiltered PSNR 36.571611
+cut: 135 / ytu: 19602 /uvtu : 1949
+POC : 14
+  Pred PSNR 25.442693
+  Recon PSNR 36.743609
+  Unfiltered PSNR 36.580374
+cut: 135 / ytu: 18794 /uvtu : 1849
+POC : 15
+  Pred PSNR 25.526481
+  Recon PSNR 36.807263
+  Unfiltered PSNR 36.642489
+cut: 135 / ytu: 18197 /uvtu : 1901
+POC : 16
+  Pred PSNR 25.490015
+  Recon PSNR 36.800295
+  Unfiltered PSNR 36.630108
+cut: 135 / ytu: 17608 /uvtu : 1792
+POC : 17
+  Pred PSNR 25.676832
+  Recon PSNR 36.860380
+  Unfiltered PSNR 36.682337
+cut: 135 / ytu: 15265 /uvtu : 1761
+POC : 18
+  Pred PSNR 20.835892
+  Recon PSNR 36.586689
+  Unfiltered PSNR 36.372037
+cut: 135 / ytu: 15447 /uvtu : 1814
+POC : 19
+  Pred PSNR 20.863291
+  Recon PSNR 36.571403
+  Unfiltered PSNR 36.361918
+cut: 135 / ytu: 14685 /uvtu : 1650
+POC : 20
+  Pred PSNR 20.912392
+  Recon PSNR 36.618688
+  Unfiltered PSNR 36.415035
+cut: 135 / ytu: 13985 /uvtu : 1612
+POC : 21
+  Pred PSNR 20.955107
+  Recon PSNR 36.706494
+  Unfiltered PSNR 36.506714
+cut: 135 / ytu: 12615 /uvtu : 1574
+POC : 22
+  Pred PSNR 20.945874
+  Recon PSNR 36.812373
+  Unfiltered PSNR 36.629294
+cut: 135 / ytu: 11922 /uvtu : 1579
+POC : 23
+  Pred PSNR 21.032320
+  Recon PSNR 36.898867
+  Unfiltered PSNR 36.720503
+cut: 135 / ytu: 11883 /uvtu : 1537
+POC : 24
+  Pred PSNR 20.867349
+  Recon PSNR 36.915307
+  Unfiltered PSNR 36.735295
+cut: 135 / ytu: 11445 /uvtu : 1528
+POC : 25
+  Pred PSNR 20.866718
+  Recon PSNR 37.023250
+  Unfiltered PSNR 36.848586
+cut: 135 / ytu: 11705 /uvtu : 1492
+POC : 26
+  Pred PSNR 20.942892
+  Recon PSNR 36.980306
+  Unfiltered PSNR 36.805893
+cut: 135 / ytu: 12072 /uvtu : 1580
+POC : 27
+  Pred PSNR 20.971196
+  Recon PSNR 36.969103
+  Unfiltered PSNR 36.799993
+cut: 135 / ytu: 12117 /uvtu : 1632
+POC : 28
+  Pred PSNR 20.899139
+  Recon PSNR 36.931704
+  Unfiltered PSNR 36.761471
+cut: 135 / ytu: 12379 /uvtu : 1669
+POC : 29
+  Pred PSNR 20.889378
+  Recon PSNR 36.881291
+  Unfiltered PSNR 36.711160
+cut: 135 / ytu: 13057 /uvtu : 1613
+POC : 30
+  Pred PSNR 20.908654
+  Recon PSNR 36.824114
+  Unfiltered PSNR 36.656303
+cut: 135 / ytu: 13288 /uvtu : 1679
+POC : 31
+  Pred PSNR 20.839586
+  Recon PSNR 36.714044
+  Unfiltered PSNR 36.540539
+cut: 135 / ytu: 13393 /uvtu : 1760
+POC : 32
+  Pred PSNR 20.930305
+  Recon PSNR 36.639581
+  Unfiltered PSNR 36.459665
+cut: 135 / ytu: 13383 /uvtu : 1727
+POC : 33
+  Pred PSNR 20.869771
+  Recon PSNR 36.555322
+  Unfiltered PSNR 36.380692
+cut: 135 / ytu: 14329 /uvtu : 1765
+POC : 34
+  Pred PSNR 20.855630
+  Recon PSNR 36.490352
+  Unfiltered PSNR 36.313851
+cut: 135 / ytu: 14948 /uvtu : 1934
+POC : 35
+  Pred PSNR 20.756206
+  Recon PSNR 36.394236
+  Unfiltered PSNR 36.212896
+cut: 135 / ytu: 15315 /uvtu : 1954
+POC : 36
+  Pred PSNR 20.770719
+  Recon PSNR 36.280963
+  Unfiltered PSNR 36.097310
+cut: 135 / ytu: 15943 /uvtu : 1913
+POC : 37
+  Pred PSNR 20.790847
+  Recon PSNR 36.185727
+  Unfiltered PSNR 36.009970
+cut: 135 / ytu: 17959 /uvtu : 1992
+POC : 38
+  Pred PSNR 20.725000
+  Recon PSNR 35.931973
+  Unfiltered PSNR 35.752243
+cut: 135 / ytu: 18569 /uvtu : 2051
+POC : 39
+  Pred PSNR 20.751447
+  Recon PSNR 35.843334
+  Unfiltered PSNR 35.662437
+cut: 135 / ytu: 20044 /uvtu : 2094
+POC : 40
+  Pred PSNR 20.707898
+  Recon PSNR 35.606748
+  Unfiltered PSNR 35.432456
+cut: 135 / ytu: 20944 /uvtu : 2116
+POC : 41
+  Pred PSNR 20.675744
+  Recon PSNR 35.490448
+  Unfiltered PSNR 35.326992
+cut: 135 / ytu: 21876 /uvtu : 2234
+POC : 42
+  Pred PSNR 20.689197
+  Recon PSNR 35.401595
+  Unfiltered PSNR 35.246830
+cut: 135 / ytu: 22176 /uvtu : 2170
+POC : 43
+  Pred PSNR 20.706793
+  Recon PSNR 35.375789
+  Unfiltered PSNR 35.221253
+cut: 135 / ytu: 22204 /uvtu : 2143
+POC : 44
+  Pred PSNR 20.692712
+  Recon PSNR 35.355200
+  Unfiltered PSNR 35.204000
+cut: 135 / ytu: 22829 /uvtu : 2068
+POC : 45
+  Pred PSNR 20.713083
+  Recon PSNR 35.340961
+  Unfiltered PSNR 35.189590
+cut: 135 / ytu: 22918 /uvtu : 2327
+POC : 46
+  Pred PSNR 20.688097
+  Recon PSNR 35.302437
+  Unfiltered PSNR 35.155533
+cut: 135 / ytu: 23082 /uvtu : 2239
+POC : 47
+  Pred PSNR 20.751460
+  Recon PSNR 35.302565
+  Unfiltered PSNR 35.149639
+cut: 135 / ytu: 23228 /uvtu : 2233
+POC : 48
+  Pred PSNR 20.745732
+  Recon PSNR 35.266556
+  Unfiltered PSNR 35.119486
+cut: 135 / ytu: 23754 /uvtu : 2272
+POC : 49
+  Pred PSNR 20.728029
+  Recon PSNR 35.254842
+  Unfiltered PSNR 35.109576
+cut: 135 / ytu: 23635 /uvtu : 2291
+POC : 50
+  Pred PSNR 20.721246
+  Recon PSNR 35.256759
+  Unfiltered PSNR 35.107591
+cut: 135 / ytu: 23329 /uvtu : 2258
+POC : 51
+  Pred PSNR 20.706117
+  Recon PSNR 35.220739
+  Unfiltered PSNR 35.074887
+cut: 135 / ytu: 23857 /uvtu : 2232
+POC : 52
+  Pred PSNR 20.719310
+  Recon PSNR 35.216421
+  Unfiltered PSNR 35.068406
+cut: 135 / ytu: 23800 /uvtu : 2270
+POC : 53
+  Pred PSNR 20.726064
+  Recon PSNR 35.213538
+  Unfiltered PSNR 35.064723
+cut: 135 / ytu: 24079 /uvtu : 2298
+POC : 54
+  Pred PSNR 20.714630
+  Recon PSNR 35.208576
+  Unfiltered PSNR 35.058262
+cut: 135 / ytu: 24111 /uvtu : 2389
+POC : 55
+  Pred PSNR 20.714277
+  Recon PSNR 35.204870
+  Unfiltered PSNR 35.060928
+cut: 135 / ytu: 24156 /uvtu : 2338
+POC : 56
+  Pred PSNR 20.716133
+  Recon PSNR 35.190992
+  Unfiltered PSNR 35.042810
+cut: 135 / ytu: 23982 /uvtu : 2330
+POC : 57
+  Pred PSNR 20.716202
+  Recon PSNR 35.194555
+  Unfiltered PSNR 35.055229
+cut: 135 / ytu: 24251 /uvtu : 2297
+POC : 58
+  Pred PSNR 20.646531
+  Recon PSNR 35.167894
+  Unfiltered PSNR 35.022807
+cut: 135 / ytu: 24114 /uvtu : 2291
+POC : 59
+  Pred PSNR 20.654813
+  Recon PSNR 35.169829
+  Unfiltered PSNR 35.027683
+cut: 135 / ytu: 24568 /uvtu : 2427
+POC : 60
+  Pred PSNR 20.630143
+  Recon PSNR 35.156791
+  Unfiltered PSNR 35.006897
+cut: 135 / ytu: 24232 /uvtu : 2309
+POC : 61
+  Pred PSNR 20.635399
+  Recon PSNR 35.143793
+  Unfiltered PSNR 34.998898
+cut: 135 / ytu: 24880 /uvtu : 2437
+POC : 62
+  Pred PSNR 20.617220
+  Recon PSNR 35.166630
+  Unfiltered PSNR 35.020336
+cut: 135 / ytu: 24390 /uvtu : 2333
+POC : 63
+  Pred PSNR 20.628829
+  Recon PSNR 35.143874
+  Unfiltered PSNR 34.996094
+cut: 135 / ytu: 24878 /uvtu : 2358
+POC : 64
+  Pred PSNR 20.638621
+  Recon PSNR 35.164640
+  Unfiltered PSNR 35.014562
+cut: 135 / ytu: 24624 /uvtu : 2311
+POC : 65
+  Pred PSNR 20.793527
+  Recon PSNR 35.205229
+  Unfiltered PSNR 35.057393
+cut: 135 / ytu: 24462 /uvtu : 2303
+POC : 66
+  Pred PSNR 20.796936
+  Recon PSNR 35.215528
+  Unfiltered PSNR 35.071493
+cut: 135 / ytu: 23901 /uvtu : 2343
+POC : 67
+  Pred PSNR 20.771907
+  Recon PSNR 35.209390
+  Unfiltered PSNR 35.059825
+cut: 135 / ytu: 24339 /uvtu : 2270
+POC : 68
+  Pred PSNR 20.794431
+  Recon PSNR 35.219610
+  Unfiltered PSNR 35.074342
+cut: 135 / ytu: 24040 /uvtu : 2365
+POC : 69
+  Pred PSNR 20.814844
+  Recon PSNR 35.218388
+  Unfiltered PSNR 35.074568
+cut: 135 / ytu: 24393 /uvtu : 2340
+POC : 70
+  Pred PSNR 20.799507
+  Recon PSNR 35.209638
+  Unfiltered PSNR 35.062645
+cut: 135 / ytu: 24318 /uvtu : 2255
+POC : 71
+  Pred PSNR 20.808346
+  Recon PSNR 35.194266
+  Unfiltered PSNR 35.045656
+cut: 135 / ytu: 24496 /uvtu : 2225
+POC : 72
+  Pred PSNR 20.781202
+  Recon PSNR 35.208430
+  Unfiltered PSNR 35.060056
+cut: 135 / ytu: 24352 /uvtu : 2293
+POC : 73
+  Pred PSNR 20.784014
+  Recon PSNR 35.207656
+  Unfiltered PSNR 35.060345
+cut: 135 / ytu: 24220 /uvtu : 2330
+POC : 74
+  Pred PSNR 20.772093
+  Recon PSNR 35.209233
+  Unfiltered PSNR 35.062627
+Done

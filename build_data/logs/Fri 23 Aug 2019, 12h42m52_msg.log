@@ -1,0 +1,78 @@
+[INFO|build_dataset.py:228] 2019-08-23 12:42:52,953 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 binfile get training set..
+[INFO|build_dataset.py:251] 2019-08-23 12:42:58,555 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 0
+[INFO|build_dataset.py:437] 2019-08-23 12:42:59,927 >   Save to Image : AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22
+[INFO|build_dataset.py:443] 2019-08-23 12:43:13,051 >   POC_0 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:18,114 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 1
+[INFO|build_dataset.py:443] 2019-08-23 12:43:19,745 >   POC_1 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:25,759 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 2
+[INFO|build_dataset.py:443] 2019-08-23 12:43:27,154 >   POC_2 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:32,691 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 3
+[INFO|build_dataset.py:443] 2019-08-23 12:43:34,465 >   POC_3 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:40,206 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 4
+[INFO|build_dataset.py:443] 2019-08-23 12:43:41,561 >   POC_4 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:46,397 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 5
+[INFO|build_dataset.py:443] 2019-08-23 12:43:47,839 >   POC_5 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:43:57,214 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 6
+[INFO|build_dataset.py:443] 2019-08-23 12:43:59,113 >   POC_6 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:05,850 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 7
+[INFO|build_dataset.py:443] 2019-08-23 12:44:07,415 >   POC_7 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:14,558 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 8
+[INFO|build_dataset.py:443] 2019-08-23 12:44:16,210 >   POC_8 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:23,953 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 9
+[INFO|build_dataset.py:443] 2019-08-23 12:44:25,475 >   POC_9 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:31,639 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 10
+[INFO|build_dataset.py:443] 2019-08-23 12:44:33,050 >   POC_10 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:39,610 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 11
+[INFO|build_dataset.py:443] 2019-08-23 12:44:41,371 >   POC_11 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:47,506 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 12
+[INFO|build_dataset.py:443] 2019-08-23 12:44:49,026 >   POC_12 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:44:58,925 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 13
+[INFO|build_dataset.py:443] 2019-08-23 12:45:00,984 >   POC_13 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:06,744 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 14
+[INFO|build_dataset.py:443] 2019-08-23 12:45:08,151 >   POC_14 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:14,320 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 15
+[INFO|build_dataset.py:443] 2019-08-23 12:45:15,929 >   POC_15 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:21,718 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 16
+[INFO|build_dataset.py:443] 2019-08-23 12:45:23,186 >   POC_16 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:28,907 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 17
+[INFO|build_dataset.py:443] 2019-08-23 12:45:30,554 >   POC_17 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:36,824 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 18
+[INFO|build_dataset.py:443] 2019-08-23 12:45:38,359 >   POC_18 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:44,236 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 19
+[INFO|build_dataset.py:443] 2019-08-23 12:45:45,923 >   POC_19 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:51,831 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 20
+[INFO|build_dataset.py:443] 2019-08-23 12:45:53,394 >   POC_20 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:45:59,269 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 21
+[INFO|build_dataset.py:443] 2019-08-23 12:46:00,819 >   POC_21 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:06,446 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 22
+[INFO|build_dataset.py:443] 2019-08-23 12:46:08,032 >   POC_22 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:16,570 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 23
+[INFO|build_dataset.py:443] 2019-08-23 12:46:18,341 >   POC_23 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:25,843 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 24
+[INFO|build_dataset.py:443] 2019-08-23 12:46:27,466 >   POC_24 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:34,152 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 25
+[INFO|build_dataset.py:443] 2019-08-23 12:46:35,691 >   POC_25 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:42,806 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 26
+[INFO|build_dataset.py:443] 2019-08-23 12:46:44,492 >   POC_26 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:51,296 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 27
+[INFO|build_dataset.py:443] 2019-08-23 12:46:53,064 >   POC_27 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:46:59,237 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 28
+[INFO|build_dataset.py:443] 2019-08-23 12:47:01,079 >   POC_28 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:07,213 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 29
+[INFO|build_dataset.py:443] 2019-08-23 12:47:08,696 >   POC_29 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:14,519 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 30
+[INFO|build_dataset.py:443] 2019-08-23 12:47:16,057 >   POC_30 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:22,627 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 31
+[INFO|build_dataset.py:443] 2019-08-23 12:47:24,306 >   POC_31 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:30,152 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 32
+[INFO|build_dataset.py:443] 2019-08-23 12:47:31,744 >   POC_32 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:37,765 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 33
+[INFO|build_dataset.py:443] 2019-08-23 12:47:39,350 >   POC_33 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:45,093 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 34
+[INFO|build_dataset.py:443] 2019-08-23 12:47:46,687 >   POC_34 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:47:53,150 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 35
+[INFO|build_dataset.py:443] 2019-08-23 12:47:54,663 >   POC_35 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:48:00,605 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 36
+[INFO|build_dataset.py:443] 2019-08-23 12:48:02,066 >   POC_36 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)
+[INFO|build_dataset.py:251] 2019-08-23 12:48:08,075 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 37
+[INFO|build_dataset.py:443] 2019-08-23 12:48:09,694 >   POC_37 finished(AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 Cnt : 2)

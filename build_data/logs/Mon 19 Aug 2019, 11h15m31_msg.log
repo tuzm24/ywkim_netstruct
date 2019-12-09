@@ -1,0 +1,4 @@
+[INFO|build_dataset.py:223] 2019-08-19 11:15:31,582 > AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 binfile get training set..
+[INFO|build_dataset.py:246] 2019-08-19 11:15:55,167 >   AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 POC 0
+[ERROR|build_dataset.py:268] 2019-08-19 11:15:55,214 > operands could not be broadcast together with shapes (8294400,) (0,) 
+[ERROR|build_dataset.py:269] 2019-08-19 11:15:55,215 >    AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22 poc 0 cannot calc PSNR

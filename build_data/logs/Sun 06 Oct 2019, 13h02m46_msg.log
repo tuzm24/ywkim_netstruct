@@ -1,0 +1,8 @@
+[INFO|build_dataset.py:887] 2019-10-06 13:02:47,126 > ./build_data/DecoderApp.exe -b C:/Users/YangwooKim/Desktop/20190909_VTM6.1/sample_bin\AI_BQTerrace_1920x1080_60_32.bin -i D:/origCfP\BQTerrace_1920x1080_60.yuv -bd 8
+[INFO|build_dataset.py:888] 2019-10-06 13:02:47,127 > AI_BQTerrace_1920x1080_60_32.bin start
+[INFO|build_dataset.py:892] 2019-10-06 13:03:19,576 > AI_BQTerrace_1920x1080_60_32.bin done
+[INFO|build_dataset.py:478] 2019-10-06 13:03:19,578 > AI_BQTerrace_1920x1080_60_32 binfile get test set..
+[INFO|build_dataset.py:515] 2019-10-06 13:03:20,897 >   AI_BQTerrace_1920x1080_60_32 POC 0
+[INFO|build_dataset.py:688] 2019-10-06 13:03:22,643 >   Save to Image : AI_BQTerrace_1920x1080_60_32
+[INFO|build_dataset.py:515] 2019-10-06 13:03:27,678 >   AI_BQTerrace_1920x1080_60_32 POC 1
+[INFO|build_dataset.py:484] 2019-10-06 13:03:30,169 >   AI_BQTerrace_1920x1080_60_32 POC is break(POC : 2)

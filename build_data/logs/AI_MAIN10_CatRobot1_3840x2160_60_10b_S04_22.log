@@ -1,0 +1,234 @@
+
+VVCSoftware: VTM Decoder Version 4.0 [Windows][VS 1916][64 bit] [SIMD=AVX2] 
+ywkim_AI_MAIN10_CatRobot1_3840x2160_60_10b_S04_22.bin
+POC    0 TId: 0 ( I-SLICE, QP 22 ) [DT  0.809] [L0 ] [L1 ] [:,(unk)] 
+POC    1 TId: 0 ( I-SLICE, QP 22 ) [DT  0.804] [L0 ] [L1 ] [:,(unk)] 
+POC    2 TId: 0 ( I-SLICE, QP 22 ) [DT  0.830] [L0 ] [L1 ] [:,(unk)] 
+POC    3 TId: 0 ( I-SLICE, QP 22 ) [DT  0.906] [L0 ] [L1 ] [:,(unk)] 
+POC    4 TId: 0 ( I-SLICE, QP 22 ) [DT  1.813] [L0 ] [L1 ] [:,(unk)] 
+POC    5 TId: 0 ( I-SLICE, QP 22 ) [DT  1.206] [L0 ] [L1 ] [:,(unk)] 
+POC    6 TId: 0 ( I-SLICE, QP 22 ) [DT  1.057] [L0 ] [L1 ] [:,(unk)] 
+POC    7 TId: 0 ( I-SLICE, QP 22 ) [DT  1.049] [L0 ] [L1 ] [:,(unk)] 
+POC    8 TId: 0 ( I-SLICE, QP 22 ) [DT  0.756] [L0 ] [L1 ] [:,(unk)] 
+POC    9 TId: 0 ( I-SLICE, QP 22 ) [DT  0.786] [L0 ] [L1 ] [:,(unk)] 
+POC   10 TId: 0 ( I-SLICE, QP 22 ) [DT  0.758] [L0 ] [L1 ] [:,(unk)] 
+POC   11 TId: 0 ( I-SLICE, QP 22 ) [DT  0.866] [L0 ] [L1 ] [:,(unk)] 
+POC   12 TId: 0 ( I-SLICE, QP 22 ) [DT  1.660] [L0 ] [L1 ] [:,(unk)] 
+POC   13 TId: 0 ( I-SLICE, QP 22 ) [DT  0.791] [L0 ] [L1 ] [:,(unk)] 
+POC   14 TId: 0 ( I-SLICE, QP 22 ) [DT  0.702] [L0 ] [L1 ] [:,(unk)] 
+POC   15 TId: 0 ( I-SLICE, QP 22 ) [DT  0.801] [L0 ] [L1 ] [:,(unk)] 
+POC   16 TId: 0 ( I-SLICE, QP 22 ) [DT  0.683] [L0 ] [L1 ] [:,(unk)] 
+POC   17 TId: 0 ( I-SLICE, QP 22 ) [DT  0.682] [L0 ] [L1 ] [:,(unk)] 
+POC   18 TId: 0 ( I-SLICE, QP 22 ) [DT  0.668] [L0 ] [L1 ] [:,(unk)] 
+POC   19 TId: 0 ( I-SLICE, QP 22 ) [DT  0.671] [L0 ] [L1 ] [:,(unk)] 
+POC   20 TId: 0 ( I-SLICE, QP 22 ) [DT  0.749] [L0 ] [L1 ] [:,(unk)] 
+POC   21 TId: 0 ( I-SLICE, QP 22 ) [DT  0.685] [L0 ] [L1 ] [:,(unk)] 
+POC   22 TId: 0 ( I-SLICE, QP 22 ) [DT  0.688] [L0 ] [L1 ] [:,(unk)] 
+POC   23 TId: 0 ( I-SLICE, QP 22 ) [DT  0.668] [L0 ] [L1 ] [:,(unk)] 
+POC   24 TId: 0 ( I-SLICE, QP 22 ) [DT  0.669] [L0 ] [L1 ] [:,(unk)] 
+POC   25 TId: 0 ( I-SLICE, QP 22 ) [DT  0.683] [L0 ] [L1 ] [:,(unk)] 
+POC   26 TId: 0 ( I-SLICE, QP 22 ) [DT  0.757] [L0 ] [L1 ] [:,(unk)] 
+POC   27 TId: 0 ( I-SLICE, QP 22 ) [DT  1.097] [L0 ] [L1 ] [:,(unk)] 
+POC   28 TId: 0 ( I-SLICE, QP 22 ) [DT  1.352] [L0 ] [L1 ] [:,(unk)] 
+POC   29 TId: 0 ( I-SLICE, QP 22 ) [DT  1.093] [L0 ] [L1 ] [:,(unk)] 
+POC   30 TId: 0 ( I-SLICE, QP 22 ) [DT  1.548] [L0 ] [L1 ] [:,(unk)] 
+POC   31 TId: 0 ( I-SLICE, QP 22 ) [DT  0.961] [L0 ] [L1 ] [:,(unk)] 
+POC   32 TId: 0 ( I-SLICE, QP 22 ) [DT  1.030] [L0 ] [L1 ] [:,(unk)] 
+POC   33 TId: 0 ( I-SLICE, QP 22 ) [DT  1.236] [L0 ] [L1 ] [:,(unk)] 
+POC   34 TId: 0 ( I-SLICE, QP 22 ) [DT  1.049] [L0 ] [L1 ] [:,(unk)] 
+POC   35 TId: 0 ( I-SLICE, QP 22 ) [DT  0.966] [L0 ] [L1 ] [:,(unk)] 
+POC   36 TId: 0 ( I-SLICE, QP 22 ) [DT  0.880] [L0 ] [L1 ] [:,(unk)] 
+POC   37 TId: 0 ( I-SLICE, QP 22 ) [DT  0.862] [L0 ] [L1 ] [:,(unk)] 
+
+ Total Time:       56.373 sec.
+ytu: 59436 /uvtu : 28548
+POC : 0
+  Pred PSNR 31.907756
+  Recon PSNR 42.823591
+  Unfiltered PSNR 42.789926
+ytu: 59642 /uvtu : 28716
+POC : 1
+  Pred PSNR 31.736255
+  Recon PSNR 42.816866
+  Unfiltered PSNR 42.782418
+ytu: 61594 /uvtu : 29723
+POC : 2
+  Pred PSNR 31.902344
+  Recon PSNR 42.779688
+  Unfiltered PSNR 42.745325
+ytu: 62498 /uvtu : 30365
+POC : 3
+  Pred PSNR 31.859937
+  Recon PSNR 42.746722
+  Unfiltered PSNR 42.712579
+ytu: 61962 /uvtu : 29883
+POC : 4
+  Pred PSNR 31.816031
+  Recon PSNR 42.731412
+  Unfiltered PSNR 42.698418
+ytu: 63107 /uvtu : 31089
+POC : 5
+  Pred PSNR 31.824914
+  Recon PSNR 42.717438
+  Unfiltered PSNR 42.683294
+ytu: 63259 /uvtu : 30050
+POC : 6
+  Pred PSNR 31.729429
+  Recon PSNR 42.722053
+  Unfiltered PSNR 42.687486
+ytu: 64529 /uvtu : 30073
+POC : 7
+  Pred PSNR 31.743966
+  Recon PSNR 42.737008
+  Unfiltered PSNR 42.701359
+ytu: 63240 /uvtu : 29460
+POC : 8
+  Pred PSNR 31.840706
+  Recon PSNR 42.762414
+  Unfiltered PSNR 42.727245
+ytu: 63114 /uvtu : 30382
+POC : 9
+  Pred PSNR 31.772553
+  Recon PSNR 42.781711
+  Unfiltered PSNR 42.745741
+ytu: 61896 /uvtu : 30309
+POC : 10
+  Pred PSNR 31.852456
+  Recon PSNR 42.789767
+  Unfiltered PSNR 42.755151
+ytu: 63312 /uvtu : 30234
+POC : 11
+  Pred PSNR 31.946122
+  Recon PSNR 42.798007
+  Unfiltered PSNR 42.762512
+ytu: 62483 /uvtu : 30500
+POC : 12
+  Pred PSNR 31.972906
+  Recon PSNR 42.784259
+  Unfiltered PSNR 42.750670
+ytu: 62563 /uvtu : 30294
+POC : 13
+  Pred PSNR 31.959754
+  Recon PSNR 42.782843
+  Unfiltered PSNR 42.748360
+ytu: 62661 /uvtu : 30207
+POC : 14
+  Pred PSNR 31.947758
+  Recon PSNR 42.778755
+  Unfiltered PSNR 42.746446
+ytu: 62499 /uvtu : 30193
+POC : 15
+  Pred PSNR 32.083552
+  Recon PSNR 42.794026
+  Unfiltered PSNR 42.761192
+ytu: 62278 /uvtu : 29709
+POC : 16
+  Pred PSNR 32.077490
+  Recon PSNR 42.793277
+  Unfiltered PSNR 42.761992
+ytu: 61914 /uvtu : 29607
+POC : 17
+  Pred PSNR 32.047562
+  Recon PSNR 42.790520
+  Unfiltered PSNR 42.759347
+ytu: 60853 /uvtu : 29625
+POC : 18
+  Pred PSNR 32.026324
+  Recon PSNR 42.796790
+  Unfiltered PSNR 42.764734
+ytu: 60141 /uvtu : 29701
+POC : 19
+  Pred PSNR 32.090281
+  Recon PSNR 42.790481
+  Unfiltered PSNR 42.760268
+ytu: 59304 /uvtu : 28676
+POC : 20
+  Pred PSNR 32.076964
+  Recon PSNR 42.785597
+  Unfiltered PSNR 42.755021
+ytu: 60028 /uvtu : 29464
+POC : 21
+  Pred PSNR 31.985641
+  Recon PSNR 42.786665
+  Unfiltered PSNR 42.757489
+ytu: 59613 /uvtu : 28457
+POC : 22
+  Pred PSNR 31.967893
+  Recon PSNR 42.790748
+  Unfiltered PSNR 42.760607
+ytu: 59900 /uvtu : 28551
+POC : 23
+  Pred PSNR 31.985874
+  Recon PSNR 42.801483
+  Unfiltered PSNR 42.771014
+ytu: 60932 /uvtu : 28436
+POC : 24
+  Pred PSNR 32.101075
+  Recon PSNR 42.806023
+  Unfiltered PSNR 42.774919
+ytu: 60978 /uvtu : 28976
+POC : 25
+  Pred PSNR 32.133660
+  Recon PSNR 42.802568
+  Unfiltered PSNR 42.771335
+ytu: 62090 /uvtu : 29120
+POC : 26
+  Pred PSNR 32.161298
+  Recon PSNR 42.806644
+  Unfiltered PSNR 42.774364
+ytu: 61905 /uvtu : 30443
+POC : 27
+  Pred PSNR 32.155439
+  Recon PSNR 42.787517
+  Unfiltered PSNR 42.753290
+ytu: 62668 /uvtu : 30061
+POC : 28
+  Pred PSNR 32.052922
+  Recon PSNR 42.767203
+  Unfiltered PSNR 42.731629
+ytu: 63023 /uvtu : 29215
+POC : 29
+  Pred PSNR 32.109705
+  Recon PSNR 42.768824
+  Unfiltered PSNR 42.735392
+ytu: 62992 /uvtu : 28460
+POC : 30
+  Pred PSNR 32.072206
+  Recon PSNR 42.764267
+  Unfiltered PSNR 42.730489
+ytu: 62710 /uvtu : 28400
+POC : 31
+  Pred PSNR 31.933015
+  Recon PSNR 42.754155
+  Unfiltered PSNR 42.720377
+ytu: 62182 /uvtu : 29123
+POC : 32
+  Pred PSNR 31.748330
+  Recon PSNR 42.729675
+  Unfiltered PSNR 42.695301
+ytu: 61770 /uvtu : 28612
+POC : 33
+  Pred PSNR 31.731406
+  Recon PSNR 42.734292
+  Unfiltered PSNR 42.700598
+ytu: 61686 /uvtu : 28901
+POC : 34
+  Pred PSNR 31.688194
+  Recon PSNR 42.729721
+  Unfiltered PSNR 42.695294
+ytu: 62551 /uvtu : 29515
+POC : 35
+  Pred PSNR 31.535758
+  Recon PSNR 42.734202
+  Unfiltered PSNR 42.699293
+ytu: 63136 /uvtu : 30022
+POC : 36
+  Pred PSNR 31.534998
+  Recon PSNR 42.739898
+  Unfiltered PSNR 42.704924
+ytu: 64228 /uvtu : 30438
+POC : 37
+  Pred PSNR 31.374932
+  Recon PSNR 42.721709
+  Unfiltered PSNR 42.685868
+Done
