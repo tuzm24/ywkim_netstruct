@@ -259,7 +259,7 @@ class NetTrainAndTest:
                 self.net = self.net.cuda()
                 self.criterion = self.criterion.cuda()
                 self.ResultMSELoss = self.ResultMSELoss.cuda()
-        self.optimizer = self.setopt(opt)(self.net.parameters(), lr = NetManager.cfg.INIT_LEARNING_RATE)
+        self.optimizer = self.setopt(self.net.parameters(), NetManager.cfg.INIT_LEARNING_RATE, opt)
         # self.lr_scheduler = optim.lr_scheduler.MultiStepLR(optimizer=self.optimizer,
         #                                               milestones=[int(NetManager.cfg.OBJECT_EPOCH * 0.5),
         #                                                           int(NetManager.cfg.OBJECT_EPOCH * 0.75)],
@@ -285,9 +285,11 @@ class NetTrainAndTest:
             self.cuda_device_count = 0
 
     @staticmethod
-    def setopt(opt = 'adam'):
+    def setopt(netparameters, learning_rate, opt = 'adam'):
         if opt == 'adam':
-            return optim.Adam
+            return optim.Adam(params = netparameters, lr = learning_rate)
+        elif opt == 'momentum':
+            return optim.SGD(netparameters, learning_rate, momentum=0.9)
         else:
             assert 0, 'The Optimizer is ambiguous'
 
@@ -422,7 +424,7 @@ class NetTrainAndTest:
                     # recons = recons.cuda()
                     inputs = inputs.cuda()
                     gts = gts.cuda()
-                outputs = self.net(inputs, gts)
+                outputs = self.net(inputs)
                 loss = self.criterion(outputs, gts)
                 MSE = self.ResultMSELoss(outputs, gts)
                 recon_MSE = torch.mean((gts) ** 2)
